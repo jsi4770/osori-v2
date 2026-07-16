@@ -10,7 +10,7 @@
 	 threadId가 0이면(=NUDGE 최초 생성) THREAD_ID를 자기 자신의 MESSAGE_ID와 같게 만들기 위해
 	 SEQ_COACHING.CURRVAL(방금 NEXTVAL로 뽑은 값)을 넣는다. 그 외에는 전달받은 threadId 사용.
 	 -->
-	<insert id="insertMessage" parameterType="CoachingMessage" useGeneratedKeys="true" keyProperty="messageId" keyColumn="MESSAGE_ID">
+	<insert id="insertMessage" parameterType="CoachingMessage" useGeneratedKeys="true" keyProperty="messageId" keyColumn="message_id">
 		INSERT INTO COACHING_MESSAGE (
 			MESSAGE_ID,
 			USER_ID,
@@ -22,10 +22,10 @@
 			AVG_AMOUNT,
 			ACCEPTED
 		) VALUES (
-			SEQ_COACHING.NEXTVAL,
+			nextval('SEQ_COACHING'),
 			#{userId},
 			<choose>
-				<when test="threadId == 0">SEQ_COACHING.CURRVAL</when>
+				<when test="threadId == 0">currval('SEQ_COACHING')</when>
 				<otherwise>#{threadId}</otherwise>
 			</choose>,
 			#{role},

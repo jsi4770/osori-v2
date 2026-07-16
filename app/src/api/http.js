@@ -1,5 +1,5 @@
 
-const API_BASE = "/fincoach";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "/fincoach";
 
 function getToken() {
   return localStorage.getItem("token");

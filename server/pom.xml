@@ -89,10 +89,10 @@
 		</dependency>
 		-->
 		
-		<!--jdbc (H2, file-based embedded DB)-->
+		<!--jdbc (PostgreSQL — Railway)-->
 		<dependency>
-		    <groupId>com.h2database</groupId>
-		    <artifactId>h2</artifactId>
+		    <groupId>org.postgresql</groupId>
+		    <artifactId>postgresql</artifactId>
 		    <scope>runtime</scope>
 		</dependency>
 		

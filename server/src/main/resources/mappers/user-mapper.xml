@@ -11,11 +11,11 @@
 	 
 	 이러한 의미가 있어서 insertMember에는 LAST_LOGIN 컬럼을 넣지 않았습니다.
 	 -->
-    <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="userId" keyColumn="USER_ID">
+    <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
 	  INSERT INTO USERS (
 	    USER_ID, LOGIN_ID, USER_NAME, NICKNAME, EMAIL, PASSWORD
 	  ) VALUES (
-	    SEQ_USERS_ID.NEXTVAL,
+	    nextval('SEQ_USERS_ID'),
 	    #{loginId},
 	    #{userName},
 	    #{nickName},
@@ -84,12 +84,12 @@
   		UPDATE USERS
   		SET
   			STATUS 	= 	CASE
-  							WHEN DATEDIFF('DAY', LAST_LOGIN, SYSDATE) &gt;= 30 THEN 'H'
+  							WHEN (CURRENT_DATE - LAST_LOGIN) &gt;= 30 THEN 'H'
   							ELSE STATUS
   					 	END,
   			LAST_LOGIN = CASE
-  			    			WHEN DATEDIFF('DAY', LAST_LOGIN, SYSDATE) &lt; 30 THEN SYSDATE
-  			    			WHEN LAST_LOGIN IS NULL THEN SYSDATE
+  			    			WHEN (CURRENT_DATE - LAST_LOGIN) &lt; 30 THEN CURRENT_DATE
+  			    			WHEN LAST_LOGIN IS NULL THEN CURRENT_DATE
   			    			ELSE LAST_LOGIN
   			    		 END
   		WHERE LOGIN_ID = #{loginId}
@@ -120,7 +120,7 @@
 		
 		        STATUS = 'Y',
 		        LAST_LOGIN = CASE
-		                        WHEN DATEDIFF('DAY', LAST_LOGIN, SYSDATE) &gt;= 30 THEN SYSDATE
+		                        WHEN (CURRENT_DATE - LAST_LOGIN) &gt;= 30 THEN CURRENT_DATE
 		                        ELSE LAST_LOGIN
 		                     END
 		    WHERE LOGIN_ID = #{loginId}
@@ -162,8 +162,7 @@
   	</update>
   	
   	<select id="selectUserId" resultType="int">
-  		SELECT SEQ_USERS_ID.CURRVAL
-  		FROM DUAL
+  		SELECT currval('SEQ_USERS_ID')
   	</select>
   	
   	<insert id="insertAuthAccount" parameterType="Map">
@@ -209,8 +208,8 @@
   	
   	<update id="lockAccount" parameterType="User">
   		UPDATE USERS
-  		SET LOCK_UNTIL = SYSDATE + (10 / 1440)
-  		WHERE LOGIN_ID = #{loginId} 
+  		SET LOCK_UNTIL = CURRENT_TIMESTAMP + INTERVAL '10 minutes'
+  		WHERE LOGIN_ID = #{loginId}
   	</update>
   	
   	<update id="resetLoginLock" parameterType="String">

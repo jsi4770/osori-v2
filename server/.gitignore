@@ -32,8 +32,9 @@ build/
 .vscode/
 
 ### Local secrets — do not commit real credentials ###
-src/main/resources/application.properties
-src/main/resources/application-prod.properties
+### application.properties itself is now the safe, committed template (CHANGE_ME placeholders); ###
+### real local secrets live in application-local.properties, activated via SPRING_PROFILES_ACTIVE=local ###
+src/main/resources/application-local.properties
 
 ### Local H2 db files (legacy local dev) ###
 data/

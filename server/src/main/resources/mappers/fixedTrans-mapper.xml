@@ -16,7 +16,7 @@
 			PAY_DAY,
 			USER_ID
 		) VALUES (
-			SEQ_FNO.NEXTVAL,
+			nextval('SEQ_FNO'),
 			#{name},
 			#{transDate},
 			#{amount},

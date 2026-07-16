@@ -17,7 +17,7 @@
         USER_ID,
         GROUPB_ID)
         VALUES (
-        SEQ_MYTRANS.NEXTVAL,
+        nextval('SEQ_MYTRANS'),
         #{title},
         #{transDate},
         #{originalAmount},
@@ -66,59 +66,45 @@
 	</delete>
 
 	<!-- [추가] 고정지출 -> MYTRANS 자동 반영 (매일 실행용) -->
+	<!-- Postgres에는 표준 MERGE 버전 제약이 있어, INSERT ... SELECT ... WHERE NOT EXISTS로 동일 로직을 구현 -->
 	<insert id="mergeFixedToMyTrans">
-	  MERGE INTO MYTRANS m
-	  USING (
-	    SELECT
-	      f.FIXED_ID,
-	      f.USER_ID,
-	      f.NAME AS TITLE,
-	      TRUNC(SYSDATE) AS TRANS_DATE,
-	      f.AMOUNT AS ORIGINAL_AMOUNT,
-	      'N' AS IS_SHARED,
-	      f.CATEGORY,
-	      'OUT' AS TYPE,
-	      '고정지출 자동등록' AS MEMO,
-	      NULL AS GROUPB_ID
-	    FROM FIXEDTRANS f
-	    WHERE
-	      DAY_OF_MONTH(TRUNC(SYSDATE)) =
-	      LEAST(
-	        f.PAY_DAY,
-	        DAY_OF_MONTH(LAST_DAY(TRUNC(SYSDATE)))
-	      )
-	  ) s
-	  ON (
-	    m.FIXED_ID = s.FIXED_ID
-	    AND TRUNC(m.TRANS_DATE) = s.TRANS_DATE
-	    AND m.USER_ID = s.USER_ID
+	  INSERT INTO MYTRANS (
+	    TRAN_ID,
+	    TITLE,
+	    TRANS_DATE,
+	    ORIGINAL_AMOUNT,
+	    IS_SHARED,
+	    CATEGORY,
+	    TYPE,
+	    MEMO,
+	    USER_ID,
+	    GROUPB_ID,
+	    FIXED_ID
 	  )
-	  WHEN NOT MATCHED THEN
-	    INSERT (
-	      TRAN_ID,
-	      TITLE,
-	      TRANS_DATE,
-	      ORIGINAL_AMOUNT,
-	      IS_SHARED,
-	      CATEGORY,
-	      TYPE,
-	      MEMO,
-	      USER_ID,
-	      GROUPB_ID,
-	      FIXED_ID
+	  SELECT
+	    nextval('SEQ_MYTRANS'),
+	    f.NAME,
+	    CURRENT_DATE,
+	    f.AMOUNT,
+	    'N',
+	    f.CATEGORY,
+	    'OUT',
+	    '고정지출 자동등록',
+	    f.USER_ID,
+	    NULL,
+	    f.FIXED_ID
+	  FROM FIXEDTRANS f
+	  WHERE
+	    EXTRACT(DAY FROM CURRENT_DATE) =
+	    LEAST(
+	      f.PAY_DAY,
+	      EXTRACT(DAY FROM (date_trunc('month', CURRENT_DATE) + INTERVAL '1 month - 1 day'))
 	    )
-	    VALUES (
-	      SEQ_MYTRANS.NEXTVAL,
-	      s.TITLE,
-	      s.TRANS_DATE,
-	      s.ORIGINAL_AMOUNT,
-	      s.IS_SHARED,
-	      s.CATEGORY,
-	      s.TYPE,
-	      s.MEMO,
-	      s.USER_ID,
-	      s.GROUPB_ID,
-	      s.FIXED_ID
+	    AND NOT EXISTS (
+	      SELECT 1 FROM MYTRANS m
+	      WHERE m.FIXED_ID = f.FIXED_ID
+	        AND m.TRANS_DATE = CURRENT_DATE
+	        AND m.USER_ID = f.USER_ID
 	    )
 	</insert>
 
