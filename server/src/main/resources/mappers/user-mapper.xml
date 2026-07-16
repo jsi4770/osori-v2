@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="userMapper">
+
+	<!-- 
+	 테이블을 설계 할 때, LAST_LOGIN은 가입 할 때, 디폴트 값을 두지 않았다.
+	 이러한 이유는 회원 가입만 한거지 실제로 로그인 한 것은 아니기 때문에 LAST_LOGIN을 SYSDATE 값을 바로 주면 안된다.
+	 
+	 이러한 의미가 있어서 insertMember에는 LAST_LOGIN 컬럼을 넣지 않았습니다.
+	 -->
+    <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="userId" keyColumn="USER_ID">
+	  INSERT INTO USERS (
+	    USER_ID, LOGIN_ID, USER_NAME, NICKNAME, EMAIL, PASSWORD
+	  ) VALUES (
+	    SEQ_USERS_ID.NEXTVAL,
+	    #{loginId},
+	    #{userName},
+	    #{nickName},
+	    #{email},
+	    #{password}
+	  )
+	</insert>
+    
+    <!--  
+    <select id="selectUser" parameterType="User" resultType="User">
+    	SELECT USER_ID,
+    		   LOGIN_ID,
+    		   USER_NAME,
+    		   NICKNAME,
+    		   EMAIL,
+    		   PASSWORD,
+    		   STATUS,
+    		   LAST_LOGIN,
+    		   ORIGIN_NAME,
+    		   CHANGE_NAME,
+    		   CREATED_AT  		    	
+    	FROM USERS
+    	WHERE LOGIN_ID= #{loginId}
+    </select>
+    -->
+    
+    <select id="selectUser" parameterType="User" resultType="User">
+    	SELECT 
+    		U.*,
+    		A.LOGIN_TYPE AS loginType
+    	FROM USERS U
+    	LEFT JOIN AUTH_ACCOUNT A ON (U.USER_ID = A.USER_ID)
+    	WHERE U.LOGIN_ID = #{loginId}	
+    </select>
+    
+    <select id="selectByLoginId" parameterType="string" resultType="User">
+    	SELECT *
+    	FROM USERS
+    	WHERE LOGIN_ID = #{loginId}
+    </select>
+    
+    
+    <select id="idCheck" parameterType="string" resultType="int">
+    	SELECT COUNT(*)
+    	FROM USERS
+    	WHERE LOGIN_ID= #{loginId}
+    </select>
+    
+    <select id="nickNameCheck" parameterType="string" resultType="int">
+    	SELECT COUNT(*)
+    	FROM USERS
+    	WHERE NICKNAME=#{nickName}
+    </select>
+    
+    <select id="emailCheck" parameterType="string" resultType="int">
+    	SELECT COUNT(*)
+    	FROM USERS
+    	WHERE EMAIL=#{email}
+    </select>
+  	
+  	<!-- 현재 로그인 시점과 마지막 로그인 시점이 30일이상 차이나면 STATUS H로 강제 변경 -->
+  	<!-- 변경하고나서 마이페이지로 이동하게 하기 -->
+  	<!-- 30일보다 적으면 LAST_LOGIN유지는 그대로 -->
+  	<!-- 점심먹고오면 최초 로그인 할 때도 생각을 해줘야한다. 왜냐면 LAST_LOGIN이 null인 경우도 생각해야함.-->
+  	<update id="updateDate" parameterType="User">
+  		UPDATE USERS
+  		SET
+  			STATUS 	= 	CASE
+  							WHEN DATEDIFF('DAY', LAST_LOGIN, SYSDATE) &gt;= 30 THEN 'H'
+  							ELSE STATUS
+  					 	END,
+  			LAST_LOGIN = CASE
+  			    			WHEN DATEDIFF('DAY', LAST_LOGIN, SYSDATE) &lt; 30 THEN SYSDATE
+  			    			WHEN LAST_LOGIN IS NULL THEN SYSDATE
+  			    			ELSE LAST_LOGIN
+  			    		 END
+  		WHERE LOGIN_ID = #{loginId}
+  		
+  		<!-- 로그인 한 시점이랑 마지막 로그인 시점이랑 차이가 30일이상 나면 휴면 처리 (STATUS -> 'H'로 바꾼게 STATUS ~)
+  			 LAST_LOGIN은 위에 말한 두 시점의 차이가 30일 미만이면 LAST_LOGIN -> SYSDATE로
+  			 근데 맨 처음에 로그인을 할때(즉, 회원 가입 이후 최초 로그인 할 때)는 LAST_LOGIN이 NULL이므로 이 경우는 로그인 한 시점으로 갱신
+  		 -->	    		 			 	
+  	</update>
+  	
+  	<!-- 휴면 -> 강제로 이동 시킨다음에 수정을 해야 Y로 // 수정을 안한다? H그대로 -->
+		<update id="updateUser" parameterType="User">
+		    UPDATE USERS
+		    SET USER_NAME = #{userName},
+		        NICKNAME = #{nickName},         
+		        EMAIL = #{email},
+		        
+		        <choose>
+		            <when test="changeName != null">
+		                ORIGIN_NAME = #{originName},
+		                CHANGE_NAME = #{changeName},
+		            </when>
+		            <otherwise>
+		                ORIGIN_NAME = NULL,
+		                CHANGE_NAME = NULL,
+		            </otherwise>
+		        </choose>
+		
+		        STATUS = 'Y',
+		        LAST_LOGIN = CASE
+		                        WHEN DATEDIFF('DAY', LAST_LOGIN, SYSDATE) &gt;= 30 THEN SYSDATE
+		                        ELSE LAST_LOGIN
+		                     END
+		    WHERE LOGIN_ID = #{loginId}
+		</update>		 	
+  	
+  	<update id="deleteUser" parameterType="User">
+  		UPDATE USERS
+  		SET STATUS = 'N'
+  		WHERE LOGIN_ID = #{loginId} 
+  	</update>
+  	
+  	<update id="changeUserPwd" parameterType="User">
+  		UPDATE USERS
+  		SET PASSWORD = #{password}
+  		WHERE LOGIN_ID = #{loginId}
+  	</update>
+  	
+  	<!--
+  	<select id="findLoginIdByEmail" parameterType="string" resultType="User">
+  		SELECT *
+  		FROM USERS
+  		WHERE EMAIL = #{email} 
+  	</select>
+  	-->
+  	
+  	<select id="findLoginIdByEmail" parameterType="string" resultType="User">
+  		SELECT
+  			U.*,
+  			A.LOGIN_TYPE AS loginType
+  		FROM USERS U
+  		JOIN AUTH_ACCOUNT A ON (U.USER_ID = A.USER_ID)
+  		WHERE U.EMAIL = #{email}	
+  	</select>
+  	
+  	<update id="resetPassword" parameterType="Map">
+  		UPDATE USERS
+  		SET PASSWORD = #{newPassword}
+  		WHERE LOGIN_ID = #{loginId} 	
+  	</update>
+  	
+  	<select id="selectUserId" resultType="int">
+  		SELECT SEQ_USERS_ID.CURRVAL
+  		FROM DUAL
+  	</select>
+  	
+  	<insert id="insertAuthAccount" parameterType="Map">
+  		INSERT INTO AUTH_ACCOUNT(
+  			USER_ID,
+  			LOGIN_TYPE,
+  			PROVIDER_USER_ID 
+  		) VALUES (
+  			#{currentUserId},
+  			#{loginType},
+  			#{providerUserId} 
+  		)
+  	</insert>
+  	
+  	<select id="getProviderUserId" parameterType="int" resultType="string">
+  		SELECT PROVIDER_USER_ID
+  		FROM AUTH_ACCOUNT
+  		WHERE USER_ID = #{userId}
+  	</select>
+  	
+  	<!-- 연동 해제 후, 로컬로 전환 -->
+  	<update id="updateAuthAccount" parameterType="Map">
+  		UPDATE AUTH_ACCOUNT
+  		SET PROVIDER_USER_ID = NULL,
+  			LOGIN_TYPE = #{loginType}
+  	    WHERE USER_ID = #{userId} 	
+  	</update>
+  	
+  	<!-- 재 연동 -> 카카오로 전환 -->
+  	<update id="updateAuthAccount2" parameterType="Map">
+  		UPDATE AUTH_ACCOUNT
+  		SET PROVIDER_USER_ID = #{providerUserId},
+  			LOGIN_TYPE = #{loginType}
+  		WHERE USER_ID = #{userId}	
+  	</update>
+  	
+  	<!-- updateAuthAccount2 이후로 추가 된 것들 -->
+  	<update id="updateLoginCount" parameterType="User">
+  		UPDATE USERS
+  		SET LOGIN_COUNT = LOGIN_COUNT + 1
+  		WHERE LOGIN_ID = #{loginId}
+  	</update>
+  	
+  	<update id="lockAccount" parameterType="User">
+  		UPDATE USERS
+  		SET LOCK_UNTIL = SYSDATE + (10 / 1440)
+  		WHERE LOGIN_ID = #{loginId} 
+  	</update>
+  	
+  	<update id="resetLoginLock" parameterType="String">
+  		UPDATE USERS
+  		SET LOCK_UNTIL = NULL,
+  			LOGIN_COUNT = 0
+  		WHERE LOGIN_ID = #{loginId}	
+  	</update>
+  	
+  	<update id="resetLoginLock2" parameterType="String">
+  		UPDATE USERS
+  		SET LOGIN_COUNT = 0
+  		WHERE LOGIN_ID = #{loginId}
+  	</update>
+  	
+</mapper>

@@ -1,0 +1,206 @@
+.ftList {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+}
+
+.ftRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.ftRow:last-child {
+  border-bottom: none;
+}
+
+.ftRowMain {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ftRowName {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ftName {
+  font-size: 16px;
+  font-weight: 800;
+  color: #111;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ftRowSub {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.ftAmount {
+  font-size: 18px;
+  font-weight: 900;
+  color: #111;
+  white-space: nowrap;
+}
+
+/* 액션 영역: 아래로 안 내려가게 고정 */
+.ftRowActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  flex: 0 0 auto; /* 줄어들면서 아래로 밀리지 않게 */
+  min-width: 120px;
+  justify-content: flex-end;
+}
+
+/* ------------------------------
+   [ADDED] 버튼 UI만 예쁘게(위치/레이아웃은 그대로)
+   - 고정지출 추가 버튼(ftAddBtn)
+   - 수정/삭제 버튼(ftBtn)
+   ------------------------------ */
+
+/* 상단 '고정지출 추가' 버튼: 오른쪽 위치 유지 */
+.ftAddBtn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  width: 140px;
+  margin-left: auto;
+
+  padding: 12px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+
+  background: #111827;
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 1;
+
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+.ftAddBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.10);
+  background: #0f172a;
+}
+
+.ftAddBtn:active {
+  transform: translateY(0);
+}
+
+.ftAddBtn:focus-visible {
+  outline: 3px solid rgba(99, 102, 241, 0.35);
+  outline-offset: 3px;
+}
+
+.ftAddIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.16);
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* 리스트 '수정/삭제' 버튼: 같은 위치 유지 + 한 줄 고정 */
+.ftBtn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #374151;
+
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease, transform 0.12s ease;
+}
+
+.ftBtn:hover {
+  background: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.ftBtn:active {
+  transform: translateY(0);
+}
+
+.ftBtn:focus-visible {
+  outline: 3px solid rgba(99, 102, 241, 0.30);
+  outline-offset: 3px;
+}
+
+.ftBtnEdit {
+  border-color: #cbd5e1;
+}
+
+.ftBtnEdit:hover {
+  background: #eef2ff;
+  border-color: #a5b4fc;
+}
+
+.ftBtnDelete {
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
+.ftBtnDelete:hover {
+  background: #fff1f2;
+  border-color: #fca5a5;
+}
+
+/* 기존 .alarm 버튼이 너무 커서 리스트용으로만 살짝 축소(혹시 남아있을 때만) */
+.alarm.ftAction {
+  padding: 10px 14px;
+  margin: 0;
+  border-radius: 12px;
+}
+
+@media (max-width: 640px) {
+  .ftRow {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .ftRowActions {
+    width: 100%;
+    justify-content: flex-end;
+    min-width: 0; /* 모바일에서는 100% 사용 */
+  }
+}
+
+
+
+

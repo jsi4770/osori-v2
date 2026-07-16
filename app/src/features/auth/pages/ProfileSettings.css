@@ -1,0 +1,489 @@
+/* .ps-page {
+  max-width: 1100px;
+} */
+
+.ps-page {
+  max-width: 1400px; /* 원본의 넓은 느낌을 위해 넉넉하게 설정 */
+  width: 95%;        /* 화면 양옆 여백 확보 */
+  margin: 0 auto;    /* 확대/축소 시 항상 중앙 정렬 */
+  box-sizing: border-box;
+}
+
+.ps-sub {
+  margin-top: 6px;
+  color: #666;
+  font-weight: 600;
+}
+
+/* =========================================================
+   [BEFORE]
+   .ps-stack { gap: 48px; }
+
+   [AFTER]
+   - gap을 그냥 크게 줘서 "누가봐도 분리" 되게 함
+   - 96~120px 권장
+   ========================================================= */
+.ps-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 100px; /* ✅ 여기서 확실히 끊김 */
+}
+
+/* .ps-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  align-items: stretch;
+  width: 95%;
+} */
+
+.ps-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 무조건 가로 2열 유지 */
+  gap: 22px;         /* 원본 간격 유지 */
+  width: 100%;
+}
+
+/* .ps-card {
+  padding: 28px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  width: 760px;  
+} */
+
+.ps-card {
+  padding: 28px;
+  height: 600px;    /* 원본 높이 유지 */
+  display: flex;
+  flex-direction: column;
+  
+  /* ✅ 수정: 고정 760px 삭제하고 아래 2줄 추가 */
+  width: 100%;      
+  box-sizing: border-box; /* 패딩이 너비에 포함되어 확대해도 안 짤림 */
+}
+
+.ps-card-title h3 {
+  margin: 0 0 18px;
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
+.ps-profile-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f2f2f2;
+  margin-bottom: 16px;
+}
+
+.ps-profile-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ps-meta-name {
+  font-weight: 900;
+  font-size: 1.05rem;
+  color: #222;
+}
+
+.ps-meta-email {
+  color: #888;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+
+.ps-form {
+  display: grid;
+  gap: 14px;
+}
+
+
+.ps-field-error {
+  color: #ff4d4f;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.ps-file {
+  display: none;
+}
+
+.ps-avatar {
+  position: relative;
+  width: 100px;   
+  height: 100px; 
+  flex-shrink: 0; 
+}
+
+.ps-avatar-btn {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #e6e6e6; 
+  background: #eef2ff;     
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; 
+  padding: 0;               
+}
+
+.ps-avatar-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;    
+  object-position: center; 
+  display: block;
+}
+
+.ps-field {
+  display: grid;
+  gap: 8px;
+}
+
+.ps-label {
+  font-weight: 800;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.ps-input {
+  width: 95%;
+  border: 1px solid #e6e6e6;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  outline: none;
+  background: #fff;
+}
+
+.ps-input:focus {
+  border-color: #0066ff;
+  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.12);
+}
+
+.ps-row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ps-link-btn {
+  border: none;
+  background: transparent;
+  color: #0066ff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.ps-link-btn:hover {
+  text-decoration: underline;
+}
+
+.ps-help {
+  color: #888;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.ps-divider {
+  height: 1px;
+  background: #f2f2f2;
+  margin: 6px 0;
+}
+
+.ps-password-box {
+  margin-top: 10px;
+  display: grid;
+  gap: 12px;
+}
+
+.ps-actions {
+  margin: 24px 0 18px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+
+.ps-actions-in-card {
+  margin: 0;
+  padding-top: 18px;
+  margin-top: auto;
+}
+
+.ps-save-btn {
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: none;
+  background: #0066ff;
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.ps-save-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ps-error {
+  color: #ff4d4f;
+  font-weight: 800;
+}
+
+/* =========================================================
+   [ADDED] 섹션 디바이더
+   - 시각적으로 "여기서 끝"을 만들어줌
+   ========================================================= */
+.ps-section-divider {
+  height: 1px;
+  background: #ededed;
+  position: relative;
+}
+
+.ps-section-divider::before {
+  content: "위 영역: 프로필/계정 설정";
+  position: absolute;
+  top: -14px;
+  left: 0;
+  color: #999;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ps-section-divider::after {
+  content: "아래 영역: 회원탈퇴";
+  position: absolute;
+  bottom: -14px;
+  left: 0;
+  color: #999;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Danger Zone */
+.ps-danger-wrap {
+  margin: 0;
+}
+
+/* =========================================================
+   [BEFORE]
+   .ps-danger { border만 빨간색 }
+
+   [AFTER]
+   - 배경을 연한 빨강으로 줘서 "다른 영역" 느낌 확실히 냄
+   - 이러면 카드랑 더더욱 안 붙어 보임
+   ========================================================= */
+
+
+/* .ps-danger {
+  border: 1px solid rgba(255, 77, 79, 0.35);
+  padding: 26px;
+  background: rgba(255, 77, 79, 0.04);
+  height:180px;
+  width: 1600px;
+} */
+
+.ps-danger {
+  padding: 26px;
+  height: 180px;    /* 원본 높이 유지 */
+  
+  /* ✅ 수정: 고정 1600px 삭제하고 아래 2줄 추가 */
+  width: 100%;      
+  box-sizing: border-box;
+}
+
+
+.ps-danger-title {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #ff4d4f;
+  margin-bottom: 10px;
+}
+
+.ps-danger-desc {
+  color: #666;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.ps-danger-btn {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: none;
+  background: #ff4d4f;
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+/* Modal */
+.ps-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.ps-modal {
+  width: 100%;
+  max-width: 520px;
+  background: white;
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+.ps-modal-title {
+  font-size: 1.2rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.ps-modal-text {
+  color: #666;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.ps-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  color: #333;
+}
+
+.ps-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.ps-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important; 
+  border-radius: 8px !important; 
+  border: 1px solid #cbd5e1 !important; 
+  background-color: #ffffff !important;
+  color: #475569 !important;
+  cursor: pointer;
+  transition: all 0.2s ease !important;
+  line-height: 1;
+}
+
+.ps-btn:hover {
+  background: #f8fafc !important; 
+  border-color: #a5b4fc !important;
+  transform: translateY(-1px) !important; 
+}
+
+.ps-btn.danger {
+  border-color: #fecaca !important; 
+  color: #b91c1c !important;     
+  background-color: #ffffff !important;
+}
+
+.ps-btn.danger:hover:not(:disabled) {
+  background: #fff1f2 !important;  
+  border-color: #fca5a5 !important;
+  transform: translateY(-1px) !important; 
+}
+
+.ps-btn:active:not(:disabled) {
+  transform: translateY(0) !important;
+}
+
+.ps-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: #eee !important;
+  color: #ccc !important;
+}
+
+@media (max-width: 980px) {
+  .ps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ps-stack {
+    gap: 60px; 
+  }
+
+}
+
+/* =========================================================
+   [ADDED] 휴면(H) 전용 UI
+   - ProfileSettings.jsx 에서 status==='H'일 때만 노출됨
+   ========================================================= */
+.ps-dormant-banner {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(24, 169, 87, 0.10); /* 연한 초록 */
+  color: #1e6b3a;
+  font-weight: 800;
+}
+
+.ps-dormant-btn {
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: none;
+  background: #18a957; /* 초록 계열 */
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.ps-dormant-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* 오른쪽 카드 내부만 스크롤 가능하게 설정 */
+.ps-scroll-area {
+  overflow-y: auto;   /* 내용이 많아지면 스크롤바 생성 */
+  max-height: 420px;  /* ✅ 이 높이를 넘어가면 스크롤 발생 (사용자 화면에 맞춰 조절 가능) */
+  padding-right: 12px; /* 스크롤바와 입력창 사이 여유 공간 */
+  margin-bottom: 10px;
+}
+
+/* 깔끔한 스크롤바 디자인 */
+.ps-scroll-area::-webkit-scrollbar {
+  width: 5px;
+}
+.ps-scroll-area::-webkit-scrollbar-thumb {
+  background: #eee;
+  border-radius: 10px;
+}
+
+/* 저장 버튼 위치 고정 및 상단 구분선 */
+.ps-actions-in-card {
+  margin-top: auto;
+  padding-top: 15px;
+  border-top: 1px solid #f2f2f2;
+}
+
+/* 오른쪽 카드 자체는 높이가 무한정 늘어나지 않도록 고정 */
+.ps-card {
+  display: flex;
+  flex-direction: column;
+  height: 600px; /* ✅ 왼쪽 카드와 높이를 맞추거나 적절히 고정하세요 */
+}

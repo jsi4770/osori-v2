@@ -1,0 +1,557 @@
+/* 마이페이지 전체 레이아웃 */
+.mypage-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding-top: 70px;
+}
+
+/* 왼쪽 사이드바 */
+.sidebar {
+  width: 260px;
+  background-color: white;
+  border-right: 1px solid #eee;
+  padding: 30px 15px;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0; 
+  bottom: 0;
+  z-index: 1001; /* 다른 요소보다 위에 오도록 */
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.account-detail {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding-right: 5px;
+  min-height: 200px;
+}
+
+
+.account-detail::-webkit-scrollbar {
+  width: 5px;
+}
+.account-detail::-webkit-scrollbar-thumb {
+  background: #eee;
+  border-radius: 10px;
+}
+
+.menu-item {
+  padding: 15px 20px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #555;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu-item:hover {
+  background-color: #f0f4ff;
+  color: #0066ff;
+}
+
+.menu-item.active {
+  background-color: #0066ff;
+  color: white;
+}
+
+.alarm{
+  border: 3px solid lightgray;
+  border-radius: 50%;
+  width:30px;
+  margin:0px;
+  padding:20px;
+  position: relative;
+}
+
+.alarm:hover{
+  background-color: #c1c1c1;
+  color: #333;
+}
+
+.unread {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 15px;
+  height: 15px;
+  background-color: #ff4757;
+  border-radius: 50%;
+  border: 2px solid white;
+  z-index: 10;
+}
+
+.noti-dropdown {
+  position: absolute;   
+  top: calc(100% + 5px); 
+  right: 0;          
+  width: 350px;        
+  
+  
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 15px;
+  z-index: 1002;       
+}
+
+.noti-dropdown::-webkit-scrollbar {
+  width: 5px;
+}
+
+.noti-dropdown::-webkit-scrollbar-thumb {
+  background: #eee;
+  border-radius: 10px;
+}
+
+.noti-item{
+  padding: 12px 16px;
+  border-bottom: 1px solid #f9f9f9;
+  transition: background-color 0.2s;
+}
+
+.noti-item:last-child {
+  border-bottom: none;
+}
+
+.noti-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* 수락/거절 버튼 그룹 */
+.noti-btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.noti-btns button {
+  flex: 1;
+  padding: 6px 0;
+  font-size: 13px;
+  border: none;
+  border-radius: 6px;
+  width:100px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  border:2px solid lightgray;
+}
+
+.buttons-wrapper{
+  display: flex;
+  margin: 0;
+  padding-bottom: 40px;
+}
+
+.btn {
+  width:360px;
+  margin:0 10px;
+  display:block;
+  margin-top:20px;
+  text-Align:center;
+}
+
+.accept-btn, .reject-btn {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+.accept-btn:hover {
+  background-color: #0066ff;
+  color: white;
+}
+
+.reject-btn:hover {
+  background-color: #ff4d4f;
+  color: white;
+}
+
+
+.noti-label {
+  font-size: 11px;
+  color: #aaa;
+  background: #f0f0f0;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.empty-msg {
+  text-align: center;
+  padding: 30px 0;
+  color: #999;
+  font-size: 14px;
+}
+
+.mypage-content {
+  flex: 1;
+  margin-left: 300px; 
+  padding: 40px;
+  padding-top: 0;  
+}
+
+.content-header {
+  position: relative;
+  padding: 30px;    
+  padding-top: 0px;  
+  margin-bottom: 10px; 
+}
+
+
+.content-header h2 {
+  font-size: 1.8rem; 
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+
+.content-header .welcome-text, 
+.content-header .ps-sub {
+  margin: 0;
+  color: #666;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.content-header2 {
+  position: absolute;   
+  top: 0;               
+  right: 40px;          
+  display: flex;
+  align-items: center;
+  height: 50px;          
+  margin-top: 0;
+}
+
+.alarm-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* 프로필 카드 */
+.info-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  align-items: center;
+}
+
+.info-card {
+  max-height: 400px;
+  min-height: 180px;
+  height: auto;
+  background: white;
+  padding: 30px;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.profile-img.ps-avatar {
+  width: 80px;     
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #eef2ff;
+  border: 1px solid #e0e6ed;
+  padding: 0;   
+}
+
+.profile-img.ps-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;  
+  object-position: center;
+  display: block;
+}
+
+.profile-section .badge-list {
+  /* width, height % 삭제 */
+  display: flex !important;
+  align-items: center !important;
+}
+
+.badge-list {
+  margin-top: 30px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  margin-left: 0;
+  padding: 0;
+}
+
+.badgeImg {
+  align-items: center;
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+}
+
+
+
+
+.stat-box {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.stat-label { color: #888; font-size: 0.95rem; }
+.stat-value { font-weight: 700; color: #333; }
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.logout-btn{
+  padding: 15px;
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  text-align: left;
+  font-weight: 600;
+}
+
+.logout-btn:hover { color: #ff4d4f; }
+
+.profile-fixed-card {
+  display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/*세로선*/
+.vertical-divider {
+  width: 1px;
+  height: 80px;   /* 필요에 따라 조절 */
+  background-color: #ddd;
+  margin: 0 20px;
+}
+
+.profile-main {
+  max-height: 100px;
+  display: flex;
+  flex-direction: row;
+  /* justify-content: space-between; */
+  align-items: center;
+  border: 1px solid #e0e6ed;
+}
+
+.profile-details h3 { margin: 0; font-size: 1.4rem; }
+.profile-details p { margin: 5px 0; color: #888; }
+
+/* 가계부 그리드 */
+.account-book-grid {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.amount {
+  font-size: 35px;
+  font-weight: bolder;
+  margin: 0;
+}
+
+.amount-title {
+  margin: 0;
+}
+
+.card-title-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.status-dot {
+  font-size: 0.8rem;
+  color: #666;
+  background: #f0f0f0;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.group-name {
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.welecome-text {
+  margin : 8px 0 0;
+  font-size : 1rem;
+  color : #666;
+  font-weight: 600;
+}
+
+/*질문봇 영역*/
+.faq-container {
+  position: fixed; 
+  bottom: 20px;
+  left: 20px; 
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; 
+  z-index: 999;
+}
+
+.qBot {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.faq-dropdown{
+  position:relative;
+  margin-bottom: 20px;
+  background: white;
+  border-radius: 24px;
+  border:3px solid #0066ff;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  max-height: 350px; 
+}
+
+.faq-dropdown::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 30px; 
+  border-width: 15px 12px 0;
+  border-style: solid;
+  border-color: #0066ff transparent transparent;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  display: block;
+  z-index: 10;
+}
+
+.faq-chat-area {
+  max-height: 400px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.faq-chat-area::-webkit-scrollbar { display: none; }
+
+.chat-row { display: flex; width: 100%; margin-bottom: 5px; }
+.chat-bubble {
+  padding: 10px 14px;
+  max-width: 70%;
+  font-size: 14px;
+  line-height: 1.4;
+  position: relative;
+}
+
+.chat-row.bot { justify-content: flex-start; }
+.chat-row.bot .chat-bubble {
+  background-color: #f1f1f1;
+  color: black;
+  border-radius: 0 15px 15px 15px;
+}
+
+.chat-row.user { justify-content: flex-end; }
+.chat-row.user .chat-bubble {
+  background-color: #0066ff;
+  color: white;
+  border-radius: 15px 15px 0 15px; 
+}
+
+.faq-item-btn {
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  margin-top: 6px;
+  border: 1px solid #0066ff;
+  background: white;
+  color: #0066ff;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+
+.new-question-input-area{
+  width: 88%;
+  padding: 8px 12px;
+  margin-top: 6px;
+  border: 1px solid #0066ff;
+  background: white;
+  border-radius: 20px;
+  font-size: 13px;
+  text-align: center
+}
+
+.new-question-input-area input {
+    border: 1px solid #ccc;
+    border-radius: 8px; 
+    background-color: white; 
+    padding: 5px 10px;
+    color: #333; 
+    transition: border-color 0.3s ease;
+}
+
+.new-question-input-area input:focus {
+    border-color: #007bff;
+    outline: none; 
+}
+
+.new-question-input-area input::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+.new-question-input-area button{
+  background-color: #f1f1f1;
+  color: #333; 
+  margin: 10px 10px 0px 10px;
+}
+
+@media (max-width: 900px) {
+  .account-book-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

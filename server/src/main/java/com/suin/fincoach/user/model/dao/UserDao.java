@@ -1,0 +1,123 @@
+package com.suin.fincoach.user.model.dao;
+
+import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.stereotype.Repository;
+
+import com.suin.fincoach.user.model.vo.User;
+
+@Repository
+public class UserDao {
+	
+	    //회원 가입 
+		public int insertUser(SqlSessionTemplate sqlSession, User user) {
+			return sqlSession.insert("userMapper.insertUser", user); 
+			
+		}
+		
+		//회원 조회
+		public User selectUser(SqlSessionTemplate sqlSession, User user) {
+			return sqlSession.selectOne("userMapper.selectUser", user); 
+		}
+		
+
+		//아이디 중복체크 
+		public int idCheck(SqlSessionTemplate sqlSession, String loginId) {
+			return sqlSession.selectOne("userMapper.idCheck", loginId); 
+		}
+		
+		//닉네임 중복체크
+		public int nickNameCheck(SqlSessionTemplate sqlSession, String nickName) {
+			return sqlSession.selectOne("userMapper.nickNameCheck",nickName); 
+		}
+		
+		//이메일 중복체크
+		public int emailCheck(SqlSessionTemplate sqlSession, String email) {
+			return sqlSession.selectOne("userMapper.emailCheck",email); 
+		}
+		
+		//사용자가 로그인을 시도하려고 할때 사용자 정보가 있으면 마지막 로그인 한 날짜를 업데이트 처리 및 휴면 계정까지 처리하기 
+		public int updateDate(SqlSessionTemplate sqlSession, User loginUser) {
+			return sqlSession.update("userMapper.updateDate",loginUser); 
+		}
+
+		//정보 수정 (휴면 계정이면 status도 바꿔주자. 근데 사실 휴면계정이든 아니든 status Y로 고정 시켜도 문제없다. N은 탈퇴 한사람으로 가정) 
+		public int updateUser(SqlSessionTemplate sqlSession, User loginUser) {
+			return sqlSession.update("userMapper.updateUser",loginUser); 
+		}
+		
+		//회원 삭제(DB에서 아예 삭제가 아닌 STATUS='N'으로)
+		public int deleteUser(SqlSessionTemplate sqlSession, User loginUser) {
+			return sqlSession.delete("userMapper.deleteUser", loginUser); 
+		}
+		
+		//회원 비밀번호 변경 
+		public int changeUserPwd(SqlSessionTemplate sqlSession, User loginUser) {
+			return sqlSession.update("userMapper.changeUserPwd", loginUser); 
+		}
+
+		//loginId를 바탕으로 사용자 찾기 
+		public User selectByLoginId(SqlSessionTemplate sqlSession, String loginId) {
+			return sqlSession.selectOne("userMapper.selectByLoginId", loginId); 
+		}
+
+		//Email을 바탕으로 사용자 찾기 
+		public User findLoginIdByEmail(SqlSessionTemplate sqlSession, String email) {
+			return sqlSession.selectOne("userMapper.findLoginIdByEmail",email); 
+		}
+
+		//비밀번호 바꾸는 메소드 
+		public int resetPassword(SqlSessionTemplate sqlSession, Map<String, String> userMap) {
+			return sqlSession.update("userMapper.resetPassword", userMap); 
+		}
+		
+		//현재 시퀀스 번호 갖고오는 메소드
+		public int selectUserId(SqlSessionTemplate sqlSession) {
+			
+			return sqlSession.selectOne("userMapper.selectUserId");
+					
+		}
+
+		public int insertAuthAccount(SqlSessionTemplate sqlSession, HashMap<String, Object> accountMap) {
+			return sqlSession.insert("userMapper.insertAuthAccount", accountMap); 
+		}
+		
+		//토큰 아이디 갖고오기
+		public String getProviderUserId(SqlSessionTemplate sqlSession, int userId) {
+			return sqlSession.selectOne("userMapper.getProviderUserId", userId); 
+		}
+
+		//연동 해제시 로컬로 전환
+		public int updateAuthAccount(SqlSessionTemplate sqlSession, HashMap<String, Object> authAccountMap) {
+			return sqlSession.update("userMapper.updateAuthAccount", authAccountMap); 
+		}
+		
+		//기존에 연동했던 사람이 다시 연동하려는 경우
+		public int updateAuthAccount2(SqlSessionTemplate sqlSession, Map<String, Object> result) {
+			return sqlSession.update("userMapper.updateAuthAccount2", result); 
+		}
+
+		//로그인 실패시 로그인 카운트 횟수 늘리기 
+		public int updateLoginCount(SqlSessionTemplate sqlSession, User loginUser) {
+			return sqlSession.update("userMapper.updateLoginCount", loginUser); 
+		}
+
+		// 계정 잠금 처리 
+		public int lockAccount(SqlSessionTemplate sqlSession,User loginUser) {
+			return sqlSession.update("userMapper.lockAccount", loginUser); 
+		}
+
+		// 현재 시간이 잠금 시간보다 이후면 잠금 해제 하는 메소드 
+		public int resetLoginLock(SqlSessionTemplate sqlSession, String loginId) {
+			return sqlSession.update("userMapper.resetLoginLock", loginId); 
+		}
+
+		public int resetLoginLock2(SqlSessionTemplate sqlSession, String loginId) {
+			return sqlSession.update("userMapper.resetLoginLock2", loginId);
+		}
+
+
+}

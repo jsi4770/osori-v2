@@ -1,0 +1,69 @@
+.home-coach-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(31, 38, 135, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hcc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hcc-header h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.hcc-report-link {
+  border: none;
+  background: none;
+  color: #0066ff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.hcc-empty {
+  color: #999;
+  text-align: center;
+  padding: 20px 0;
+  margin: 0;
+}
+
+.hcc-content {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #2d3436;
+  margin: 0;
+  word-break: keep-all;
+}
+
+.hcc-meta {
+  font-size: 0.85rem;
+  color: #888;
+  margin: 0;
+}
+
+.hcc-chat-btn {
+  align-self: flex-start;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  background: #0066ff;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.hcc-chat-btn:hover {
+  background: #0052cc;
+}

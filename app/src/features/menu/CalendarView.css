@@ -1,0 +1,283 @@
+/*pretendard 글꼴*/
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+.content-header {
+  padding: 30px;
+  padding-top: 0px; 
+  margin-bottom: 10px;
+}
+
+.content-header2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.calender-title {
+  display: flex;
+  justify-content: space-between; /* 양 끝으로 벌림 */
+  align-items: center;           /* 세로 중앙 정렬 */
+  width: 100%;
+}
+
+.calendar-header {
+  margin: 0;
+  margin-bottom: 1px !important;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #000;
+}
+
+.content-header p {
+  font-family: 'Pretendard', sans-serif !important;
+  font-weight: 600 !important;
+  color: #666 !important;
+}
+
+.calendar-summary {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif !important;
+  font-size: 1rem !important;
+  color: #666 !important;    
+  font-weight: 600 !important;
+  margin: 6px 0 0; 
+}
+
+.calendar-page-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: calc(100vh - 0px);
+  box-sizing: border-box;
+  overflow: hidden;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.ledger-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 12px 25px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  width: fit-content;
+}
+
+.ledger-filter-bar .divider {
+  width: 1px;
+  height: 20px;
+  background-color: #eee;
+  margin: 0 5px;
+}
+
+.all-filter .chip-name {
+  color: #333;
+  font-weight: bold;
+}
+
+.filter-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+
+.calendar-content-wrapper {
+  display: flex;
+  flex-direction: row; 
+  gap: 25px;
+  align-items: stretch; 
+  flex: 1;
+  min-height: 0;
+  height: 1500px;
+}
+
+.calendar-card {
+  flex: 7;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;         
+  box-sizing: border-box;
+  overflow: hidden;    
+}
+
+.detail-card {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.react-calendar {
+  width: 100% !important;
+  border: none !important;
+  display: flex;
+  flex-direction: column;
+  flex: 1;             
+  min-height: 0;        
+}
+
+.react-calendar__month-view__days {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr); 
+  grid-auto-rows: 1fr;
+  gap: 4px;
+  height: 95%;
+}
+
+.react-calendar__tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px 4px !important;
+  border-radius: 10px;
+  /* 🌟 기존의 height: auto나 flex: 1을 제거하고 그리드에 맡김 */
+}
+
+/* 오늘 날짜의 배경색 수정 (기본 노란색 제거) */
+.react-calendar__tile--now {
+  background: #f1f2f6 !important;
+  border-radius: 10px;
+}
+
+.react-calendar__tile--now.react-calendar__tile--active abbr {
+  color: white !important;
+}
+
+.react-calendar__month-view__weekdays abbr {
+  text-decoration: none !important;
+  border-bottom: none !important;
+  cursor: default;
+}
+
+.react-calendar__viewContainer,
+.react-calendar__month-view,
+.react-calendar__month-view > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-header { margin-bottom: 15px; font-size: 20px; }
+
+.saturday { color: #3b82f6 !important; }
+.react-calendar__month-view__days__day--weekend:nth-child(7n+1) { color: #e74c3c !important; }
+.income-tag { color:#2ecc71 !important; font-size: 13px; font-weight: bold; font-family: inherit;}
+.expense-tag { color: #e74c3c !important; font-size: 13px; font-weight: bold; font-family: inherit;}
+
+.react-calendar__tile--active {
+  background: #0066ff !important;
+  border-radius: 10px;
+  color: white !important;
+}
+.react-calendar__tile--active .income-tag,
+.react-calendar__tile--active .expense-tag { color: white !important; }
+
+.detail-title {
+  font-family: 'Pretendard', sans-serif;
+  font-size: 25px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f8f9fa;
+}
+
+.detail-list-container {
+  flex: 1;
+  overflow-y: auto; /* 스크롤 발생 */
+  padding-right: 8px;
+}
+
+.detail-list { list-style: none !important; padding: 0 !important; margin: 0; }
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f8f9fa;
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* 뱃지 및 아이템 정렬 */
+.item-info { display: flex; flex-direction: column; flex: 1; text-align: left; }
+.item-header { display: flex; align-items: center; margin-bottom: 2px; }
+.ledger-badge { font-size: 15px; color: white; padding: 1px 5px; border-radius: 4px; margin-right: 6px; }
+.item-body {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.item-store {
+  font-family: 'Pretendard', sans-serif;
+  font-weight: bold;
+  font-size: 17px;
+  color: #333;
+}
+.item-category { font-size: 15px; color: #333; }
+.item-memo { font-size: 15px; color: #888; }
+.item-amount { font-family: 'Pretendard', sans-serif; font-weight: bold; min-width: 85px; text-align: right; font-size: 15px; }
+
+/* 공휴일 */
+/* 1. 공휴일 및 일요일: 빨간색 (우선순위를 위해 !important 사용 가능) */
+.holiday-red abbr {
+  color: #e74c3c !important;
+}
+
+/* 2. 일반 토요일: 파란색 */
+.holiday-blue abbr {
+  color: #3b82f6 !important;
+}
+
+/* 3. 선택된 날짜: 글자색 흰색 유지 */
+.react-calendar__tile--active.holiday-red abbr,
+.react-calendar__tile--active.holiday-blue abbr {
+  color: white !important;
+}
+
+@media (max-width: 1200px) {
+  .calendar-page-container {
+    height: auto; 
+    overflow: visible; 
+    padding: 15px;
+  }
+
+  .calendar-content-wrapper {
+    flex-direction: column;
+    height: auto;
+    gap: 15px;
+  }
+
+  .calendar-card {
+    width: 100%;
+    flex: none;
+    min-height: 450px; 
+  }
+
+  .detail-card {
+    width: 100%;
+    flex: none;
+    /*상세 내역 최대 높이 제한 */
+    max-height: 400px; 
+    display: flex;
+    flex-direction: column;
+  }
+
+  .detail-list-container {
+    flex: 1;
+    overflow-y: auto;
+  }
+}

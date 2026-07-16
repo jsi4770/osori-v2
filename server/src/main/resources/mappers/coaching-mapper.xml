@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="coachingMapper">
+
+	<!--
+	 NUDGE / USER / COACH 행 삽입.
+	 threadId가 0이면(=NUDGE 최초 생성) THREAD_ID를 자기 자신의 MESSAGE_ID와 같게 만들기 위해
+	 SEQ_COACHING.CURRVAL(방금 NEXTVAL로 뽑은 값)을 넣는다. 그 외에는 전달받은 threadId 사용.
+	 -->
+	<insert id="insertMessage" parameterType="CoachingMessage" useGeneratedKeys="true" keyProperty="messageId" keyColumn="MESSAGE_ID">
+		INSERT INTO COACHING_MESSAGE (
+			MESSAGE_ID,
+			USER_ID,
+			THREAD_ID,
+			ROLE,
+			CONTENT,
+			CATEGORY,
+			ORIGINAL_AMOUNT,
+			AVG_AMOUNT,
+			ACCEPTED
+		) VALUES (
+			SEQ_COACHING.NEXTVAL,
+			#{userId},
+			<choose>
+				<when test="threadId == 0">SEQ_COACHING.CURRVAL</when>
+				<otherwise>#{threadId}</otherwise>
+			</choose>,
+			#{role},
+			#{content},
+			#{category},
+			#{originalAmount},
+			#{avgAmount},
+			#{accepted}
+		)
+	</insert>
+
+	<select id="selectThread" parameterType="int" resultType="CoachingMessage">
+		SELECT
+			MESSAGE_ID,
+			USER_ID,
+			THREAD_ID,
+			ROLE,
+			CONTENT,
+			CATEGORY,
+			ORIGINAL_AMOUNT,
+			AVG_AMOUNT,
+			ACCEPTED,
+			CREATED_AT
+		FROM COACHING_MESSAGE
+		WHERE THREAD_ID = #{threadId}
+		ORDER BY MESSAGE_ID ASC
+	</select>
+
+	<select id="selectRecentNudges" parameterType="int" resultType="CoachingMessage">
+		SELECT
+			MESSAGE_ID,
+			USER_ID,
+			THREAD_ID,
+			ROLE,
+			CONTENT,
+			CATEGORY,
+			ORIGINAL_AMOUNT,
+			AVG_AMOUNT,
+			ACCEPTED,
+			CREATED_AT
+		FROM COACHING_MESSAGE
+		WHERE USER_ID = #{userId}
+		  AND ROLE = 'NUDGE'
+		ORDER BY MESSAGE_ID DESC
+		FETCH FIRST 20 ROWS ONLY
+	</select>
+
+	<update id="updateAccepted" parameterType="CoachingMessage">
+		UPDATE COACHING_MESSAGE
+		SET ACCEPTED = #{accepted}
+		WHERE MESSAGE_ID = #{messageId}
+		  AND ROLE = 'NUDGE'
+	</update>
+
+</mapper>

@@ -1,0 +1,62 @@
+spring.application.name=fincoach
+
+# Server port (optional)
+#server.port=8888
+
+# Context root
+server.servlet.context-path=/fincoach
+
+# Multipart (file upload) settings
+spring.servlet.multipart.enabled=true
+spring.servlet.multipart.max-file-size=10MB
+spring.servlet.multipart.max-request-size=10MB
+
+# Datasource (H2, file-based — data persists under ./data/fincoach.mv.db across restarts)
+spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.url=jdbc:h2:file:./data/fincoach;MODE=Oracle;DATABASE_TO_LOWER=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE
+spring.datasource.username=sa
+spring.datasource.password=
+
+# Run schema.sql on every startup (statements use CREATE ... IF NOT EXISTS, so this is safe/idempotent)
+spring.sql.init.mode=always
+
+# MyBatis settings
+mybatis.configuration.jdbc-type-for-null=NULL
+mybatis.mapper-locations=/mappers/*.xml
+mybatis.configuration.map-underscore-to-camel-case=true
+
+# Type-alias package
+mybatis.type-aliases-package=com.suin.fincoach
+
+# JWT settings
+# Secret key used to sign JWT tokens (HS256 requires at least 32 bytes — replace with a long, random, secret value in real environments)
+jwt.secret=REPLACE_WITH_A_STRONG_RANDOM_SECRET_KEY_AT_LEAST_32_CHARS_LONG
+# JWT token expiration (milliseconds)
+jwt.expiration=864000000
+
+# Naver CLOVA OCR (receipt scan) — issue at https://www.ncloud.com (CLOVA OCR > General domain)
+# CLOVA OCR is metered/paid (no fixed monthly fee, but per-call charges + a payment method on file are required).
+# Disabled by default so the app runs with manual entry only; flip to true once naver.ocr.* below are filled in.
+receipt.ocr.enabled=false
+# Safety cap: max real (paid) OCR calls per day, regardless of usage — protects against runaway/accidental cost.
+receipt.ocr.daily-limit=20
+naver.ocr.invoke-url=CHANGE_ME
+naver.ocr.secret=CHANGE_ME
+
+# Kakao (social login + store-category lookup) — issue at https://developers.kakao.com
+kakao.client-id=CHANGE_ME
+kakao.admin-key=CHANGE_ME
+kakao.rest-api-key=CHANGE_ME
+kakao.redirect-uri=http://localhost:5174/auth/kakao/callback
+
+# Google Gemini (AI coaching) — free tier, issue a key at https://aistudio.google.com/apikey (no card required)
+# Disabled by default so the app runs with the built-in Mock coach; flip to true once gemini.api.key is filled in.
+coaching.llm.enabled=false
+# Safety cap: max real Gemini calls per day (protects the free-tier quota from runaway/accidental usage).
+coaching.llm.daily-limit=50
+gemini.api.key=CHANGE_ME
+gemini.model=gemini-2.5-flash
+
+# Logging
+logging.level.root=info
+logging.level.com.suin.fincoach.user=debug

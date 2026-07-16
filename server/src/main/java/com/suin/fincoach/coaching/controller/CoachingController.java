@@ -1,0 +1,126 @@
+package com.suin.fincoach.coaching.controller;
+
+import java.time.LocalDate;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.suin.fincoach.coaching.model.service.CoachingService;
+import com.suin.fincoach.coaching.model.vo.CoachingMessage;
+
+@RestController
+@RequestMapping("/coaching")
+@CrossOrigin
+public class CoachingController {
+
+	@Autowired
+	private CoachingService service;
+
+	// Gemini는 무료 티어라도 호출량이 있으므로, 안전 캡을 넘기면 실제 호출을 막고 429를 돌려준다.
+	@Value("${coaching.llm.enabled:false}")
+	private boolean llmEnabled;
+
+	@Value("${coaching.llm.daily-limit:50}")
+	private int dailyLimit;
+
+	private final AtomicInteger callsToday = new AtomicInteger(0);
+	private volatile LocalDate callsDate = LocalDate.now();
+
+	private synchronized int incrementAndGetTodayCalls() {
+		LocalDate today = LocalDate.now();
+		if (!today.equals(callsDate)) {
+			callsDate = today;
+			callsToday.set(0);
+		}
+		return callsToday.incrementAndGet();
+	}
+
+	// 실제 Gemini 호출이 일어나는 엔드포인트에만 일일 안전 캡 적용 (LLM이 켜져 있을 때만 카운트)
+	private ResponseEntity<?> dailyCapExceeded() {
+		if (llmEnabled && incrementAndGetTodayCalls() > dailyLimit) {
+			return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+					.body(Map.of("message", "오늘의 AI 코칭 호출 한도(" + dailyLimit + "회)를 초과했습니다. 잠시 후 다시 시도해주세요."));
+		}
+		return null;
+	}
+
+	@PostMapping("/nudge")
+	public ResponseEntity<?> nudge(@RequestBody Map<String, Object> body) {
+		ResponseEntity<?> capped = dailyCapExceeded();
+		if (capped != null) {
+			return capped;
+		}
+
+		int userId = toInt(body.get("userId"));
+		String category = body.get("category") == null ? null : String.valueOf(body.get("category"));
+		int originalAmount = toInt(body.get("originalAmount"));
+		int avgAmount = toInt(body.get("avgAmount"));
+
+		CoachingMessage result = service.generateNudge(userId, category, originalAmount, avgAmount);
+		return ResponseEntity.ok(result);
+	}
+
+	@PostMapping("/chat")
+	public ResponseEntity<?> chat(@RequestBody Map<String, Object> body) {
+		ResponseEntity<?> capped = dailyCapExceeded();
+		if (capped != null) {
+			return capped;
+		}
+
+		int threadId = toInt(body.get("threadId"));
+		int userId = toInt(body.get("userId"));
+		String message = body.get("message") == null ? null : String.valueOf(body.get("message"));
+
+		if (message == null || message.isBlank()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(Map.of("message", "메시지 내용이 비어 있습니다."));
+		}
+
+		CoachingMessage result = service.continueChat(threadId, userId, message);
+		return ResponseEntity.ok(result);
+	}
+
+	@GetMapping("/report/{userId}")
+	public ResponseEntity<?> report(@PathVariable int userId) {
+		return ResponseEntity.ok(service.getGrowthReport(userId));
+	}
+
+	@PostMapping("/nudge/{messageId}/respond")
+	public ResponseEntity<?> respond(@PathVariable int messageId, @RequestBody Map<String, Object> body) {
+		Object acceptedRaw = body.get("accepted");
+		boolean accepted = Boolean.parseBoolean(String.valueOf(acceptedRaw));
+
+		int result = service.respondToNudge(messageId, accepted);
+		if (result > 0) {
+			return ResponseEntity.ok(Map.of("message", "코칭 반영이 저장되었습니다."));
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body(Map.of("message", "코칭 반영 저장에 실패했습니다."));
+	}
+
+	private int toInt(Object value) {
+		if (value == null) {
+			return 0;
+		}
+		if (value instanceof Number) {
+			return ((Number) value).intValue();
+		}
+		try {
+			return Integer.parseInt(String.valueOf(value).trim());
+		} catch (NumberFormatException e) {
+			return 0;
+		}
+	}
+
+}
