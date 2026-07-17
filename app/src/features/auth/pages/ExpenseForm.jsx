@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './ExpenseForm.css';
 import transApi from '../../../api/transApi';
 import { useAuth } from '../../../context/AuthContext';
+import { IconReceipt } from '../../../components/icons';
 
 const EXPENSE_CATEGORIES = ["식비", "생활/마트", "쇼핑", "의료/건강", "교통", "문화/여가", "교육", "기타"];
 const INCOME_CATEGORIES = ["월급", "용돈", "금융소득", "상여금", "기타"];
@@ -240,7 +241,7 @@ const ExpenseForm = () => {
                 <div className="re-upload-overlay"><span>🔄 다시 올리기</span></div>
               </>
             ) : (
-              <><div className="ocr-icon" style={{ fontSize: '3rem' }}>🧾</div><p className="ocr-text">영수증을 여기로 끌어오거나 클릭하세요</p></>
+              <><div className="ocr-icon"><IconReceipt size={48} /></div><p className="ocr-text">영수증을 여기로 끌어오거나 클릭하세요</p></>
             )}
             <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*" onChange={onFileInput} />
           </div>

@@ -3,6 +3,7 @@ import "./MyPage.css";
 import { useAuth } from "../../../context/AuthContext";
 import { fixedTransApi } from "../../../api/fixedTransApi";
 import FixedTransModal from "./FixedTransModal";
+import { IconReceipt } from "../../../components/icons";
 import "./FixedTransPage.css";
 
 export default function FixedTransPage() {
@@ -77,7 +78,7 @@ export default function FixedTransPage() {
             <span>고정지출 추가</span>
           </button>
           <div className="card-title-area" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <h3>📄 내 고정지출 목록</h3>
+            <h3>내 고정지출 목록</h3>
             <span className="status-dot">{list.length}개</span>
           </div>
 
@@ -91,7 +92,7 @@ export default function FixedTransPage() {
                 <div key={item.fixedId} className="ftRow">
                   <div className="ftRowMain">
                     <div className="ftRowName">
-                      <span aria-hidden="true">🧾</span>
+                      <IconReceipt size={15} className="ftRowIcon" aria-hidden="true" />
                       <span className="ftName">{item.name}</span>
                       <span className="status-dot">매달 {item.payDay}일</span>
                     </div>

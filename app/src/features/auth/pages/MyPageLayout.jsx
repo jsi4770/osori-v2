@@ -5,6 +5,7 @@ import "./MyPage.css";
 import { useAuth } from "../../../context/AuthContext";
 import { useState,useRef } from "react";
 import { faqApi } from "../../../api/faqApi";
+import { IconHome, IconCalendar, IconPin, IconTrendingUp, IconSettings, IconUser } from "../../../components/icons";
 
 const MyPageLayout = ({refreshGroupList}) => {
   const navigate = useNavigate();
@@ -95,7 +96,7 @@ const MyPageLayout = ({refreshGroupList}) => {
           aria-label="프로필 설정으로 이동"
         >
           <span className="mobile-profile-avatar">
-            {avatarUrl ? <img src={avatarUrl} alt="" /> : <span aria-hidden>👤</span>}
+            {avatarUrl ? <img src={avatarUrl} alt="" /> : <IconUser size={15} aria-hidden />}
           </span>
           <span className="mobile-profile-name">{displayName}</span>
         </button>
@@ -109,12 +110,12 @@ const MyPageLayout = ({refreshGroupList}) => {
         <ul className="sidebar-menu">
           <li>
             <NavLink to="/mypage/assets" className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
-              <span>🏠</span> 홈
+              <IconHome size={19} /> <span>홈</span>
             </NavLink>
           </li>
           <li>
             <NavLink to="/mypage/calendarView" className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
-              <span>📅</span> 캘린더뷰
+              <IconCalendar size={19} /> <span>캘린더뷰</span>
             </NavLink>
           </li>
           <li>
@@ -122,17 +123,17 @@ const MyPageLayout = ({refreshGroupList}) => {
               to="/mypage/fixedTrans"
               className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}
             >
-              <span>📌</span> 고정지출
+              <IconPin size={19} /> <span>고정지출</span>
             </NavLink>
           </li>
           <li>
             <NavLink to="/mypage/coaching/report" className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
-              <span>📈</span> 성장 리포트
+              <IconTrendingUp size={19} /> <span>성장 리포트</span>
             </NavLink>
           </li>
           <li>
             <NavLink to="/mypage/profileSettings" className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
-              <span>⚙️</span> 프로필 설정
+              <IconSettings size={19} /> <span>프로필 설정</span>
             </NavLink>
           </li>
 
@@ -145,23 +146,23 @@ const MyPageLayout = ({refreshGroupList}) => {
 
       <nav className="mobile-bottom-nav">
         <NavLink to="/mypage/assets" className={({ isActive }) => `mbn-item ${isActive ? "active" : ""}`}>
-          <span className="mbn-icon">🏠</span>
+          <span className="mbn-icon"><IconHome size={21} /></span>
           <span className="mbn-label">홈</span>
         </NavLink>
         <NavLink to="/mypage/calendarView" className={({ isActive }) => `mbn-item ${isActive ? "active" : ""}`}>
-          <span className="mbn-icon">📅</span>
+          <span className="mbn-icon"><IconCalendar size={21} /></span>
           <span className="mbn-label">캘린더</span>
         </NavLink>
         <NavLink to="/mypage/fixedTrans" className={({ isActive }) => `mbn-item ${isActive ? "active" : ""}`}>
-          <span className="mbn-icon">📌</span>
+          <span className="mbn-icon"><IconPin size={21} /></span>
           <span className="mbn-label">고정지출</span>
         </NavLink>
         <NavLink to="/mypage/coaching/report" className={({ isActive }) => `mbn-item ${isActive ? "active" : ""}`}>
-          <span className="mbn-icon">📈</span>
+          <span className="mbn-icon"><IconTrendingUp size={21} /></span>
           <span className="mbn-label">리포트</span>
         </NavLink>
         <NavLink to="/mypage/profileSettings" className={({ isActive }) => `mbn-item ${isActive ? "active" : ""}`}>
-          <span className="mbn-icon">⚙️</span>
+          <span className="mbn-icon"><IconSettings size={21} /></span>
           <span className="mbn-label">설정</span>
         </NavLink>
       </nav>

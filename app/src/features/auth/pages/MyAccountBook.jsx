@@ -81,7 +81,7 @@ const TransactionModal = ({ isOpen, type, transaction, onClose, onSave, onDelete
             <div className={styles['modal-content']} onClick={e => e.stopPropagation()}>
                 {isDetailMode ? (
                     <>
-                        <h3>{isViewMode ? '📄 내역 상세' : '✏️ 내역 수정'}</h3>
+                        <h3>{isViewMode ? '내역 상세' : '내역 수정'}</h3>
 
                         <div className={styles['modal-radio-group']}>
                             <label className={styles['radio-label']}>
@@ -371,7 +371,7 @@ function MyAccountBook() {
                 />
                 <div className={styles['left-side']}>
                     <div className={styles['list-card']}>
-                        <header><h2 className={styles['header-title']}>💰 나의 가계부</h2></header>
+                        <header><h2 className={styles['header-title']}>나의 가계부</h2></header>
 
                         <div className={styles['search-wrapper']}>
                             <div className={styles['filter-group']}>

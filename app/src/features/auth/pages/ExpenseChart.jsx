@@ -68,7 +68,7 @@ function ExpenseChart({ transactions = [], currentDate }) {
   if (expenses.length === 0) {
     return (
       <div className={styles['chart-card']}>
-        <h3>📊 카테고리 별 소비 분석</h3>
+        <h3>카테고리 별 소비 분석</h3>
         <p style={{ padding: '50px 0', color: '#888', textAlign: 'center' }}>분석할 지출 내역이 없습니다.</p>
       </div>
     );
@@ -76,7 +76,7 @@ function ExpenseChart({ transactions = [], currentDate }) {
 
   return (
     <div className={styles['chart-card']}>
-      <h3>📊 카테고리 별 소비 분석</h3>
+      <h3>카테고리 별 소비 분석</h3>
       <div className={styles['chart-main-container']}>
         <Doughnut data={data} options={options}/>
       </div>

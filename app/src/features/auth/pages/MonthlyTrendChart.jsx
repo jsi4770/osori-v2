@@ -205,7 +205,7 @@ function MonthlyTrendChart({ transactions = [], currentDate }) {
 
   return (
     <div className={styles['chart-card']}>
-      <h3>📈 월별 지출 분석 및 예측</h3>
+      <h3>월별 지출 분석 및 예측</h3>
       <div className={styles['chart-main-container']}>
         <Chart data={data} options={options} />
       </div>

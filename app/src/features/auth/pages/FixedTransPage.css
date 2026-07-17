@@ -32,6 +32,11 @@
   min-width: 0;
 }
 
+.ftRowIcon {
+  color: var(--primary-color);
+  flex-shrink: 0;
+}
+
 .ftName {
   font-size: 16px;
   font-weight: 800;

@@ -91,6 +91,16 @@
   background-color: #f0f8ff;
 }
 
+.ocr-icon {
+  color: #bbb;
+  margin-bottom: 12px;
+  transition: color 0.3s ease;
+}
+
+.ocr-upload-area:hover .ocr-icon {
+  color: var(--primary-color);
+}
+
 .preview-image {
   width: 100%;
   height: 100%;

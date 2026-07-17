@@ -68,7 +68,6 @@ const MyPage = () => {
     <main className="fade-in">
       <header className="content-header">
         <h2>홈</h2>
-        <p className="welcome-text">내 지갑 속 소비 흐름을 한눈에 정리해 드릴게요.</p>
       </header>
 
       <div className="account-book-grid">
@@ -77,7 +76,7 @@ const MyPage = () => {
           style={{ cursor: "pointer" }}
         >
           <div className="card-title-area">
-            <h3>🏠 내 가계부</h3>
+            <h3>내 가계부</h3>
           </div>
           <div className="account-detail">
             <p className="amount-title" style={{ justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>이번 달 지출 </p>

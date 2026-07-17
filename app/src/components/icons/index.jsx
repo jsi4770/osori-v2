@@ -1,0 +1,77 @@
+const base = {
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 1.8,
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+};
+
+export const IconHome = ({ size = 20, ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M3 11.5 12 4l9 7.5" />
+    <path d="M5.5 10v9.5a1 1 0 0 0 1 1H9.5v-6h5v6H17.5a1 1 0 0 0 1-1V10" />
+  </svg>
+);
+
+export const IconCalendar = ({ size = 20, ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" {...base} {...props}>
+    <rect x="3.5" y="5" width="17" height="15" rx="2.5" />
+    <path d="M3.5 9.5h17" />
+    <path d="M8 3v4M16 3v4" />
+  </svg>
+);
+
+export const IconPin = ({ size = 20, ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M12 21s-6.5-5.8-6.5-11A6.5 6.5 0 0 1 18.5 10c0 5.2-6.5 11-6.5 11Z" />
+    <circle cx="12" cy="10" r="2.3" />
+  </svg>
+);
+
+export const IconTrendingUp = ({ size = 20, ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M3.5 16.5 9.5 10.5 13.5 14.5 20.5 6.5" />
+    <path d="M14.5 6.5h6v6" />
+  </svg>
+);
+
+export const IconSettings = ({ size = 20, ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" {...base} {...props}>
+    <circle cx="12" cy="12" r="3.2" />
+    <path d="M12 3.5v2M12 18.5v2M20.5 12h-2M5.5 12h-2M17.7 6.3l-1.4 1.4M7.7 16.3l-1.4 1.4M17.7 17.7l-1.4-1.4M7.7 7.7 6.3 6.3" />
+  </svg>
+);
+
+export const IconUser = ({ size = 20, ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" {...base} {...props}>
+    <circle cx="12" cy="8.5" r="3.5" />
+    <path d="M4.5 20c1.4-3.6 4.4-5.5 7.5-5.5s6.1 1.9 7.5 5.5" />
+  </svg>
+);
+
+export const IconReceipt = ({ size = 20, ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M6 3.5h12v17l-2.5-1.6L13 20.5l-2.5-1.6L8 20.5l-2-1.3V3.5Z" />
+    <path d="M9 8h6M9 11.5h6M9 15h4" />
+  </svg>
+);
+
+export const IconCheck = ({ size = 16, ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M4.5 12.5 9.5 17.5 19.5 6.5" />
+  </svg>
+);
+
+export const IconSkip = ({ size = 16, ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M5 6v12l8-6-8-6Z" />
+    <path d="M17 6v12" />
+  </svg>
+);
+
+export const IconClock = ({ size = 16, ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" {...base} {...props}>
+    <circle cx="12" cy="12" r="8.5" />
+    <path d="M12 7.5V12l3 2" />
+  </svg>
+);

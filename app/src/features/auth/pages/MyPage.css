@@ -21,6 +21,13 @@
   z-index: 1001; /* 다른 요소보다 위에 오도록 */
 }
 
+.sidebar .logo {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--primary-color);
+}
+
 /* 모바일 전용 상단바(로고 + 프로필) / 하단 탭바 — 데스크톱에서는 숨김 */
 .mobile-topbar {
   display: none;
@@ -49,17 +56,20 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 56px;
-    padding: 0 18px;
+    height: calc(56px + env(safe-area-inset-top, 0px));
+    padding: env(safe-area-inset-top, 0px) 18px 0;
     background: white;
     border-bottom: 1px solid #eee;
     z-index: 1100;
+    box-sizing: border-box;
   }
 
   .mobile-topbar-logo {
     font-weight: 800;
     letter-spacing: 0.5px;
     cursor: pointer;
+    color: var(--primary-color);
+    font-size: 1.15rem;
   }
 
   .mobile-profile-chip {
@@ -131,7 +141,9 @@
   }
 
   .mbn-icon {
-    font-size: 1.2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     line-height: 1;
   }
 
@@ -330,7 +342,7 @@
   .mypage-content {
     margin-left: 0;
     padding: 16px;
-    padding-top: 72px; /* 고정된 모바일 상단바(56px) + 여백 */
+    padding-top: calc(72px + env(safe-area-inset-top, 0px)); /* 고정된 모바일 상단바(56px) + 노치 안전영역 + 여백 */
     padding-bottom: 84px; /* 고정된 하단 탭바 높이 + 여백 */
   }
 

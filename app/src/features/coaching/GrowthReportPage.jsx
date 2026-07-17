@@ -11,6 +11,7 @@ import {
 } from 'chart.js';
 import { useAuth } from '../../context/AuthContext';
 import { getGrowthReport, respondToNudge } from '../../api/coachingApi';
+import { IconCheck, IconSkip, IconClock } from '../../components/icons';
 import './GrowthReportPage.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
@@ -23,9 +24,9 @@ const formatDate = (value) => {
 };
 
 const acceptedBadge = (accepted) => {
-  if (accepted === 'Y') return { text: '✅ 실행함', className: 'accepted' };
-  if (accepted === 'N') return { text: '⏭️ 건너뜀', className: 'dismissed' };
-  return { text: '⏳ 미응답', className: 'pending' };
+  if (accepted === 'Y') return { icon: IconCheck, text: '실행함', className: 'accepted' };
+  if (accepted === 'N') return { icon: IconSkip, text: '건너뜀', className: 'dismissed' };
+  return { icon: IconClock, text: '미응답', className: 'pending' };
 };
 
 const GrowthReportPage = () => {
@@ -87,7 +88,7 @@ const GrowthReportPage = () => {
   return (
     <main className="growth-report-page fade-in">
       <header className="grp-header">
-        <h2>📈 성장 리포트</h2>
+        <h2>성장 리포트</h2>
         <p className="grp-subtitle">코치의 제안을 얼마나 따랐는지 돌아봐요.</p>
       </header>
 
@@ -115,11 +116,12 @@ const GrowthReportPage = () => {
           <section className="grp-timeline">
             {nudges.map((n) => {
               const badge = acceptedBadge(n.accepted);
+              const BadgeIcon = badge.icon;
               return (
                 <div key={n.messageId} className="grp-item">
                   <div className="grp-item-top">
                     <span className="grp-category">#{n.category || '기타'}</span>
-                    <span className={`grp-badge ${badge.className}`}>{badge.text}</span>
+                    <span className={`grp-badge ${badge.className}`}><BadgeIcon size={13} /> {badge.text}</span>
                   </div>
 
                   <p className="grp-content">{n.content}</p>

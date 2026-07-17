@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { userApi } from "../../../api/userApi";
+import { IconUser } from "../../../components/icons";
 import "./MyPage.css";
 import "./ProfileSettings.css";
 
@@ -402,11 +403,11 @@ function ProfileSettings() {
                   {previewUrl ? (
                       <img src={previewUrl} alt="프로필 미리보기" />
                     ) : isImageRemoved ? (
-                      <span aria-hidden>👤</span>
+                      <IconUser size={36} aria-hidden />
                     ) : serverAvatarUrl ? (
                       <img src={serverAvatarUrl} alt="프로필 이미지" />
                     ) : (
-                      <span aria-hidden>👤</span>
+                      <IconUser size={36} aria-hidden />
                     )}
                 </button>
               </div>
