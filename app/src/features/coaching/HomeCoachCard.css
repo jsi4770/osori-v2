@@ -67,3 +67,35 @@
 .hcc-chat-btn:hover {
   background: #0052cc;
 }
+
+.hcc-chat-btn:disabled {
+  background: #b3c9f5;
+  cursor: not-allowed;
+}
+
+.hcc-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.hcc-refresh-btn {
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+  background: #fff;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.hcc-refresh-btn:hover {
+  background: #f5f5f5;
+}
+
+.hcc-refresh-btn:disabled {
+  color: #bbb;
+  cursor: not-allowed;
+}

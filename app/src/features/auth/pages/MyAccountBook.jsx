@@ -458,7 +458,7 @@ function MyAccountBook() {
 
                 <div className={styles['right-side']}>
 
-                    <HomeCoachCard />
+                    <HomeCoachCard transactions={transactions} />
 
                     <div className={styles['month-selector-container']}>
                         <div className={styles['month-nav-group']}>

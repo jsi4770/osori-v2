@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { getGrowthReport } from '../../api/coachingApi';
+import { getGrowthReport, requestNudge } from '../../api/coachingApi';
+import { manualCoachingTarget } from '../Util/zScore';
 import './HomeCoachCard.css';
 
-const HomeCoachCard = () => {
+const HomeCoachCard = ({ transactions = [] }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const userId = user?.userId;
 
   const [latestNudge, setLatestNudge] = useState(null);
   const [status, setStatus] = useState('loading'); // loading | ready | error
+  const [requesting, setRequesting] = useState(false);
 
   useEffect(() => {
     if (!userId) {
@@ -33,6 +35,28 @@ const HomeCoachCard = () => {
     return () => { cancelled = true; };
   }, [userId]);
 
+  const handleManualCoaching = async () => {
+    if (!userId || requesting) return;
+
+    const target = manualCoachingTarget(transactions, new Date());
+    if (!target) {
+      alert('이번 달 지출 내역이 아직 없어요. 지출을 등록한 뒤 다시 시도해주세요.');
+      return;
+    }
+
+    setRequesting(true);
+    try {
+      const nudge = await requestNudge({ userId, ...target });
+      setLatestNudge(nudge);
+      setStatus('ready');
+    } catch (error) {
+      const message = error?.response?.data?.message || '코칭 요청에 실패했어요. 잠시 후 다시 시도해주세요.';
+      alert(message);
+    } finally {
+      setRequesting(false);
+    }
+  };
+
   return (
     <div className="home-coach-card">
       <div className="hcc-header">
@@ -51,7 +75,12 @@ const HomeCoachCard = () => {
       )}
 
       {status === 'ready' && !latestNudge && (
-        <p className="hcc-empty">아직 코칭 메시지가 없어요.</p>
+        <>
+          <p className="hcc-empty">아직 코칭 메시지가 없어요.</p>
+          <button className="hcc-chat-btn" onClick={handleManualCoaching} disabled={requesting}>
+            {requesting ? '코칭 준비 중...' : '지금 코칭 받기'}
+          </button>
+        </>
       )}
 
       {status === 'ready' && latestNudge && (
@@ -68,12 +97,17 @@ const HomeCoachCard = () => {
               )}
             </p>
           )}
-          <button
-            className="hcc-chat-btn"
-            onClick={() => navigate(`/mypage/coaching/chat/${latestNudge.threadId}`)}
-          >
-            대화하기
-          </button>
+          <div className="hcc-actions">
+            <button
+              className="hcc-chat-btn"
+              onClick={() => navigate(`/mypage/coaching/chat/${latestNudge.threadId}`)}
+            >
+              대화하기
+            </button>
+            <button className="hcc-refresh-btn" onClick={handleManualCoaching} disabled={requesting}>
+              {requesting ? '갱신 중...' : '다시 받기'}
+            </button>
+          </div>
         </>
       )}
     </div>

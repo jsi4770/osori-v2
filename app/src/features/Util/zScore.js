@@ -86,3 +86,53 @@ export const zScore = (transactions, currentDate) => {
   // 최대 3개까지만 반환
   return notifications.slice(0, 3);
 };
+
+// 자동 이상치 감지(zScore)는 과거 달 데이터가 없으면 절대 발동하지 않는다(첫 달 공백 문제).
+// 사용자가 수동으로 "코칭 받기"를 눌렀을 때 쓸 대상을 항상 하나 골라준다:
+// 이번 달 지출이 가장 큰 카테고리 + (과거 평균이 있으면 그 평균, 없으면 현재 금액과 동일 = 중립 체크인).
+export const manualCoachingTarget = (transactions, currentDate) => {
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth();
+
+  const parseSafeDate = (dateStr) => {
+    if (!dateStr) return new Date();
+    const parts = dateStr.split(/[/.-]/);
+    if (parts.length === 3) {
+      let year = parseInt(parts[0]);
+      let month = parseInt(parts[1]) - 1;
+      let day = parseInt(parts[2]);
+      if (year < 100) year += 2000;
+      return new Date(year, month, day);
+    }
+    return new Date(dateStr);
+  };
+
+  const thisMonthTotals = {};
+  transactions
+    .filter(t => {
+      const d = parseSafeDate(t.date || t.transDate);
+      return d.getFullYear() === currentYear && d.getMonth() === currentMonth && t.type?.toUpperCase() === 'OUT';
+    })
+    .forEach(t => {
+      const cat = t.category || '기타';
+      const amount = Math.abs(t.amount || t.originalAmount || 0);
+      thisMonthTotals[cat] = (thisMonthTotals[cat] || 0) + amount;
+    });
+
+  const categories = Object.keys(thisMonthTotals);
+  if (categories.length === 0) return null;
+
+  const topCategory = categories.reduce((a, b) => (thisMonthTotals[a] >= thisMonthTotals[b] ? a : b));
+  const originalAmount = Math.round(thisMonthTotals[topCategory]);
+
+  const pastAmounts = [];
+  transactions
+    .filter(t => parseSafeDate(t.date || t.transDate) < new Date(currentYear, currentMonth, 1) && t.type?.toUpperCase() === 'OUT' && (t.category || '기타') === topCategory)
+    .forEach(t => pastAmounts.push(Math.abs(t.amount || t.originalAmount || 0)));
+
+  const avgAmount = pastAmounts.length >= 3
+    ? Math.round(pastAmounts.reduce((sum, v) => sum + v, 0) / pastAmounts.length)
+    : originalAmount; // 과거 데이터 부족 → 중립(같은 값)으로 전달, 백엔드가 "순조로워요" 톤으로 응답
+
+  return { category: topCategory, originalAmount, avgAmount };
+};
