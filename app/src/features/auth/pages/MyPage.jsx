@@ -63,6 +63,7 @@ const MyPage = () => {
             date: formattedDate,
             type: item.type || item.TYPE,
             category: item.category || item.CATEGORY || "기타",
+            memo: item.memo || item.MEMO || "",
           };
         });
         setTransactions(mappedData);

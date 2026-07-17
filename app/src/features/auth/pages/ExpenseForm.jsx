@@ -4,9 +4,7 @@ import './ExpenseForm.css';
 import transApi from '../../../api/transApi';
 import { useAuth } from '../../../context/AuthContext';
 import { IconReceipt } from '../../../components/icons';
-
-const EXPENSE_CATEGORIES = ["식비", "생활/마트", "쇼핑", "의료/건강", "교통", "문화/여가", "교육", "기타"];
-const INCOME_CATEGORIES = ["월급", "용돈", "금융소득", "상여금", "기타"];
+import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '../../../constants/categories';
 
 const ExpenseForm = () => {
   const { user } = useAuth();

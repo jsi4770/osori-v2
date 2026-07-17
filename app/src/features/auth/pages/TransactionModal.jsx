@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "./MyAccountBook.module.css";
-
-const EXPENSE_CATEGORIES = [
-  "식비", "생활/마트", "쇼핑", "의료/건강",
-  "교통", "문화/여가", "교육", "기타",
-];
-const INCOME_CATEGORIES = ["월급", "용돈", "금융소득", "상여금", "기타"];
+import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from "../../../constants/categories";
 
 // 가계부 내역 보기/수정/삭제 공용 모달 (가계부·캘린더뷰에서 공유)
 export default function TransactionModal({ isOpen, type, transaction, onClose, onSave, onDelete }) {
