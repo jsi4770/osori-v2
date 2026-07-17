@@ -32,59 +32,80 @@ export const zScore = (transactions, currentDate) => {
     return new Date(dateStr);
   };
 
-  const categoryStats = {};
-  
-  // 1. 과거 데이터 집계
+  const amountOf = (t) => Math.abs(t.amount || t.originalAmount || 0);
+  const isOut = (t) => t.type?.toUpperCase() === 'OUT';
+  const firstOfMonth = new Date(currentYear, currentMonth, 1);
+
+  const meanStd = (arr) => {
+    const mean = arr.reduce((sum, v) => sum + v, 0) / arr.length;
+    const variance = arr.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / arr.length;
+    return { mean, std: Math.sqrt(variance) };
+  };
+
+  // 1. 과거 월(이번 달 1일 이전) 카테고리별 지출 금액 집계
+  const pastByCat = {};
   transactions
-    .filter(t => parseSafeDate(t.date || t.transDate) < new Date(currentYear, currentMonth, 1) && t.type?.toUpperCase() === 'OUT')
+    .filter(t => isOut(t) && parseSafeDate(t.date || t.transDate) < firstOfMonth)
     .forEach(t => {
-      const cat = t.category; 
-      if (!categoryStats[cat]) categoryStats[cat] = [];
-      categoryStats[cat].push(Math.abs(t.amount || t.originalAmount));
+      const cat = t.category || '기타';
+      (pastByCat[cat] = pastByCat[cat] || []).push(amountOf(t));
     });
 
-  const thresholds = {};
-  const means = {};
-  Object.keys(categoryStats).forEach(category => {
-    const amounts = categoryStats[category];
-    if (amounts.length < 3) return;
-    const mean = amounts.reduce((sum, val) => sum + val, 0) / amounts.length;
-    const variance = amounts.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / amounts.length;
-    const stdDev = Math.sqrt(variance);
-    means[category] = mean;
-    thresholds[category] = mean + (1.96 * stdDev);
-  });
-
-  // 2. 이번 달 지출 분석 및 중복 제거
-  const seenCategories = new Set(); // 이미 알림을 생성한 카테고리 체크용
-
+  // 2. 이번 달 카테고리별 지출 거래 그룹
+  const currentByCat = {};
   transactions
     .filter(t => {
       const d = parseSafeDate(t.date || t.transDate);
-      return d.getFullYear() === currentYear && d.getMonth() === currentMonth && t.type?.toUpperCase() === 'OUT';
+      return isOut(t) && d.getFullYear() === currentYear && d.getMonth() === currentMonth;
     })
     .forEach(t => {
-      // 이미 해당 카테고리에 대한 알림이 있다면 스킵
-      if (seenCategories.has(t.category)) return;
-
-      const limit = thresholds[t.category];
-      const amount = Math.abs(t.amount || t.originalAmount);
-      
-      if (limit && amount > limit) {
-        notifications.push({
-          id: `anomaly-${t.tranId || Math.random()}`,
-          message: getWitMessage(t.category, amount, limit),
-          category: t.category,
-          originalAmount: Math.round(amount),
-          avgAmount: Math.round(means[t.category]),
-        });
-
-        seenCategories.add(t.category); //카테고리 등록
-      }
+      const cat = t.category || '기타';
+      (currentByCat[cat] = currentByCat[cat] || []).push(amountOf(t));
     });
 
-  // 최대 3개까지만 반환
-  return notifications.slice(0, 3);
+  // 3. 카테고리별 이상치 탐지: 과거 월 이력이 충분하면 그걸로, 없으면 이번 달 내 기준으로 판정
+  Object.keys(currentByCat).forEach(category => {
+    const items = currentByCat[category];
+    const past = pastByCat[category];
+    let outlier = null; // { amount, avg, limit }
+
+    if (past && past.length >= 3) {
+      // (A) 과거 월 기준: 과거 개별 지출의 평균 + 1.96σ를 넘는 이번 달 지출
+      const { mean, std } = meanStd(past);
+      const limit = mean + 1.96 * std;
+      items.forEach(amount => {
+        if (amount > limit && (!outlier || amount > outlier.amount)) {
+          outlier = { amount, avg: mean, limit };
+        }
+      });
+    } else if (items.length >= 3) {
+      // (B) 이번 달 내 기준(leave-one-out): 같은 카테고리 나머지 거래 평균 대비 크게 튀는 지출
+      items.forEach((amount, idx) => {
+        const others = items.filter((_, j) => j !== idx);
+        const { mean, std } = meanStd(others);
+        const limit = mean + 1.96 * std;
+        // std=0 등에서의 노이즈 방지: 나머지 평균의 1.5배 이상일 때만 이상치로 인정
+        if (amount > limit && amount >= mean * 1.5 && (!outlier || amount > outlier.amount)) {
+          outlier = { amount, avg: mean, limit };
+        }
+      });
+    }
+
+    if (outlier) {
+      notifications.push({
+        id: `anomaly-${category}-${Math.round(outlier.amount)}`,
+        message: getWitMessage(category, outlier.amount, outlier.avg),
+        category,
+        originalAmount: Math.round(outlier.amount),
+        avgAmount: Math.round(outlier.avg),
+      });
+    }
+  });
+
+  // 지출이 큰 이상치부터, 최대 3개까지 반환
+  return notifications
+    .sort((a, b) => b.originalAmount - a.originalAmount)
+    .slice(0, 3);
 };
 
 // 자동 이상치 감지(zScore)는 과거 달 데이터가 없으면 절대 발동하지 않는다(첫 달 공백 문제).
