@@ -151,7 +151,7 @@
   grid-template-columns: repeat(7, 1fr);
   /* 각 주 행에 넉넉한 셀 높이를 줘 달력을 크게 유지하되 화면을 넘기지 않게 함
      (5~6줄이면 대략 480~580px + 상단 요약/네비/요일). 억지 flex 높이 대신 결정적 */
-  grid-auto-rows: minmax(80px, 13.5vh);
+  grid-auto-rows: minmax(68px, 11vh);
   gap: 4px;
 }
 
