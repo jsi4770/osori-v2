@@ -4,6 +4,8 @@ import "./MyPage.css";
 import { useAuth } from "../../../context/AuthContext";
 import ZScoreNotification from "../../Util/ZScoreNotification";
 import transApi from "../../../api/transApi";
+import ExpenseChart from "./ExpenseChart";
+import MonthlyTrendChart from "./MonthlyTrendChart";
 
 const MyPage = () => {
   const { user } = useAuth();
@@ -11,6 +13,19 @@ const MyPage = () => {
   const [, setIsLoading] = useState(true);
   const [currentDate] = useState(new Date());
   const [transactions, setTransactions] = useState([]);
+  const [showRecent, setShowRecent] = useState(true);
+  const [analysisDate, setAnalysisDate] = useState(new Date());
+
+  const analysisYear = analysisDate.getFullYear();
+  const analysisMonth = analysisDate.getMonth() + 1;
+
+  const handlePrevMonth = () => {
+    setAnalysisDate(new Date(analysisDate.getFullYear(), analysisDate.getMonth() - 1, 1));
+  };
+
+  const handleNextMonth = () => {
+    setAnalysisDate(new Date(analysisDate.getFullYear(), analysisDate.getMonth() + 1, 1));
+  };
 
   //내 가계부 지출액 표시 함수
   const loadData = async () => {
@@ -18,7 +33,24 @@ const MyPage = () => {
     try {
       if (user?.userId) {
         const transData = await transApi.getUserTrans(user.userId);
-        setTransactions(transData);
+        const mappedData = (transData || []).map((item) => {
+          const rawDate = item.transDate || item.TRANS_DATE || item.date || "";
+          let formattedDate = rawDate;
+          if (rawDate && typeof rawDate === "string" && rawDate.includes("/")) {
+            const [yy, mm, dd] = rawDate.split("/");
+            formattedDate = `20${yy}-${mm}-${dd}`;
+          }
+
+          return {
+            id: item.transId || item.TRAN_ID || item.trans_id || item.id || 0,
+            text: item.title || item.TITLE || item.text || "",
+            amount: Number(item.originalAmount || item.ORIGINAL_AMOUNT || item.amount || 0),
+            date: formattedDate,
+            type: item.type || item.TYPE,
+            category: item.category || item.CATEGORY || "기타",
+          };
+        });
+        setTransactions(mappedData);
       }
     } catch (error) {
       console.error('데이터 로딩 실패:', error);
@@ -34,7 +66,7 @@ const MyPage = () => {
     return transactions
       .filter((t) => {
         // 날짜 파싱 (26/01/28 또는 2026-01-28 대응)
-        const dateStr = t.date || t.transDate;
+        const dateStr = t.date;
         if (!dateStr) return false;
 
         const parts = dateStr.split(/[/.-]/);
@@ -57,8 +89,15 @@ const MyPage = () => {
           t.type?.toUpperCase() === 'OUT'
         );
       })
-      .reduce((sum, t) => sum + Math.abs(t.amount || t.originalAmount || 0), 0);
+      .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
   }, [transactions, currentDate]);
+
+  const recentExpenses = useMemo(() => {
+    return transactions
+      .filter((t) => t.type?.toUpperCase() === 'OUT')
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 3);
+  }, [transactions]);
 
   useEffect(() => {
     loadData();
@@ -66,19 +105,74 @@ const MyPage = () => {
 
   return (
     <main className="fade-in">
-      <div className="account-book-grid">
-        <div className="info-card"
-          onClick={() => navigate("/mypage/myAccountBook")}
-          style={{ cursor: "pointer" }}
-        >
-          <div className="card-title-area">
-            <h3>내 가계부</h3>
-          </div>
-          <div className="account-detail">
-            <p className="amount-title" style={{ justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>이번 달 지출 </p>
-            <p className="amount" style={{ justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>{totalMonthlyExpenditure.toLocaleString()}원</p>
+      <div className="home-summary-card">
+        <div className="expense-summary-bar">
+          <span className="expense-summary-label">이번 달 지출</span>
+          <span className="expense-summary-amount">{totalMonthlyExpenditure.toLocaleString()}원</span>
+        </div>
 
-            <ZScoreNotification transactions={transactions} currentDate={currentDate} />
+        <ZScoreNotification transactions={transactions} currentDate={currentDate} />
+
+        <div className="home-shortcut-row">
+          <button className="home-shortcut-btn" onClick={() => navigate("/mypage/expenseForm")}>
+            지출 등록
+          </button>
+          <button className="home-shortcut-btn" onClick={() => navigate("/mypage/myAccountBook")}>
+            내역 보기
+          </button>
+        </div>
+
+        <div className="recent-expense-section">
+          <div className="recent-expense-header">
+            <h3>최근 지출</h3>
+            <label className="toggle-switch">
+              <input
+                type="checkbox"
+                checked={showRecent}
+                onChange={() => setShowRecent((prev) => !prev)}
+              />
+              <span className="toggle-slider" />
+            </label>
+          </div>
+
+          {showRecent && (
+            <ul className="recent-expense-list">
+              {recentExpenses.length > 0 ? (
+                recentExpenses.map((t) => (
+                  <li key={t.id} className="recent-expense-item">
+                    <div className="recent-expense-info">
+                      <span className="recent-expense-name">{t.text}</span>
+                      <span className="recent-expense-date">{t.date}</span>
+                    </div>
+                    <span className="recent-expense-amount">{Math.abs(t.amount).toLocaleString()}원</span>
+                  </li>
+                ))
+              ) : (
+                <li className="recent-expense-empty">최근 지출 내역이 없습니다.</li>
+              )}
+            </ul>
+          )}
+        </div>
+      </div>
+
+      <div className="home-analysis-section">
+        <div className="month-selector-container">
+          <div className="month-nav-group">
+            <button onClick={handlePrevMonth} className="nav-btn">◀</button>
+            <span className="month-nav-label">{analysisYear}년 {analysisMonth}월 분석</span>
+            <button onClick={handleNextMonth} className="nav-btn">▶</button>
+          </div>
+        </div>
+
+        <div className="chart-card">
+          <div className="chart-main-container">
+            <ExpenseChart transactions={transactions} currentDate={analysisDate} />
+          </div>
+        </div>
+
+        <div className="chart-card">
+          <div className="chart-main-container">
+            <MonthlyTrendChart transactions={transactions} currentDate={analysisDate} />
           </div>
         </div>
       </div>

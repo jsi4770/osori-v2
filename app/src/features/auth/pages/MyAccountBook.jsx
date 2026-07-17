@@ -3,8 +3,6 @@ import styles from './MyAccountBook.module.css';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import transApi from '../../../api/transApi';
-import ExpenseChart from './ExpenseChart';
-import MonthlyTrendChart from './MonthlyTrendChart';
 import HomeCoachCard from '../../coaching/HomeCoachCard';
 
 const EXPENSE_CATEGORIES = [
@@ -195,7 +193,6 @@ const TransactionModal = ({ isOpen, type, transaction, onClose, onSave, onDelete
 };
 
 function MyAccountBook() {
-    const [currentDate, setCurrentDate] = useState(new Date());
     const [transactions, setTransactions] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showIncome, setShowIncome] = useState(false);
@@ -203,19 +200,6 @@ function MyAccountBook() {
     const [showShared, setShowShared] = useState(false);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
-
-    const [analysisDate, setAnalysisDate] = useState(new Date());
-
-    const handlePrevMonth = () => {
-        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
-    };
-
-    const handleNextMonth = () => {
-        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
-    };
-
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth() + 1;
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalType, setModalType] = useState('view');
@@ -459,25 +443,6 @@ function MyAccountBook() {
                 <div className={styles['right-side']}>
 
                     <HomeCoachCard transactions={transactions} />
-
-                    <div className={styles['month-selector-container']}>
-                        <div className={styles['month-nav-group']}>
-                            <button onClick={handlePrevMonth} className={styles['nav-btn']}>◀</button>
-                            <span style={{ fontWeight: '800', fontSize: '1.2rem' }}>{currentYear}년 {currentMonth}월 분석</span>
-                            <button onClick={handleNextMonth} className={styles['nav-btn']}>▶</button>
-                        </div>
-                    </div>
-                    <div className={styles['chart-card']}>
-                        <div className={styles['chart-main-container']}>
-                            <ExpenseChart transactions={transactions} currentDate={currentDate} />
-                        </div>
-                    </div>
-
-                    <div className={styles['chart-card']}>
-                        <div className={styles['chart-main-container']}>
-                            <MonthlyTrendChart transactions={transactions} currentDate={currentDate} />
-                        </div>
-                    </div>
 
                 </div>
             </div>
