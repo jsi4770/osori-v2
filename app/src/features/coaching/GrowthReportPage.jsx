@@ -87,11 +87,6 @@ const GrowthReportPage = () => {
 
   return (
     <main className="growth-report-page fade-in">
-      <header className="grp-header">
-        <h2>성장 리포트</h2>
-        <p className="grp-subtitle">코치의 제안을 얼마나 따랐는지 돌아봐요.</p>
-      </header>
-
       {status === 'loading' && <p className="grp-empty">불러오는 중...</p>}
       {status === 'error' && <p className="grp-empty">코칭 기능을 잠시 사용할 수 없어요.</p>}
 
