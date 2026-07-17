@@ -1,13 +1,15 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './CalendarView.css';
 import transApi from '../../api/transApi';
 import { fetchHolidays } from '../../api/holidayApi';
+import TransactionModal from '../auth/pages/TransactionModal';
 
 // 달력 칸은 폭이 좁아 십만 단위 이상이면 잘리므로 만/억 단위로 축약해 표기한다.
-// (우측 일별 상세 패널은 전체 금액을 그대로 보여준다)
+// (우측 가계부 패널은 전체 금액을 그대로 보여준다)
 const fmtCompact = (n) => {
   const abs = Math.abs(n);
   if (abs >= 1e8) return (n / 1e8).toFixed(abs % 1e8 === 0 ? 0 : 1).replace(/\.0$/, "") + "억";
@@ -17,9 +19,17 @@ const fmtCompact = (n) => {
 
 function CalendarView({ currentDate, setCurrentDate }) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [transactions, setTransactions] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date().toLocaleDateString('en-CA'));
   const [holidays, setHolidays] = useState({});
+  const [listMode, setListMode] = useState('day'); // 'day' | 'month'
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // 수정/삭제 모달
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState('view'); // 'view' | 'edit' | 'delete'
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const userId = user?.userId || user?.USER_ID || user?.id;
 
@@ -37,7 +47,7 @@ function CalendarView({ currentDate, setCurrentDate }) {
   };
 
   // 내가 등록한 수입/지출 내역을 가계부와 동일하게 불러온다(로그인 토큰 기반 api 인스턴스 사용).
-  useEffect(() => {
+  const fetchTransactions = () => {
     if (!userId) return;
     transApi.getUserTrans(userId)
       .then(data => {
@@ -46,8 +56,9 @@ function CalendarView({ currentDate, setCurrentDate }) {
           return;
         }
         const mapped = data.map(t => ({
+          id: t.transId || t.TRANS_ID || t.trans_id || t.id || 0,
+          text: t.title || t.TITLE || '내역 없음',
           date: normalizeDate(t.transDate || t.TRANS_DATE || t.date || t.DATE),
-          title: t.title || t.TITLE || '내역 없음',
           category: t.category || t.CATEGORY || '기타',
           type: (t.type || t.TYPE || 'OUT').toUpperCase(),
           amount: Number(t.originalAmount || t.ORIGINAL_AMOUNT || t.amount || 0),
@@ -56,7 +67,9 @@ function CalendarView({ currentDate, setCurrentDate }) {
         setTransactions(mapped);
       })
       .catch(err => console.error("내역 로드 실패:", err));
-  }, [userId]);
+  };
+
+  useEffect(() => { fetchTransactions(); }, [userId]);
 
   //공휴일
   useEffect(() => {
@@ -78,10 +91,27 @@ function CalendarView({ currentDate, setCurrentDate }) {
     return null;
   };
 
-  const details = useMemo(() => {
-    if (!selectedDate) return [];
-    return transactions.filter(item => item.date === selectedDate);
-  }, [transactions, selectedDate]);
+  // 우측 목록: '이 날' 또는 '이 달 전체' + 검색어
+  const listItems = useMemo(() => {
+    let base;
+    if (listMode === 'day') {
+      base = transactions.filter(item => item.date === selectedDate);
+    } else {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      base = transactions
+        .filter(item => {
+          const d = new Date(item.date);
+          return d.getFullYear() === year && d.getMonth() === month;
+        })
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+    }
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return base;
+    return base.filter(item =>
+      item.text.toLowerCase().includes(term) || item.category.toLowerCase().includes(term)
+    );
+  }, [transactions, selectedDate, listMode, currentDate, searchTerm]);
 
   const monthlyTotalExpense = useMemo(() => {
     const year = currentDate.getFullYear();
@@ -89,9 +119,7 @@ function CalendarView({ currentDate, setCurrentDate }) {
     return transactions
       .filter(item => {
         const itemDate = new Date(item.date);
-        return item.type === 'OUT' &&
-               itemDate.getFullYear() === year &&
-               itemDate.getMonth() === month;
+        return item.type === 'OUT' && itemDate.getFullYear() === year && itemDate.getMonth() === month;
       })
       .reduce((sum, item) => sum + item.amount, 0);
   }, [transactions, currentDate]);
@@ -114,6 +142,46 @@ function CalendarView({ currentDate, setCurrentDate }) {
     return null;
   };
 
+  // ---- 모달 열기/저장/삭제 ----
+  const openView = (item) => { setSelectedItem(item); setModalType('view'); setIsModalOpen(true); };
+  const openEdit = (e, item) => { e.stopPropagation(); setSelectedItem(item); setModalType('edit'); setIsModalOpen(true); };
+  const openDelete = (e, item) => { e.stopPropagation(); setSelectedItem(item); setModalType('delete'); setIsModalOpen(true); };
+
+  const handleSave = async (updated) => {
+    if (!userId) { alert("로그인 정보가 없습니다."); return; }
+    try {
+      await transApi.updateTrans({
+        transId: updated.id,
+        title: updated.text,
+        transDate: updated.date,
+        originalAmount: Number(updated.amount),
+        category: updated.category,
+        type: updated.type,
+        memo: updated.memo || '',
+        userId: Number(userId),
+        isShared: 'N',
+      });
+      alert("수정되었습니다.");
+      setIsModalOpen(false);
+      fetchTransactions();
+    } catch (err) {
+      console.error(err);
+      alert("수정 중 오류가 발생했습니다.");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await transApi.deleteTrans(id);
+      alert("삭제되었습니다.");
+      setIsModalOpen(false);
+      fetchTransactions();
+    } catch (err) {
+      console.error(err);
+      alert("삭제 중 오류가 발생했습니다.");
+    }
+  };
+
   return (
     <main className="fade-in calendar-page-container">
       <div className="calendar-content-wrapper" style={{ display: 'flex', gap: '20px' }}>
@@ -130,7 +198,7 @@ function CalendarView({ currentDate, setCurrentDate }) {
           </div>
 
           <Calendar
-            onClickDay={(date) => setSelectedDate(date.toLocaleDateString('en-CA'))}
+            onClickDay={(date) => { setSelectedDate(date.toLocaleDateString('en-CA')); setListMode('day'); }}
             tileContent={renderTileContent}
             formatDay={(locale, date) => date.getDate()}
             activeStartDate={currentDate}
@@ -141,34 +209,73 @@ function CalendarView({ currentDate, setCurrentDate }) {
         </div>
 
         <div className="detail-card">
-          <h3 className="detail-title">{selectedDate} 내역</h3>
+          <div className="ledger-head">
+            <h3 className="detail-title">
+              {listMode === 'day' ? `${selectedDate} 내역` : `${currentDate.getMonth() + 1}월 전체`}
+            </h3>
+            <button type="button" className="ledger-add-btn" onClick={() => navigate('/mypage/expenseForm')}>
+              + 추가
+            </button>
+          </div>
+
+          <div className="ledger-toggle" role="group" aria-label="목록 범위">
+            <button type="button" className={`ledger-toggle-btn ${listMode === 'day' ? 'active' : ''}`} onClick={() => setListMode('day')}>이 날</button>
+            <button type="button" className={`ledger-toggle-btn ${listMode === 'month' ? 'active' : ''}`} onClick={() => setListMode('month')}>이 달 전체</button>
+          </div>
+
+          <input
+            type="text"
+            className="ledger-search"
+            placeholder="내역 검색 (내용/카테고리)"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+
           <div className="detail-list-container">
-            {details.length > 0 ? (
+            {listItems.length > 0 ? (
               <ul className="detail-list">
-                {details.map((item, idx) => (
-                  <li key={idx} className="detail-item">
-                    <div className="item-info">
-                      <div className="item-store">{item.title}</div>
-                      <div className="item-body">
-                        <span className="item-category">{item.category}</span>
-                        {item.memo && <span className="item-memo">{item.memo}</span>}
+                {listItems.map((item) => (
+                  <li key={item.id} className="ledger-item">
+                    <div className="ledger-item-main" onClick={() => openView(item)}>
+                      <div className="ledger-item-title">{item.text}</div>
+                      <div className="ledger-item-sub">
+                        {item.category}{listMode === 'month' ? ` · ${item.date}` : ''}
                       </div>
                     </div>
-                    <div
-                      className={`item-amount ${item.type}`}
-                      style={{ color: item.type === 'IN' ? 'var(--income-color)' : 'var(--expense-color)' }}
-                    >
-                      {item.type === 'IN' ? '+' : '-'}{item.amount.toLocaleString()}원
+                    <div className="ledger-item-right">
+                      <div
+                        className="ledger-item-amt"
+                        style={{ color: item.type === 'IN' ? 'var(--income-color)' : 'var(--expense-color)' }}
+                      >
+                        {item.type === 'IN' ? '+' : '-'}{item.amount.toLocaleString()}원
+                      </div>
+                      <div className="ledger-item-actions">
+                        <button type="button" onClick={(e) => openEdit(e, item)}>수정</button>
+                        <button type="button" className="del" onClick={(e) => openDelete(e, item)}>삭제</button>
+                      </div>
                     </div>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p>거래 내역이 없습니다.</p>
+              <p className="ledger-empty">
+                {searchTerm.trim()
+                  ? '검색 결과가 없어요.'
+                  : (listMode === 'day' ? '이 날 등록된 내역이 없어요.' : '이 달 등록된 내역이 없어요.')}
+              </p>
             )}
           </div>
         </div>
       </div>
+
+      <TransactionModal
+        isOpen={isModalOpen}
+        type={modalType}
+        transaction={selectedItem}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSave}
+        onDelete={handleDelete}
+      />
     </main>
   );
 }

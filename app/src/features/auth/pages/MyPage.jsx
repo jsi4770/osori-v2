@@ -132,7 +132,7 @@ const MyPage = () => {
           <button className="home-shortcut-btn" onClick={() => navigate("/mypage/expenseForm")}>
             지출 등록
           </button>
-          <button className="home-shortcut-btn" onClick={() => navigate("/mypage/myAccountBook")}>
+          <button className="home-shortcut-btn" onClick={() => navigate("/mypage/calendarView")}>
             내역 보기
           </button>
         </div>

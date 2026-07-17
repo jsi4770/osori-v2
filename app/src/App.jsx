@@ -12,7 +12,6 @@ import { transactions } from './Data/mockData'; //목업 수입지출데이터
 import RegisterPage from './features/auth/pages/RegisterPage';
 import LoginPage from './features/auth/pages/LoginPage';
 import ResetPasswordPage from "./features/auth/pages/ResetPasswordPage";
-import MyAccountBook from "./features/auth/pages/MyAccountBook";
 import ExpensePage from './features/auth/pages/ExpensePage';
 import FixedTransPage from "./features/auth/pages/FixedTransPage";
 import KakaoCallback from "./features/auth/pages/KakaoCallback";
@@ -85,7 +84,8 @@ function App() {
           />
 
           <Route path="profileSettings" element={<ProfileSettings />}/>
-          <Route path="myAccountBook" element={<MyAccountBook />} />
+          {/* 캘린더뷰가 가계부 기능을 흡수하면서 대체됨. 기존 링크/북마크가 안 깨지도록 리다이렉트만 유지 */}
+          <Route path="myAccountBook" element={<Navigate to="/mypage/calendarView" replace />} />
           <Route path='expenseForm' element={<ExpensePage/>}/>
           <Route path="fixedTrans" element={<FixedTransPage />} />
           <Route path="coaching/chat/:threadId" element={<CoachChatPage />} />

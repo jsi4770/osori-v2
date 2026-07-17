@@ -188,7 +188,7 @@ const ExpenseForm = () => {
 
       await transApi.myTransSave({ ...formData, userId: user?.userId, type: transType });
       alert("저장되었습니다!");
-      navigate('/mypage/myAccountBook');
+      navigate('/mypage/calendarView');
     } catch (error) { alert("저장 중 오류 발생"); }
   };
 
