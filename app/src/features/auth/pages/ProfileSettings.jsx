@@ -401,12 +401,11 @@ function ProfileSettings() {
   return (
     <main className="fade-in">
       <div className="ps-stack">
-        <section className="ps-grid">
-          <div className="info-card ps-card">
-            <div className="ps-card-title">
-              <h3>프로필</h3>
-            </div>
+        {/* 계정: 프로필 + 이메일/비밀번호/소셜 연동을 하나의 카드로 통합 */}
+        <section className="ps-section">
+          <h2 className="ps-section-title">계정</h2>
 
+          <div className="info-card ps-card ps-account-card">
             <div className="ps-profile-row">
               <div className="profile-img ps-avatar" title="클릭해서 프로필 사진 변경">
                 <input
@@ -449,7 +448,7 @@ function ProfileSettings() {
               </div>
             </div>
 
-            <div className="ps-form">
+            <div className="ps-form ps-form-2col">
               <div className="ps-field">
                 <label className="ps-label">닉네임</label>
                 <input
@@ -484,55 +483,44 @@ function ProfileSettings() {
                 )}
               </div>
             </div>
-          </div>
 
-          <div className="info-card ps-card">
-            <div className="ps-card-title ps-title-row">
-              <h3>계정 정보</h3>
-            </div>
+            <div className="ps-divider" />
 
-            <div className="ps-scroll-area">
-              <div className="ps-form">
-                <div className="ps-field">
-                  <label className="ps-label">이메일 (읽기만 가능)</label>
-                  <input
-                    className="ps-input"
-                    value={email}
-                    readOnly
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      setFieldErrors((prev) => ({ ...prev, email: "" }));
-                    }}
-                    onBlur={checkEmailDuplicate}
-                    placeholder="이메일"
-                  />
-                  {fieldErrors.email && <div className="ps-field-error">{fieldErrors.email}</div>}
-                </div>
-
-                {user?.loginType === 'KAKAO' && (
-                  <>
-                    <div className="ps-divider" />
-                    <div className="ps-field">
-                      <div className="ps-row-between">
-                        <label className="ps-label">계정 연동</label>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <span style={{ fontSize: '0.9rem', color: 'var(--text-sub)' }}>카카오 계정 연동 중</span>
-                          <button 
-                            type="button" 
-                            className="ps-link-btn" 
-                            style={{ color: '#ff4d4f', fontWeight: 'bold' }}
-                            onClick={handleUnlinkKakao}
-                          >
-                            연동 해제
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                )}
+            <div className="ps-form">
+              <div className="ps-field">
+                <label className="ps-label">이메일 (읽기만 가능)</label>
+                <input
+                  className="ps-input"
+                  value={email}
+                  readOnly
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setFieldErrors((prev) => ({ ...prev, email: "" }));
+                  }}
+                  onBlur={checkEmailDuplicate}
+                  placeholder="이메일"
+                />
+                {fieldErrors.email && <div className="ps-field-error">{fieldErrors.email}</div>}
               </div>
 
-              <div className="ps-divider" />
+              {user?.loginType === 'KAKAO' && (
+                <div className="ps-field">
+                  <div className="ps-row-between">
+                    <label className="ps-label">계정 연동</label>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <span style={{ fontSize: '0.9rem', color: 'var(--text-sub)' }}>카카오 계정 연동 중</span>
+                      <button
+                        type="button"
+                        className="ps-link-btn"
+                        style={{ color: '#ff4d4f', fontWeight: 'bold' }}
+                        onClick={handleUnlinkKakao}
+                      >
+                        연동 해제
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="ps-field">
                 <div className="ps-row-between">
@@ -639,7 +627,10 @@ function ProfileSettings() {
           </div>
         </section>
 
-        <section className="ps-theme-wrap">
+        {/* 환경설정: 화면 테마 등 앱 동작 방식에 관한 설정 */}
+        <section className="ps-section">
+          <h2 className="ps-section-title">환경설정</h2>
+
           <div className="info-card ps-theme">
             <div className="ps-theme-info">
               <div className="ps-theme-title">화면 테마</div>
@@ -663,34 +654,42 @@ function ProfileSettings() {
           </div>
         </section>
 
-        <section className="ps-logout-wrap">
-          <div className="info-card ps-logout">
-            <div className="ps-logout-info">
-              <div className="ps-logout-title">로그아웃</div>
-              <div className="ps-logout-desc">
-                이 기기에서 로그아웃합니다. 다시 이용하려면 로그인이 필요합니다.
+        {/* 계정 관리: 로그아웃(중립) + 위험 구역(회원탈퇴)을 한 카드 안에서 구분 */}
+        <section className="ps-section">
+          <h2 className="ps-section-title">계정 관리</h2>
+
+          <div className="info-card ps-account-mgmt">
+            <div className="ps-mgmt-row">
+              <div className="ps-mgmt-info">
+                <div className="ps-mgmt-title">로그아웃</div>
+                <div className="ps-mgmt-desc">
+                  이 기기에서 로그아웃합니다. 다시 이용하려면 로그인이 필요합니다.
+                </div>
+              </div>
+              <button
+                type="button"
+                className="ps-logout-btn"
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+              >
+                {isLoggingOut ? "로그아웃 중..." : "로그아웃"}
+              </button>
+            </div>
+
+            <div className="ps-danger-zone">
+              <div className="ps-danger-zone-label">위험 구역</div>
+              <div className="ps-mgmt-row">
+                <div className="ps-mgmt-info">
+                  <div className="ps-mgmt-title ps-danger-title">회원탈퇴</div>
+                  <div className="ps-mgmt-desc">
+                    회원 탈퇴 시 계정 정보 및 데이터는 복구할 수 없습니다. (서버 정책에 따라 비활성화 처리될 수 있습니다.)
+                  </div>
+                </div>
+                <button type="button" className="ps-danger-btn" onClick={openWithdraw}>
+                  회원탈퇴
+                </button>
               </div>
             </div>
-            <button
-              type="button"
-              className="ps-logout-btn"
-              onClick={handleLogout}
-              disabled={isLoggingOut}
-            >
-              {isLoggingOut ? "로그아웃 중..." : "로그아웃"}
-            </button>
-          </div>
-        </section>
-
-        <section className="ps-danger-wrap">
-          <div className="info-card ps-danger">
-            <div className="ps-danger-title">회원탈퇴</div>
-            <div className="ps-danger-desc">
-              회원 탈퇴 시 계정 정보 및 데이터는 복구할 수 없습니다. (서버 정책에 따라 비활성화 처리될 수 있습니다.)
-            </div>
-            <button type="button" className="ps-danger-btn" onClick={openWithdraw}>
-              회원탈퇴
-            </button>
           </div>
         </section>
       </div>

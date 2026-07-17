@@ -4,58 +4,43 @@
   font-weight: 600;
 }
 
-/* =========================================================
-   [BEFORE]
-   .ps-stack { gap: 48px; }
-
-   [AFTER]
-   - gap을 그냥 크게 줘서 "누가봐도 분리" 되게 함
-   - 96~120px 권장
-   ========================================================= */
+/* 설정 화면: 계정 / 환경설정 / 계정 관리 세 개의 카테고리 섹션으로 구성.
+   섹션 제목이 구분 역할을 하므로 큰 여백 대신 일정한 리듬의 간격만 준다. */
 .ps-stack {
   display: flex;
   flex-direction: column;
-  gap: 100px; /* ✅ 여기서 확실히 끊김 */
+  gap: 36px;
 }
 
-/* .ps-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 22px;
-  align-items: stretch;
-  width: 95%;
-} */
-
-.ps-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* 무조건 가로 2열 유지 */
-  gap: 22px;         /* 원본 간격 유지 */
-  width: 100%;
-}
-
-/* .ps-card {
-  padding: 28px;
-  height: 100%;
+.ps-section {
   display: flex;
   flex-direction: column;
-  width: 760px;
-} */
+  gap: 12px;
+}
+
+.ps-section-title {
+  margin: 0;
+  padding-left: 4px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-sub);
+  letter-spacing: 0.02em;
+}
 
 .ps-card {
   padding: 28px;
-  height: 600px;    /* 원본 높이 유지 */
   display: flex;
   flex-direction: column;
-
-  /* ✅ 수정: 고정 760px 삭제하고 아래 2줄 추가 */
   width: 100%;
-  box-sizing: border-box; /* 패딩이 너비에 포함되어 확대해도 안 짤림 */
+  box-sizing: border-box;
 }
 
-.ps-card-title h3 {
-  margin: 0 0 18px;
-  font-size: 1.2rem;
-  font-weight: 900;
+.ps-account-card {
+  gap: 8px;
+}
+
+.ps-form-2col {
+  grid-template-columns: 1fr 1fr;
 }
 
 .ps-profile-row {
@@ -228,40 +213,7 @@
   font-weight: 800;
 }
 
-/* =========================================================
-   [ADDED] 섹션 디바이더
-   - 시각적으로 "여기서 끝"을 만들어줌
-   ========================================================= */
-.ps-section-divider {
-  height: 1px;
-  background: var(--border-subtle);
-  position: relative;
-}
-
-.ps-section-divider::before {
-  content: "위 영역: 프로필/계정 설정";
-  position: absolute;
-  top: -14px;
-  left: 0;
-  color: var(--text-weak);
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.ps-section-divider::after {
-  content: "아래 영역: 회원탈퇴";
-  position: absolute;
-  bottom: -14px;
-  left: 0;
-  color: var(--text-weak);
-  font-size: 12px;
-  font-weight: 700;
-}
-
 /* 화면 테마 선택 (라이트/다크/시스템) */
-.ps-theme-wrap {
-  margin: 0;
-}
 .ps-theme {
   display: flex;
   align-items: center;
@@ -306,29 +258,26 @@
   box-shadow: 0 2px 6px var(--shadow-color);
 }
 
-/* Logout (중립 액션 — 회원탈퇴 위험 영역과 구분) */
-.ps-logout-wrap {
-  margin: 0;
+/* 계정 관리: 로그아웃(중립 액션)과 위험 구역(회원탈퇴)을 한 카드 안에서 구분 */
+.ps-account-mgmt {
+  gap: 20px;
 }
 
-.ps-logout {
+.ps-mgmt-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 20px 26px;
-  width: 100%;
-  box-sizing: border-box;
 }
 
-.ps-logout-title {
-  font-size: 1.1rem;
+.ps-mgmt-title {
+  font-size: 1.05rem;
   font-weight: 900;
-  color: var(--text-color, #333);
+  color: var(--text-strong);
   margin-bottom: 6px;
 }
 
-.ps-logout-desc {
+.ps-mgmt-desc {
   color: var(--text-sub);
   font-weight: 600;
 }
@@ -354,50 +303,24 @@
   cursor: not-allowed;
 }
 
-/* Danger Zone */
-.ps-danger-wrap {
-  margin: 0;
+.ps-danger-zone {
+  padding: 18px 20px;
+  border-radius: 16px;
+  background: rgba(255, 77, 79, 0.05);
+  border: 1px solid rgba(255, 77, 79, 0.2);
 }
 
-/* =========================================================
-   [BEFORE]
-   .ps-danger { border만 빨간색 }
-
-   [AFTER]
-   - 배경을 연한 빨강으로 줘서 "다른 영역" 느낌 확실히 냄
-   - 이러면 카드랑 더더욱 안 붙어 보임
-   ========================================================= */
-
-
-/* .ps-danger {
-  border: 1px solid rgba(255, 77, 79, 0.35);
-  padding: 26px;
-  background: rgba(255, 77, 79, 0.04);
-  height:180px;
-  width: 1600px;
-} */
-
-.ps-danger {
-  padding: 26px;
-  height: 180px;    /* 원본 높이 유지 */
-
-  /* ✅ 수정: 고정 1600px 삭제하고 아래 2줄 추가 */
-  width: 100%;
-  box-sizing: border-box;
-}
-
-
-.ps-danger-title {
-  font-size: 1.1rem;
-  font-weight: 900;
+.ps-danger-zone-label {
+  font-size: 0.8rem;
+  font-weight: 800;
   color: #ff4d4f;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   margin-bottom: 10px;
 }
 
-.ps-danger-desc {
-  color: var(--text-sub);
-  font-weight: 600;
-  margin-bottom: 16px;
+.ps-mgmt-title.ps-danger-title {
+  color: #ff4d4f;
 }
 
 .ps-danger-btn {
@@ -508,25 +431,18 @@
 }
 
 @media (max-width: 980px) {
-  .ps-grid {
+  .ps-form-2col {
     grid-template-columns: 1fr;
   }
 
   .ps-stack {
-    gap: 60px;
+    gap: 28px;
   }
 
-  .ps-card {
-    height: auto;
-    min-height: 0;
-  }
-
-  .ps-danger {
-    height: auto;
-  }
-
-  .ps-scroll-area {
-    max-height: none;
+  .ps-mgmt-row,
+  .ps-theme {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 
@@ -558,33 +474,9 @@
   cursor: not-allowed;
 }
 
-/* 오른쪽 카드 내부만 스크롤 가능하게 설정 */
-.ps-scroll-area {
-  overflow-y: auto;   /* 내용이 많아지면 스크롤바 생성 */
-  max-height: 420px;  /* ✅ 이 높이를 넘어가면 스크롤 발생 (사용자 화면에 맞춰 조절 가능) */
-  padding-right: 12px; /* 스크롤바와 입력창 사이 여유 공간 */
-  margin-bottom: 10px;
-}
-
-/* 깔끔한 스크롤바 디자인 */
-.ps-scroll-area::-webkit-scrollbar {
-  width: 5px;
-}
-.ps-scroll-area::-webkit-scrollbar-thumb {
-  background: var(--border-subtle);
-  border-radius: 10px;
-}
-
 /* 저장 버튼 위치 고정 및 상단 구분선 */
 .ps-actions-in-card {
   margin-top: auto;
   padding-top: 15px;
   border-top: 1px solid var(--border-subtle);
-}
-
-/* 오른쪽 카드 자체는 높이가 무한정 늘어나지 않도록 고정 */
-.ps-card {
-  display: flex;
-  flex-direction: column;
-  height: 600px; /* ✅ 왼쪽 카드와 높이를 맞추거나 적절히 고정하세요 */
 }
