@@ -14,8 +14,7 @@ public class FixedTransSchedulerConfig {
   private final TransServiceImpl transService;
 
   // 매일 00:05 실행
-  //@Scheduled(cron = "0 5 0 * * *")
-  @Scheduled(cron = "0 * * * * *") // 매분 0초마다
+  @Scheduled(cron = "0 5 0 * * *")
   public void runDailyFixedTransToMyTrans() {
     transService.mergeFixedToMyTrans();
   }

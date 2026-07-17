@@ -5,8 +5,10 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './CalendarView.css';
 import transApi from '../../api/transApi';
+import { fixedTransApi } from '../../api/fixedTransApi';
 import { fetchHolidays } from '../../api/holidayApi';
 import TransactionModal from '../auth/pages/TransactionModal';
+import { FIXED_AUTO_MEMO } from '../Util/zScore';
 
 // 달력 칸은 폭이 좁아 십만 단위 이상이면 잘리므로 만/억 단위로 축약해 표기한다.
 // (우측 가계부 패널은 전체 금액을 그대로 보여준다)
@@ -21,6 +23,7 @@ function CalendarView({ currentDate, setCurrentDate }) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [transactions, setTransactions] = useState([]);
+  const [fixedTrans, setFixedTrans] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date().toLocaleDateString('en-CA'));
   const [holidays, setHolidays] = useState({});
   const [listMode, setListMode] = useState('day'); // 'day' | 'month'
@@ -71,6 +74,14 @@ function CalendarView({ currentDate, setCurrentDate }) {
 
   useEffect(() => { fetchTransactions(); }, [userId]);
 
+  // 고정지출 목록(예정일 미리보기 계산용). 실제 등록 여부는 스케줄러가 만드는 실제 내역이 결정한다.
+  useEffect(() => {
+    if (!userId) return;
+    fixedTransApi.list(userId)
+      .then(data => setFixedTrans(Array.isArray(data) ? data : []))
+      .catch(err => console.error("고정지출 로드 실패:", err));
+  }, [userId]);
+
   //공휴일
   useEffect(() => {
     const getHolidays = async () => {
@@ -113,6 +124,29 @@ function CalendarView({ currentDate, setCurrentDate }) {
     );
   }, [transactions, selectedDate, listMode, currentDate, searchTerm]);
 
+  // 이번에 보고 있는 달 기준, 아직 실제 내역으로 등록되지 않은(오늘 이후) 고정지출 예정일 → 회색 미리보기용.
+  // 실제 지출 집계(monthlyTotalExpense)에는 포함하지 않는다: 스케줄러가 당일 실제 내역을 만들면
+  // 그때부터는 transactions에 잡혀 정상적으로 집계된다.
+  const upcomingFixedByDate = useMemo(() => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const todayStr = new Date().toLocaleDateString('en-CA');
+    const map = {};
+    fixedTrans.forEach(f => {
+      const payDay = Number(f.payDay);
+      if (!payDay) return;
+      // PAY_DAY가 그 달 일수보다 크면(예: 31일 지정) 그 달의 마지막 날로 clamp — 백엔드 스케줄러와 동일한 규칙
+      const occDay = Math.min(payDay, daysInMonth);
+      const occDate = new Date(year, month, occDay).toLocaleDateString('en-CA');
+      if (occDate <= todayStr) return; // 오늘 이하는 이미 실제 내역으로 등록됐을 날짜라 미리보기 불필요
+      const amount = Number(f.amount || 0);
+      if (!map[occDate]) map[occDate] = [];
+      map[occDate].push({ name: f.name, amount, category: f.category });
+    });
+    return map;
+  }, [fixedTrans, currentDate]);
+
   const monthlyTotalExpense = useMemo(() => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -128,13 +162,16 @@ function CalendarView({ currentDate, setCurrentDate }) {
     if (view === 'month' && date instanceof Date) {
       const dateStr = date.toLocaleDateString('en-CA');
       const dayData = transactions.filter(item => item.date === dateStr);
-      if (dayData.length > 0) {
+      const upcoming = upcomingFixedByDate[dateStr];
+      if (dayData.length > 0 || upcoming) {
         const income = dayData.filter(i => i.type === 'IN').reduce((s, i) => s + i.amount, 0);
         const expense = dayData.filter(i => i.type === 'OUT').reduce((s, i) => s + i.amount, 0);
+        const upcomingTotal = upcoming ? upcoming.reduce((s, u) => s + u.amount, 0) : 0;
         return (
           <div className="amount-container">
             {income > 0 && <div className="income-tag">+{fmtCompact(income)}</div>}
             {expense > 0 && <div className="expense-tag">-{fmtCompact(expense)}</div>}
+            {upcomingTotal > 0 && <div className="fixed-preview-tag">-{fmtCompact(upcomingTotal)}</div>}
           </div>
         );
       }
@@ -231,13 +268,29 @@ function CalendarView({ currentDate, setCurrentDate }) {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
 
+          {listMode === 'day' && upcomingFixedByDate[selectedDate] && (
+            <div className="fixed-preview-notice">
+              {upcomingFixedByDate[selectedDate].map((u, idx) => (
+                <div key={idx} className="fixed-preview-row">
+                  <span>{u.name} <span className="fixed-preview-badge">고정지출 예정</span></span>
+                  <span className="fixed-preview-amt">-{u.amount.toLocaleString()}원</span>
+                </div>
+              ))}
+            </div>
+          )}
+
           <div className="detail-list-container">
             {listItems.length > 0 ? (
               <ul className="detail-list">
                 {listItems.map((item) => (
                   <li key={item.id} className="ledger-item">
                     <div className="ledger-item-main" onClick={() => openView(item)}>
-                      <div className="ledger-item-title">{item.text}</div>
+                      <div className="ledger-item-title">
+                        {item.text}
+                        {item.memo === FIXED_AUTO_MEMO && (
+                          <span className="ledger-fixed-badge">고정지출</span>
+                        )}
+                      </div>
                       <div className="ledger-item-sub">
                         {item.category}{listMode === 'month' ? ` · ${item.date}` : ''}
                       </div>

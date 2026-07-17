@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { fixedTransApi } from "../../../api/fixedTransApi";
+import { EXPENSE_CATEGORIES } from "../../../constants/categories";
 import "./FixedTransModal.css";
-const CATEGORY_OPTIONS = ["식비", "생활/마트", "쇼핑", "의료/건강", "교통", "문화/여가", "교육", "기타"];
+const CATEGORY_OPTIONS = EXPENSE_CATEGORIES;
 
 export default function FixedTransModal({
   userId,
@@ -155,11 +156,13 @@ export default function FixedTransModal({
           </label>
           <div className="ftmSelectWrap">
             <select className="ftmSelect" id="payDay" name="payDay" value={form.payDay} onChange={onChange}>
-              {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
+              {Array.from({ length: 30 }, (_, i) => i + 1).map((d) => (
                 <option key={d} value={d}>
                   매달 {d}일
                 </option>
               ))}
+              {/* 31은 달마다 마지막 날(28~31일)로 클램핑되어 처리되므로 "말일"로 안내한다 */}
+              <option value={31}>매월 말일</option>
             </select>
             <span className="ftmSelectArrow" aria-hidden="true">
               ▾

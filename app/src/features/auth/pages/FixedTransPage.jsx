@@ -68,13 +68,15 @@ export default function FixedTransPage() {
       {/* 목록 */}
       <div className="account-book-grid">
         <div className="info-card" style={{ gridColumn: "1 / -1", paddingTop:'10px'}}>
-          <button type="button" className="ftAddBtn" onClick={openCreate}>
-            <span className="ftAddIcon" aria-hidden="true">＋</span>
-            <span>고정지출 추가</span>
-          </button>
           <div className="card-title-area" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <h3>내 고정지출 목록</h3>
-            <span className="status-dot">{list.length}개</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <h3>내 고정지출 목록</h3>
+              <span className="status-dot">{list.length}개</span>
+            </div>
+            <button type="button" className="ftAddBtn" onClick={openCreate}>
+              <span className="ftAddIcon" aria-hidden="true">＋</span>
+              <span>고정지출 추가</span>
+            </button>
           </div>
 
           {isLoading ? (
@@ -89,7 +91,9 @@ export default function FixedTransPage() {
                     <div className="ftRowName">
                       <IconReceipt size={15} className="ftRowIcon" aria-hidden="true" />
                       <span className="ftName">{item.name}</span>
-                      <span className="status-dot">매달 {item.payDay}일</span>
+                      <span className="status-dot">
+                        {Number(item.payDay) === 31 ? "매달 말일" : `매달 ${item.payDay}일`}
+                      </span>
                     </div>
 
                     <div className="ftRowSub">

@@ -228,6 +228,19 @@
 .income-tag { color:#2ecc71 !important; }
 .expense-tag { color: #e74c3c !important; }
 
+/* 고정지출 예정(아직 실제 내역으로 등록되지 않음) 미리보기 — 흐리게 표시하고 지출 집계에는 포함하지 않음 */
+.fixed-preview-tag {
+  font-size: 12px;
+  font-weight: bold;
+  font-family: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-weak) !important;
+  opacity: 0.8;
+}
+.react-calendar__tile--active .fixed-preview-tag { color: rgba(255, 255, 255, 0.75) !important; }
+
 .react-calendar__tile--active {
   background: var(--primary-color) !important;
   border-radius: 10px;
@@ -333,6 +346,20 @@
   white-space: nowrap;
 }
 
+/* 고정지출 스케줄러가 자동 등록한 실제 내역 표식 — "고정지출 예정"(fixed-preview-badge)과 짝을 이루되
+   이미 실현된 내역이라는 걸 구분하기 위해 문구는 "예정" 없이 "고정지출"만 표기 */
+.ledger-fixed-badge {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-weak);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 1px 6px;
+  vertical-align: middle;
+}
+
 .ledger-item-sub {
   font-size: 13px;
   color: var(--text-weak);
@@ -378,6 +405,42 @@
   text-align: center;
   color: var(--text-weak);
   padding: 40px 0;
+}
+
+/* 고정지출 예정 안내(이 날 패널) — 실제 내역이 아니라 편집 불가한 참고용 배너 */
+.fixed-preview-notice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  background: var(--surface-subtle);
+}
+
+.fixed-preview-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-weak);
+}
+
+.fixed-preview-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-weak);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 1px 6px;
+  margin-left: 6px;
+}
+
+.fixed-preview-amt {
+  flex-shrink: 0;
+  font-weight: 700;
+  color: var(--text-weak);
 }
 
 .detail-list-container {
