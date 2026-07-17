@@ -253,9 +253,8 @@
 
 @media (max-width: 1200px) {
   .calendar-page-container {
-    height: auto; 
-    overflow: visible; 
-    padding: 15px;
+    height: auto;
+    overflow: visible;
   }
 
   .calendar-content-wrapper {
