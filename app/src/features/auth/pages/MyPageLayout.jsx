@@ -145,17 +145,17 @@ const MyPageLayout = ({refreshGroupList}) => {
       </aside>
 
       <nav className="mobile-bottom-nav">
-        <NavLink to="/mypage/assets" className={({ isActive }) => `mbn-item ${isActive ? "active" : ""}`}>
-          <span className="mbn-icon"><IconHome size={21} /></span>
-          <span className="mbn-label">홈</span>
+        <NavLink to="/mypage/fixedTrans" className={({ isActive }) => `mbn-item ${isActive ? "active" : ""}`}>
+          <span className="mbn-icon"><IconPin size={21} /></span>
+          <span className="mbn-label">고정지출</span>
         </NavLink>
         <NavLink to="/mypage/calendarView" className={({ isActive }) => `mbn-item ${isActive ? "active" : ""}`}>
           <span className="mbn-icon"><IconCalendar size={21} /></span>
           <span className="mbn-label">캘린더</span>
         </NavLink>
-        <NavLink to="/mypage/fixedTrans" className={({ isActive }) => `mbn-item ${isActive ? "active" : ""}`}>
-          <span className="mbn-icon"><IconPin size={21} /></span>
-          <span className="mbn-label">고정지출</span>
+        <NavLink to="/mypage/assets" className={({ isActive }) => `mbn-item ${isActive ? "active" : ""}`}>
+          <span className="mbn-icon"><IconHome size={21} /></span>
+          <span className="mbn-label">홈</span>
         </NavLink>
         <NavLink to="/mypage/coaching/report" className={({ isActive }) => `mbn-item ${isActive ? "active" : ""}`}>
           <span className="mbn-icon"><IconTrendingUp size={21} /></span>

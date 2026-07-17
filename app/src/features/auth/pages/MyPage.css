@@ -350,15 +350,6 @@
     padding: 8px 4px 12px;
   }
 
-  .content-header h2 {
-    font-size: 1.35rem;
-  }
-
-  .content-header .welcome-text,
-  .content-header .ps-sub {
-    font-size: 0.9rem;
-  }
-
   .info-card {
     padding: 20px;
     max-height: none;
@@ -383,18 +374,17 @@
 
 
 .content-header h2 {
-  font-size: 1.8rem; 
+  font-size: 1.4rem;
+  font-weight: 800;
   margin-top: 0;
   margin-bottom: 6px;
 }
 
-.content-header .welcome-text, 
+.content-header .welcome-text,
 .content-header .ps-sub {
   margin: 0;
-  color: #666;
-  font-weight: 600;
-  font-size: 1rem;
-  line-height: 1.5;
+  color: #888;
+  font-size: 0.9rem;
 }
 
 .content-header2 {

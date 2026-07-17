@@ -25,12 +25,6 @@
   color: #000;
 }
 
-.content-header p {
-  font-family: 'Pretendard', sans-serif !important;
-  font-weight: 600 !important;
-  color: #666 !important;
-}
-
 .calendar-summary {
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif !important;
   font-size: 1rem !important;
@@ -94,26 +88,30 @@
   gap: 25px;
   align-items: stretch;
   flex: 1;
+  min-width: 0;
   min-height: 0;
 }
 
 .calendar-card {
   flex: 7;
+  min-width: 0;
   background: #ffffff;
   border-radius: 20px;
   padding: 20px;
   display: flex;
   flex-direction: column;
-  height: 100%;         
+  height: 100%;
   box-sizing: border-box;
-  overflow: hidden;    
+  overflow: hidden;
 }
 
 .detail-card {
-  flex: 1;
+  flex: 3;
+  min-width: 0;
   background: #ffffff;
   border-radius: 20px;
   padding: 20px;
+  box-sizing: border-box;
   box-shadow: 0 10px 20px rgba(0,0,0,0.05);
   display: flex;
   flex-direction: column;
@@ -172,8 +170,9 @@
 
 .calendar-header { margin-bottom: 15px; font-size: 20px; }
 
-.saturday { color: #3b82f6 !important; }
-.react-calendar__month-view__days__day--weekend:nth-child(7n+1) { color: #e74c3c !important; }
+/* 평일 기본값: 검은색 (토요일/일요일/공휴일은 아래 holiday-red, holiday-blue가 덮어씀) */
+.react-calendar__month-view__days__day abbr { color: #000; }
+
 .income-tag { color:#2ecc71 !important; font-size: 13px; font-weight: bold; font-family: inherit;}
 .expense-tag { color: #e74c3c !important; font-size: 13px; font-weight: bold; font-family: inherit;}
 

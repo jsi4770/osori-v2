@@ -66,10 +66,6 @@ const MyPage = () => {
 
   return (
     <main className="fade-in">
-      <header className="content-header">
-        <h2>홈</h2>
-      </header>
-
       <div className="account-book-grid">
         <div className="info-card"
           onClick={() => navigate("/mypage/myAccountBook")}
