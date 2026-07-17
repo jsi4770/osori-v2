@@ -88,7 +88,7 @@ const MyPageLayout = ({refreshGroupList}) => {
   return (
     <div className="mypage-container">
       <div className="mobile-topbar">
-        <div className="mobile-topbar-logo" onClick={() => navigate("/")}>OSORI</div>
+        <div className="mobile-topbar-logo" onClick={() => navigate("/mypage/assets")}>OSORI</div>
 
         <button
           className="mobile-profile-chip"
@@ -103,7 +103,7 @@ const MyPageLayout = ({refreshGroupList}) => {
       </div>
 
       <aside className="sidebar">
-        <div className="logo" onClick={() => navigate("/")} style={{ cursor: "pointer", padding: "0 20px 30px" }}>
+        <div className="logo" onClick={() => navigate("/mypage/assets")} style={{ cursor: "pointer", padding: "0 20px 30px" }}>
           OSORI
         </div>
 

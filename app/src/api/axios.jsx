@@ -9,4 +9,15 @@ const api = axios.create({
     withCredentials: true
 });
 
-export default api; 
+// 저장된 JWT를 매 요청에 실어 보낸다.
+// 세션 쿠키가 PWA 종료 시 사라져도 localStorage 토큰으로 인증이 유지되도록 함.
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+        config.headers = config.headers || {};
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
+export default api;

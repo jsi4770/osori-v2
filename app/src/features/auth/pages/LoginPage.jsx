@@ -72,8 +72,8 @@ export default function LoginPage() {
         return;
       }
 
-      // [기존] 정상(Y) 회원이면 마이페이지로
-      navigate("/mypage", { replace: true });
+      // [기존] 정상(Y) 회원이면 마이페이지로(홈 탭이 활성화되도록 /mypage/assets 사용)
+      navigate("/mypage/assets", { replace: true });
     } catch (e2) {
       const msg = e2?.data?.message || "로그인 실패";
       alert(msg);

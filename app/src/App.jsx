@@ -19,6 +19,22 @@ import KakaoCallback from "./features/auth/pages/KakaoCallback";
 import SocialRegisterPage from "./features/auth/pages/SocialRegisterPage";
 import CoachChatPage from "./features/coaching/CoachChatPage";
 import GrowthReportPage from "./features/coaching/GrowthReportPage";
+import { useAuth } from "./context/AuthContext";
+
+// 로그인 여부에 따라 진입 지점을 분기(PWA 재실행/새로고침 시 세션 유지)
+function RootRedirect() {
+  const { isAuthenticated, user } = useAuth();
+  const loggedIn = isAuthenticated && user && user.status !== "N";
+  return <Navigate to={loggedIn ? "/mypage/assets" : "/login"} replace />;
+}
+
+// 이미 로그인된 사용자가 로그인/랜딩 화면에 오면 홈으로 보냄
+function AnonOnly({ children }) {
+  const { isAuthenticated, user } = useAuth();
+  const loggedIn = isAuthenticated && user && user.status !== "N";
+  if (loggedIn) return <Navigate to="/mypage/assets" replace />;
+  return children;
+}
 
 function App() {
   const [calendarDate, setCalendarDate] = useState(new Date());
@@ -26,10 +42,10 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<RootRedirect />} />
 
         <Route element={<AuthLayout />}>
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={<AnonOnly><LoginPage /></AnonOnly>} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/find-id" element={<FindIdPage />} />
           <Route path="/find-password" element={<FindPasswordPage />} />
@@ -68,7 +84,7 @@ function App() {
           <Route path="coaching/chat/:threadId" element={<CoachChatPage />} />
           <Route path="coaching/report" element={<GrowthReportPage />} />
         </Route>
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<RootRedirect />} />
       </Routes>
     </Router>
   );
