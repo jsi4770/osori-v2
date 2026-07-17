@@ -24,6 +24,15 @@
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
 }
 
+:root[data-theme="dark"] .notification-list-container {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0.03)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 .notification-list {
   width: 100%;
   height: auto;
@@ -45,7 +54,7 @@
   text-align: center;
   line-height: 1.4;
   font-weight: bold;
-  color: #555;
+  color: var(--text-sub);
   white-space: normal; /* 긴 문구가 잘리지 않고 줄바꿈되도록 */
   overflow: visible;
   padding : 6px 4px;
@@ -65,6 +74,10 @@
 
 .notification-item.clickable:hover {
   background: rgba(255, 255, 255, 0.35);
+}
+
+:root[data-theme="dark"] .notification-item.clickable:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .notification-item .notification-text {

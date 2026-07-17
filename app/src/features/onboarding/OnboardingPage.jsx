@@ -4,6 +4,7 @@ import { IconReceipt, IconTrendingUp, IconCalendar, IconCheck } from "../../comp
 import "./OnboardingPage.css";
 
 const BADGER = "/osori-badger.png";
+const BADGER_MONEY = "/osori-badger-money.png";
 
 // 카카오 로그인 URL — 로그인 페이지와 동일 규격 유지
 const REST_API_KEY = "fbeeefb1ab0d16e849dfdfdd01f9222b";
@@ -104,7 +105,7 @@ function OcrVisual() {
         <div className="ob-ocr-fields">
           <div className="ob-chip"><span>날짜</span><b>07.17</b></div>
           <div className="ob-chip"><span>금액</span><b>12,800원</b></div>
-          <div className="ob-chip ob-chip-full"><span>품목</span><b>스타벅스 · 식비</b></div>
+          <div className="ob-chip ob-chip-full"><span>품목</span><b>교보문고 · 생활</b></div>
         </div>
       </div>
     </div>
@@ -164,10 +165,8 @@ function FixedVisual() {
 function StartVisual() {
   return (
     <div className="ob-visual ob-start">
-      <span className="ob-spark ob-spark-1">✨</span>
-      <span className="ob-spark ob-spark-2">🌿</span>
       <div className="ob-badger-halo" />
-      <img src={BADGER} alt="환영하는 오소리" className="ob-badger" />
+      <img src={BADGER_MONEY} alt="환영하는 오소리" className="ob-badger ob-badger-money" />
     </div>
   );
 }
@@ -228,14 +227,7 @@ export default function OnboardingPage() {
 
   return (
     <div className="ob-wrap" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-      <div className="ob-topbar">
-        <span className="ob-logo">OSORI</span>
-        {!isLast && (
-          <button type="button" className="ob-skip" onClick={() => finish("/login")}>
-            건너뛰기
-          </button>
-        )}
-      </div>
+      <div className="ob-topbar" />
 
       {/* key로 단계 전환 시 fade-in-up 애니메이션 재생 */}
       <div className="ob-stage" key={slide.key}>
@@ -272,9 +264,14 @@ export default function OnboardingPage() {
             </button>
           </div>
         ) : (
-          <button type="button" className="ob-btn ob-btn-next" onClick={goNext}>
-            다음
-          </button>
+          <>
+            <button type="button" className="ob-btn ob-btn-next" onClick={goNext}>
+              다음
+            </button>
+            <button type="button" className="ob-skip ob-skip-footer" onClick={() => finish("/login")}>
+              건너뛰기
+            </button>
+          </>
         )}
       </div>
     </div>

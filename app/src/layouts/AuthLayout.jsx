@@ -5,7 +5,7 @@ export default function AuthLayout() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#fff",
+        background: "var(--bg-color)",
         display: "flex",
         justifyContent: "center",
         alignItems: "flex-start",

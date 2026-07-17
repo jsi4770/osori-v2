@@ -89,7 +89,7 @@ const TransactionModal = ({ isOpen, type, transaction, onClose, onSave, onDelete
                                     onChange={handleTypeChange}
                                     disabled={isViewMode}
                                 />
-                                <span style={{ color: formData.type === 'IN' ? 'var(--income-color)' : '#ccc' }}>수입</span>
+                                <span style={{ color: formData.type === 'IN' ? 'var(--income-color)' : 'var(--text-weak)' }}>수입</span>
                             </label>
                             <label className={styles['radio-label']}>
                                 <input
@@ -98,7 +98,7 @@ const TransactionModal = ({ isOpen, type, transaction, onClose, onSave, onDelete
                                     onChange={handleTypeChange}
                                     disabled={isViewMode}
                                 />
-                                <span style={{ color: formData.type === 'OUT' ? 'var(--expense-color)' : '#ccc' }}>지출</span>
+                                <span style={{ color: formData.type === 'OUT' ? 'var(--expense-color)' : 'var(--text-weak)' }}>지출</span>
                             </label>
                         </div>
 
@@ -178,7 +178,7 @@ const TransactionModal = ({ isOpen, type, transaction, onClose, onSave, onDelete
                 ) : (
                     <>
                         <h3>🗑️ 삭제 확인</h3>
-                        <p style={{ textAlign: 'center', color: '#666', fontSize: '1rem', margin: '20px 0' }}>
+                        <p style={{ textAlign: 'center', color: 'var(--text-sub)', fontSize: '1rem', margin: '20px 0' }}>
                             <strong>"{transaction?.text}"</strong> 내역을<br />정말 삭제하시겠습니까?
                         </p>
                         <div className={styles['modal-actions']}>
@@ -397,13 +397,13 @@ function MyAccountBook() {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
                             <h3 style={{ fontSize: '1.1rem', fontWeight: '700' }}>거래 내역</h3>
                             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} style={{ padding: '4px', borderRadius: '4px', border: '1px solid #ddd' }} />
+                                <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} style={{ padding: '4px', borderRadius: '4px', border: '1px solid var(--border)' }} />
                                 <span>~</span>
-                                <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} style={{ padding: '4px', borderRadius: '4px', border: '1px solid #ddd' }} />
+                                <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} style={{ padding: '4px', borderRadius: '4px', border: '1px solid var(--border)' }} />
                             </div>
                         </div>
 
-                        <div style={{ flex: 1, overflowY: 'auto', borderTop: '2px solid #2d3436' }}>
+                        <div style={{ flex: 1, overflowY: 'auto', borderTop: '2px solid var(--text-main)' }}>
                             {filteredTransactions.length > 0 ? (
                                 filteredTransactions.map((t, index) => (
                                     <div
@@ -411,7 +411,7 @@ function MyAccountBook() {
                                         className={styles['list-item']}
                                         onClick={() => openViewModal(t)}
                                         style={{
-                                            display: 'flex', justifyContent: 'space-between', padding: '15px 0', borderBottom: '1px solid #eee', cursor: 'pointer'
+                                            display: 'flex', justifyContent: 'space-between', padding: '15px 0', borderBottom: '1px solid var(--border-subtle)', cursor: 'pointer'
                                         }}
                                     >
                                         <div>
@@ -433,7 +433,7 @@ function MyAccountBook() {
                                     </div>
                                 ))
                             ) : (
-                                <p style={{ textAlign: 'center', color: '#999', padding: '40px 0' }}>표시할 내역이 없습니다.</p>
+                                <p style={{ textAlign: 'center', color: 'var(--text-weak)', padding: '40px 0' }}>표시할 내역이 없습니다.</p>
                             )}
                         </div>
                     </div>

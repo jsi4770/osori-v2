@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
+import { useTheme } from "../../../context/ThemeContext";
 import { userApi } from "../../../api/userApi";
 import { IconUser } from "../../../components/icons";
 import "./MyPage.css";
@@ -9,6 +10,13 @@ import "./ProfileSettings.css";
 function ProfileSettings() {
   const navigate = useNavigate();
   const { user, setUser, logout } = useAuth();
+  const { pref: themePref, setTheme } = useTheme();
+
+  const THEME_OPTIONS = [
+    { key: "light", label: "라이트" },
+    { key: "dark", label: "다크" },
+    { key: "system", label: "시스템" },
+  ];
 
   // 서버(저장된) 기준 초기값
   const initial = useMemo(() => {
@@ -513,7 +521,7 @@ function ProfileSettings() {
                       <div className="ps-row-between">
                         <label className="ps-label">계정 연동</label>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <span style={{ fontSize: '0.9rem', color: '#666' }}>카카오 계정 연동 중</span>
+                          <span style={{ fontSize: '0.9rem', color: 'var(--text-sub)' }}>카카오 계정 연동 중</span>
                           <button 
                             type="button" 
                             className="ps-link-btn" 
@@ -632,6 +640,30 @@ function ProfileSettings() {
                   ? "휴면 해제"
                   : "저장"}
               </button>
+            </div>
+          </div>
+        </section>
+
+        <section className="ps-theme-wrap">
+          <div className="info-card ps-theme">
+            <div className="ps-theme-info">
+              <div className="ps-theme-title">화면 테마</div>
+              <div className="ps-theme-desc">
+                라이트 · 다크 · 시스템 설정 중에서 선택할 수 있어요.
+              </div>
+            </div>
+            <div className="ps-theme-seg" role="group" aria-label="화면 테마 선택">
+              {THEME_OPTIONS.map((o) => (
+                <button
+                  key={o.key}
+                  type="button"
+                  className={`ps-theme-opt ${themePref === o.key ? "active" : ""}`}
+                  aria-pressed={themePref === o.key}
+                  onClick={() => setTheme(o.key)}
+                >
+                  {o.label}
+                </button>
+              ))}
             </div>
           </div>
         </section>

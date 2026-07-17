@@ -15,8 +15,8 @@
   height: 100vh;
   height: 100dvh;
   background:
-    radial-gradient(120% 60% at 50% 0%, var(--primary-tint) 0%, #ffffff 55%) no-repeat,
-    #ffffff;
+    radial-gradient(120% 60% at 50% 0%, var(--primary-tint) 0%, var(--surface-sunken) 55%) no-repeat,
+    var(--surface-sunken);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -45,13 +45,19 @@
 .ob-skip {
   border: none;
   background: transparent;
-  color: #9aa0a6;
+  color: var(--text-weak);
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   padding: 6px 4px;
 }
 .ob-skip:hover { color: #6b7076; }
+
+/* 다음 버튼 아래 중앙 배치 */
+.ob-skip-footer {
+  display: block;
+  margin: 12px auto 0;
+}
 
 /* ---- 무대(비주얼 + 텍스트) ---- */
 .ob-stage {
@@ -91,7 +97,7 @@
   font-size: 26px;
   line-height: 1.32;
   font-weight: 800;
-  color: #1f2328;
+  color: var(--text-strong);
   margin: 0 0 12px;
   letter-spacing: -0.4px;
 }
@@ -164,9 +170,9 @@
 .ob-btn-kakao:hover { background: #f5dd00; }
 .ob-btn-email {
   height: 52px;
-  background: #fff;
-  color: #3c4147;
-  border: 1.5px solid #e3e6ea;
+  background: var(--surface);
+  color: var(--text-main);
+  border: 1.5px solid var(--border);
   font-weight: 700;
 }
 .ob-btn-email:hover { border-color: var(--primary-color); color: var(--primary-color); }
@@ -200,11 +206,13 @@
   width: min(60%, 230px);
   height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.14));
+  filter: drop-shadow(0 14px 22px var(--shadow-color));
   animation: obFloat 3.5s ease-in-out infinite;
   z-index: 1;
 }
 .ob-badger-sm { width: min(38%, 130px); }
+/* 돈 뿌리는 오소리(코인·지폐 포함 장면)라 조금 더 크게 */
+.ob-badger-money { width: min(82%, 300px); }
 @keyframes obFloat {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
@@ -243,15 +251,15 @@
 .ob-receipt {
   position: relative;
   width: 190px;
-  background: #fff;
+  background: var(--surface);
   border-radius: 12px;
   padding: 16px 18px 20px;
-  box-shadow: 0 10px 26px rgba(0,0,0,0.10);
-  border: 1px solid #f0f0f0;
+  box-shadow: 0 10px 26px var(--shadow-color);
+  border: 1px solid var(--border-subtle);
   overflow: hidden;
 }
-.ob-receipt-top { font-weight: 800; font-size: 14px; margin-bottom: 12px; color: #333; }
-.ob-receipt-line { height: 9px; border-radius: 5px; background: #eef1f4; margin: 8px 0; }
+.ob-receipt-top { font-weight: 800; font-size: 14px; margin-bottom: 12px; color: var(--text-main); }
+.ob-receipt-line { height: 9px; border-radius: 5px; background: var(--surface-subtle); margin: 8px 0; }
 .ob-scan-line {
   position: absolute;
   left: 0; right: 0; top: 0;
@@ -278,14 +286,14 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: #fff;
-  border: 1px solid #e8ebef;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
   border-radius: 10px;
   padding: 9px 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+  box-shadow: 0 4px 10px var(--shadow-color);
 }
-.ob-chip span { font-size: 11px; color: #9aa0a6; font-weight: 700; }
-.ob-chip b { font-size: 13px; color: #2a2f35; }
+.ob-chip span { font-size: 11px; color: var(--text-weak); font-weight: 700; }
+.ob-chip b { font-size: 13px; color: var(--text-main); }
 .ob-chip-full { width: 100%; justify-content: center; }
 
 /* 3. AI — 말풍선 */
@@ -302,10 +310,10 @@
   font-weight: 600;
   padding: 12px 15px;
   border-radius: 16px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+  box-shadow: 0 6px 16px var(--shadow-color);
 }
 .ob-bubble b { color: var(--primary-color); }
-.ob-bubble-1 { align-self: flex-start; background: #fff; border: 1px solid #eef1f4; border-bottom-left-radius: 4px; }
+.ob-bubble-1 { align-self: flex-start; background: var(--surface); border: 1px solid var(--border-subtle); border-bottom-left-radius: 4px; }
 .ob-bubble-2 { align-self: flex-end; background: var(--primary-tint); border-bottom-right-radius: 4px; }
 .ob-bubble-ai {
   align-self: center;
@@ -327,11 +335,11 @@
 .ob-dash {
   width: 100%;
   max-width: 300px;
-  background: #fff;
+  background: var(--surface);
   border-radius: 20px;
   padding: 18px 18px 14px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-  border: 1px solid #f1f3f5;
+  box-shadow: 0 12px 30px var(--shadow-color);
+  border: 1px solid var(--border-subtle);
 }
 .ob-dash-head {
   display: flex;
@@ -339,8 +347,8 @@
   justify-content: space-between;
   margin-bottom: 14px;
 }
-.ob-dash-label { margin: 0 0 2px; font-size: 12px; color: #9aa0a6; font-weight: 700; }
-.ob-dash-total { margin: 0; font-size: 22px; font-weight: 900; color: #1f2328; }
+.ob-dash-label { margin: 0 0 2px; font-size: 12px; color: var(--text-weak); font-weight: 700; }
+.ob-dash-total { margin: 0; font-size: 22px; font-weight: 900; color: var(--text-strong); }
 .ob-dash-badge {
   width: 40px; height: 40px;
   border-radius: 12px;
@@ -353,19 +361,19 @@
   align-items: center;
   gap: 10px;
   padding: 9px 0;
-  border-top: 1px solid #f4f6f8;
+  border-top: 1px solid var(--border-subtle);
 }
 .ob-sub-icon {
   width: 34px; height: 34px;
   border-radius: 10px;
-  background: #f5f7f9;
+  background: var(--surface-subtle);
   display: flex; align-items: center; justify-content: center;
   font-size: 17px;
 }
 .ob-sub-meta { flex: 1; display: flex; flex-direction: column; }
-.ob-sub-meta b { font-size: 13.5px; color: #2a2f35; }
-.ob-sub-meta span { font-size: 11px; color: #9aa0a6; }
-.ob-sub-price { font-size: 13.5px; font-weight: 800; color: #2a2f35; }
+.ob-sub-meta b { font-size: 13.5px; color: var(--text-main); }
+.ob-sub-meta span { font-size: 11px; color: var(--text-weak); }
+.ob-sub-price { font-size: 13.5px; font-weight: 800; color: var(--text-main); }
 .ob-dash-foot {
   margin-top: 12px;
   display: flex;

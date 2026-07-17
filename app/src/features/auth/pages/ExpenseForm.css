@@ -1,7 +1,7 @@
 .expense-page-wrapper {
   width: 100%;
   min-height: calc(100vh - 70px);
-  background-color: #f8f9fa;
+  background-color: var(--surface-sunken);
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -13,9 +13,9 @@
   position: relative;
   width: 100%;
   max-width: none;
-  background-color: #ffffff;
+  background-color: var(--surface);
   border-radius: 24px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  box-shadow: 0 10px 30px var(--shadow-color);
   padding: 40px;
   box-sizing: border-box;
   animation: slideUp 0.5s ease-out;
@@ -35,13 +35,13 @@
 .section-title {
   font-size: 1.7rem;
   font-weight: 800;
-  color: #333;
+  color: var(--text-main);
   margin-bottom: 22px;
 }
 
 .type-toggle-container {
   display: flex;
-  background-color: #f0f2f5;
+  background-color: var(--surface-subtle);
   border-radius: 15px;
   padding: 6px;
   max-width: 400px;
@@ -54,7 +54,7 @@
   border: none;
   border-radius: 12px;
   background: transparent;
-  color: #888;
+  color: var(--text-weak);
   font-weight: 700;
   font-size: 1.1rem;
   cursor: pointer;
@@ -62,8 +62,8 @@
 }
 
 .type-btn.active {
-  background-color: white;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  background-color: var(--surface);
+  box-shadow: 0 4px 10px var(--shadow-color);
 }
 .type-btn.active.income { color: var(--primary-color); }
 .type-btn.active.expense { color: #ff4d4f; }
@@ -72,14 +72,14 @@
   width: 100%;
   height: 220px;
   box-sizing: border-box;
-  border: 3px dashed #e0e0e0;
+  border: 3px dashed var(--border);
   border-radius: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  background-color: #fafafa;
+  background-color: var(--surface-subtle);
   margin-bottom: 32px;
   position: relative;
   overflow: hidden;
@@ -88,11 +88,11 @@
 
 .ocr-upload-area:hover {
   border-color: var(--primary-color);
-  background-color: #f0f8ff;
+  background-color: var(--surface-accent);
 }
 
 .ocr-icon {
-  color: #bbb;
+  color: var(--text-weak);
   margin-bottom: 12px;
   transition: color 0.3s ease;
 }
@@ -114,7 +114,7 @@
   left: 0; 
   width: 100%; 
   height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--overlay);
   color: white;
   display: flex;
   flex-direction: column;
@@ -158,7 +158,7 @@ form {
   display: block;
   font-size: 1rem;
   font-weight: 700;
-  color: #444;
+  color: var(--text-main);
   margin-bottom: 12px;
   padding-left: 5px;
 }
@@ -166,15 +166,15 @@ form {
 .input-field {
   width: 100%;
   padding: 18px 20px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border);
   border-radius: 12px;
   font-size: 1.05rem;
-  background-color: #fff;
+  background-color: var(--surface);
   transition: all 0.2s;
   box-sizing: border-box;
-  font-family: inherit; 
-  font-size: 1rem; 
-  color: #333;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--text-main);
 }
 
 
@@ -207,11 +207,11 @@ input[type="number"] {
 }
 
 .amount-wrapper { position: relative; display: flex; align-items: center; }
-.currency-unit { 
-  position: absolute; 
-  right: 20px; 
-  font-weight: 600; 
-  color: #888; 
+.currency-unit {
+  position: absolute;
+  right: 20px;
+  font-weight: 600;
+  color: var(--text-weak);
   pointer-events: none;
 }
 
@@ -241,7 +241,7 @@ textarea.input-field {
 
 .loading-overlay {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  background-color: rgba(0, 0, 0, 0.65);
+  background-color: var(--overlay);
   backdrop-filter: blur(4px);
   z-index: 999;
   border-radius: 30px;
@@ -263,7 +263,7 @@ textarea.input-field {
 
 .split-section {
     grid-column: 1 / -1;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--border-subtle);
     padding-top: 30px;
     margin-top: 10px;
 }
@@ -285,7 +285,7 @@ textarea.input-field {
     font-weight: 800;
     font-size: 1.1rem;
     cursor: pointer;
-    color: #333;
+    color: var(--text-main);
 }
 
 .member-list-grid {
@@ -293,9 +293,9 @@ textarea.input-field {
     flex-direction: column; /* 한 줄에 한 명씩 */
     gap: 12px;
     padding: 25px;
-    background-color: #ffffff; /* 흰색 배경으로 변경 */
+    background-color: var(--surface); /* 흰색 배경으로 변경 */
     border-radius: 18px;
-    border: 1px solid #edf0f2;
+    border: 1px solid var(--border-subtle);
     margin-bottom: 20px;
 }
 
@@ -310,17 +310,17 @@ textarea.input-field {
 }
 
 .member-item-label:hover {
-    background-color: #f0f4ff;
+    background-color: var(--surface-accent);
 }
 
 .member-nickname {
     font-weight: 600;
-    color: #444;
+    color: var(--text-main);
 }
 
 .member-loginid {
     font-size: 0.8rem;
-    color: #999;
+    color: var(--text-weak);
 }
 
 .split-result-box {
@@ -335,12 +335,12 @@ textarea.input-field {
 
 .split-result-info {
     font-size: 0.9rem;
-    color: #666;             
+    color: var(--text-sub);
 }
 
 .split-result-amount {
     font-size: 1.2rem;
-    color: #333;
+    color: var(--text-main);
     margin: 0;
     font-weight: 700;
 }
@@ -371,7 +371,7 @@ textarea.input-field {
   justify-content: center;
   padding: 12px 5px;
   border-radius: 8px;
-  border: 1px solid #eee;
+  border: 1px solid var(--border-subtle);
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -379,6 +379,10 @@ textarea.input-field {
 .recent-item-chip.income {
   border-left: 4px solid #3b82f6;
   background-color: #f0f7ff;
+}
+
+:root[data-theme="dark"] .recent-item-chip.income {
+  background-color: rgba(59, 130, 246, 0.12);
 }
 .recent-item-chip.income .recent-item-price {
   color: #3b82f6;
@@ -395,6 +399,10 @@ textarea.input-field {
   border-left: 4px solid #ef4444;
   background-color: #fff5f5;
 }
+
+:root[data-theme="dark"] .recent-item-chip.expense {
+  background-color: rgba(239, 68, 68, 0.12);
+}
 .recent-item-chip.expense .recent-item-price {
   color: #ef4444;
   font-weight: 700;
@@ -408,7 +416,7 @@ textarea.input-field {
 
 .recent-item-name {
   font-size: 0.85rem;
-  color: #333;
+  color: var(--text-main);
   margin-bottom: 2px;
   width: 95%;
   text-align: center;
@@ -431,7 +439,7 @@ textarea.input-field {
 }
 
 .member-split-row:hover {
-    background-color: #f8f9fa;
+    background-color: var(--surface-sunken);
 }
 
 .split-input-group {
@@ -442,7 +450,7 @@ textarea.input-field {
 
 .suggested-amount {
     font-size: 0.9rem;
-    color: #999;
+    color: var(--text-weak);
     font-weight: 500;
 }
 .input-field.small {
@@ -450,9 +458,9 @@ textarea.input-field {
     padding: 10px 12px;
     font-size: 0.95rem;
     text-align: right;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border);
     border-radius: 8px;
-    background-color: #fff;
+    background-color: var(--surface);
 }
 
 .input-field.small:focus {
@@ -461,10 +469,10 @@ textarea.input-field {
 }
 
 .split-result-box {
-    background-color: #fcfcfc;
+    background-color: var(--surface-subtle);
     padding: 25px;
     border-radius: 18px;
-    border: 1px solid #f0f0f0;
+    border: 1px solid var(--border-subtle);
     margin-top: 25px;
     animation: slideUp 0.3s ease-out;
 }
@@ -475,7 +483,7 @@ textarea.input-field {
     align-items: center;
     margin-bottom: 15px;
     font-size: 1rem;
-    color: #666;
+    color: var(--text-sub);
 }
 
 .my-final-amount-row {
@@ -483,14 +491,14 @@ textarea.input-field {
     justify-content: space-between;
     align-items: center;
     padding-top: 15px;
-    border-top: 2px dashed #eee;
+    border-top: 2px dashed var(--border-subtle);
     margin-top: 15px;
 }
 
 .my-final-label {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #333;
+    color: var(--text-main);
 }
 
 .my-final-price {
@@ -501,6 +509,6 @@ textarea.input-field {
 
 .split-guide-text {
     font-size: 0.85rem;
-    color: #aaa;
+    color: var(--text-weak);
     margin-top: 10px;
 }

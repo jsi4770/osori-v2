@@ -182,7 +182,7 @@ function CalendarView({ currentDate, setCurrentDate }) {
           <input type="checkbox" checked={isAllActive} onChange={toggleAll} />
           <span>전체 {isAllActive ? '해제' : '선택'}</span>
         </label>
-        <div className="divider" style={{ width: '1px', background: '#ddd', margin: '0 10px' }}></div>
+        <div className="divider" style={{ width: '1px', background: 'var(--border)', margin: '0 10px' }}></div>
         {ledgers.map(l => (
           <label key={l.id} className="filter-chip">
             <input type="checkbox" checked={activeLedgers.includes(l.id)} onChange={() => toggleLedger(l.id)} />
@@ -198,7 +198,7 @@ function CalendarView({ currentDate, setCurrentDate }) {
             <h2 className="calendar-header">{user?.nickName ||'회원'}님의 소비 달력</h2>
 
             <div className="calendar-summary">
-                <span style={{ fontSize: '0.9rem', color: '#888', marginRight: '5px' }}>
+                <span style={{ fontSize: '0.9rem', color: 'var(--text-weak)', marginRight: '5px' }}>
                   {currentDate.getMonth() + 1}월 총 지출:
                 </span>
                 <strong style={{ color: '#e74c3c', fontSize: '1.3rem' }}>
@@ -232,11 +232,11 @@ function CalendarView({ currentDate, setCurrentDate }) {
                 {details.map((item, idx) => {
                   const ledger = ledgers.find(l => String(l.id) === String(item.ledgerId));
                   return (
-                    <li key={idx} className="detail-item" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid #eee' }}>
+                    <li key={idx} className="detail-item" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--border-subtle)' }}>
                       <div>
                         <span className="ledger-badge" style={{ backgroundColor: ledger?.color, color: '#fff', padding: '2px 5px', borderRadius: '4px', fontSize: '12px', cursor: 'pointer' }} onClick={() => handleLedgerClick(item.ledgerId)}>{ledger?.name}</span>
                         <div style={{ fontWeight: 'bold' }}>{item.title}</div>
-                        <div style={{ fontSize: '12px', color: '#888' }}>{item.category} {item.nickname && `| ${item.nickname}`}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-weak)' }}>{item.category} {item.nickname && `| ${item.nickname}`}</div>
                       </div>
                       <div className={`item-amount ${item.type}`} style={{ color: item.type === 'IN' ? '#2ecc71' : 'red' }}>
                         {item.type === 'IN' ? '+' : '-'}{item.amount.toLocaleString()}원

@@ -6,6 +6,17 @@
         var global = window;
       }
     </script>
+    <script>
+      // 다크모드 플래시(FOUC) 방지: 앱 렌더 전에 저장된 테마 선호(또는 시스템)를 즉시 반영
+      (function () {
+        try {
+          var pref = localStorage.getItem('osori_theme') || 'system';
+          var isDark = pref === 'dark' ||
+            (pref === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        } catch (e) {}
+      })();
+    </script>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/icons/favicon-32.png" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />

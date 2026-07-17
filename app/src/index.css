@@ -12,16 +12,62 @@
   --text-main: #2d3436;
   --text-sub: #636e72;
 
+  /* ===== 다크모드용 시맨틱 토큰 (라이트 기본값) =====
+     컴포넌트는 하드코딩 색 대신 이 토큰을 쓰도록 전환한다.
+     - surface: 카드/떠 있는 면, sunken: 페이지 배경, subtle: 입력/칩/hover, accent: 파랑틴트 패널
+     - text-strong: 제목, text-main: 본문, text-sub: 보조, text-weak: 아주 옅은 글자 */
+  --surface: #ffffff;
+  --surface-sunken: #f8f9fa;
+  --surface-subtle: #f1f3f5;
+  --surface-accent: #eef2ff;
+  --border: #e6e6e6;
+  --border-strong: #d9d9d9;
+  --border-subtle: #f0f0f0;
+  --text-strong: #111111;
+  --text-weak: #9aa0a6;
+  --shadow-color: rgba(0, 0, 0, 0.06);
+  --overlay: rgba(0, 0, 0, 0.45);
+  --warn-bg: #fffbe6;
+  --warn-border: #ffe58f;
+  --warn-text: #856404;
+
   font-family: 'Pretendard', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light;
   color: var(--text-main);
-  background-color: #ffffff;
+  background-color: var(--bg-color);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== 다크 테마 오버라이드 =====
+   JS(theme.js)가 시스템 설정/수동 선택을 해석해 <html data-theme="dark|light">를 세팅한다.
+   따라서 CSS는 [data-theme="dark"]만 다루면 되고 prefers-color-scheme 분기는 불필요. */
+:root[data-theme="dark"] {
+  --primary-tint: #17233d;
+  --bg-color: #131417;
+  --text-main: #e6e8ea;
+  --text-sub: #a2a8b0;
+
+  --surface: #1c1f24;
+  --surface-sunken: #131417;
+  --surface-subtle: #23272e;
+  --surface-accent: #1a2740;
+  --border: #2c313a;
+  --border-strong: #3a404a;
+  --border-subtle: #262b33;
+  --text-strong: #f4f6f8;
+  --text-weak: #7d838c;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --overlay: rgba(0, 0, 0, 0.65);
+  --warn-bg: #2a2410;
+  --warn-border: #4a3f18;
+  --warn-text: #e8c86a;
+
+  color-scheme: dark;
 }
 
 html {

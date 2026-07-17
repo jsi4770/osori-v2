@@ -22,19 +22,19 @@
 }
 
 .grp-subtitle {
-  color: #888;
+  color: var(--text-weak);
   margin: 0;
   font-size: 0.9rem;
 }
 
 .grp-empty {
-  color: #999;
+  color: var(--text-weak);
   text-align: center;
   padding: 60px 0;
 }
 
 .grp-chart-card {
-  background: #fff;
+  background: var(--surface);
   border-radius: 16px;
   padding: 20px;
   margin-bottom: 24px;
@@ -54,7 +54,7 @@
 }
 
 .grp-item {
-  background: #fff;
+  background: var(--surface);
   border-radius: 16px;
   padding: 18px;
   box-shadow: 0 4px 20px rgba(31, 38, 135, 0.06);
@@ -90,8 +90,8 @@
 }
 
 .grp-badge.dismissed {
-  background: #f0f0f0;
-  color: #888;
+  background: var(--surface-subtle);
+  color: var(--text-weak);
 }
 
 .grp-badge.pending {
@@ -99,17 +99,25 @@
   color: #d98b00;
 }
 
+:root[data-theme="dark"] .grp-badge.accepted {
+  background: rgba(26, 157, 75, 0.18);
+}
+
+:root[data-theme="dark"] .grp-badge.pending {
+  background: rgba(217, 139, 0, 0.18);
+}
+
 .grp-content {
   font-size: 1rem;
   line-height: 1.5;
-  color: #2d3436;
+  color: var(--text-main);
   margin: 0 0 8px;
   word-break: keep-all;
 }
 
 .grp-amounts {
   font-size: 0.85rem;
-  color: #888;
+  color: var(--text-weak);
   margin: 0 0 12px;
 }
 
@@ -123,7 +131,7 @@
 
 .grp-date {
   font-size: 0.8rem;
-  color: #aaa;
+  color: var(--text-weak);
 }
 
 .grp-actions {
@@ -147,12 +155,16 @@
 }
 
 .grp-chat-btn {
-  background: #eef3ff;
+  background: var(--surface-accent);
   color: var(--primary-color);
 }
 
 .grp-chat-btn:hover {
   background: #e0e9ff;
+}
+
+:root[data-theme="dark"] .grp-chat-btn:hover {
+  background: rgba(59, 130, 246, 0.25);
 }
 
 .grp-accept-btn {
@@ -165,10 +177,10 @@
 }
 
 .grp-dismiss-btn {
-  background: #f0f0f0;
-  color: #666;
+  background: var(--surface-subtle);
+  color: var(--text-sub);
 }
 
 .grp-dismiss-btn:hover {
-  background: #e4e4e4;
+  background: var(--border);
 }

@@ -3,7 +3,7 @@
   /* box-sizing이 없으면 좌우 패딩(36px)이 width:100%에 더해져
      부모보다 넓어지고 오른쪽으로 넘쳐 우측 치우침이 생김 */
   box-sizing: border-box;
-  background: #fff;
+  background: var(--surface);
   max-width: 520px;
   margin: 0 auto;
   padding: 28px 18px 22px;
@@ -36,12 +36,12 @@
 .label{
   font-size: 14px;
   font-weight: 700;
-  color: #111;
+  color: var(--text-strong);
 }
 
 .input{
   height: 50px;
-  border: 1px solid #e6e6e6;
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 0 14px;
   outline: none;
@@ -79,7 +79,7 @@
 
 .simpleTitle{
   font-size: 14px;
-  color: #555;
+  color: var(--text-sub);
   margin: 12px 0 12px;
 }
 
@@ -146,8 +146,8 @@
 
   height: 52px;
   border-radius: 999px;
-  border: 1px solid #d9d9d9;
-  background: #fff;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
 
   /* 글자가 길어도 3개가 유지되도록 약간 조정 */
   font-size: 13px;

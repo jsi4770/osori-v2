@@ -158,16 +158,16 @@ export default function SocialRegisterPage() {
     <div className={styles.wrap}>
 
       <div style={{
-        backgroundColor: "#fffbe6",
-        border: "1px solid #ffe58f",
+        backgroundColor: "var(--warn-bg)",
+        border: "1px solid var(--warn-border)",
         padding: "20px",
         borderRadius: "12px",
         marginBottom: "25px",
         fontSize: "14px",
-        color: "#856404",
+        color: "var(--warn-text)",
         lineHeight: "1.7",
         textAlign: "left",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
+        boxShadow: "0 2px 8px var(--shadow-color)"
       }}>
         <div style={{ fontWeight: "bold", fontSize: "16px", marginBottom: "10px", display: "flex", alignItems: "center" }}>
           💡 기존 계정과 연결하고 싶으신가요?
@@ -244,18 +244,18 @@ export default function SocialRegisterPage() {
         {/* 닉네임 (소셜 고정 정보) */}
         <div className={styles.label}>닉네임 (소셜 정보)</div>
         <input 
-          className={styles.input} 
-          style={{ backgroundColor: '#f5f5f5', color: '#888' }} 
-          value={form.nickName} 
+          className={styles.input}
+          style={{ backgroundColor: 'var(--surface-subtle)', color: 'var(--text-weak)' }}
+          value={form.nickName}
           readOnly 
         />
 
         {/* 이메일 (소셜 고정 정보) */}
         <div className={styles.label}>이메일 (소셜 정보)</div>
         <input 
-          className={styles.input} 
-          style={{ backgroundColor: '#f5f5f5', color: '#888' }} 
-          value={form.email} 
+          className={styles.input}
+          style={{ backgroundColor: 'var(--surface-subtle)', color: 'var(--text-weak)' }}
+          value={form.email}
           readOnly 
         />
 
