@@ -10,14 +10,6 @@
   align-items: center;
 }
 
-.calender-title {
-  display: flex;
-  justify-content: flex-end; /* 제목 제거 후 월 총지출 요약을 우측 정렬 */
-  align-items: center;
-  width: 100%;
-  margin-bottom: 4px;
-}
-
 .calendar-header {
   margin: 0;
   margin-bottom: 1px !important;
@@ -26,12 +18,25 @@
   color: var(--text-strong);
 }
 
-.calendar-summary {
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif !important;
-  font-size: 1rem !important;
-  color: var(--text-sub) !important;
-  font-weight: 600 !important;
-  margin: 6px 0 0; 
+/* 월 네비게이션 라벨("July 2026")에 이번 달 총지출을 한 문구로 붙여 표시 */
+.calendar-nav-label {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+}
+
+.calendar-nav-summary {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-weak);
+  white-space: nowrap;
+}
+
+.calendar-nav-summary strong {
+  color: var(--expense-color);
+  font-weight: 800;
 }
 
 .calendar-page-container {
@@ -251,11 +256,14 @@
 
 .detail-title {
   font-family: 'Pretendard', sans-serif;
-  font-size: 25px;
+  font-size: 17px;
   font-weight: bold;
+  height: 26px;
+  line-height: 26px;
   margin-bottom: 0;
   padding-bottom: 0;
   border-bottom: none;
+  white-space: nowrap;
 }
 
 .ledger-head {
@@ -269,9 +277,12 @@
 
 .ledger-add-btn {
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  height: 26px; /* .detail-title(날짜 제목)과 높이를 맞춤 */
   border: none;
   border-radius: 8px;
-  padding: 7px 12px;
+  padding: 0 12px;
   font-size: 13px;
   font-weight: 700;
   color: #fff;

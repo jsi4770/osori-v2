@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
@@ -12,6 +12,13 @@ import { FIXED_AUTO_MEMO } from '../Util/zScore';
 
 // 달력 칸은 폭이 좁아 십만 단위 이상이면 잘리므로 만/억 단위로 축약해 표기한다.
 // (우측 가계부 패널은 전체 금액을 그대로 보여준다)
+// "YYYY-MM-DD" -> "YYYY년 MM월 DD일"
+const fmtKoreanDate = (dateStr) => {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateStr || "");
+  if (!m) return dateStr || "";
+  return `${m[1]}년 ${m[2]}월 ${m[3]}일`;
+};
+
 const fmtCompact = (n) => {
   const abs = Math.abs(n);
   if (abs >= 1e8) return (n / 1e8).toFixed(abs % 1e8 === 0 ? 0 : 1).replace(/\.0$/, "") + "억";
@@ -219,21 +226,35 @@ function CalendarView({ currentDate, setCurrentDate }) {
     }
   };
 
+  // ---- 캘린더 터치 스와이프로 월 이동 ----
+  const touchStartRef = useRef({ x: 0, y: 0 });
+  const SWIPE_THRESHOLD = 50; // 이 이상 가로로 움직여야 스와이프로 인정(오터치 방지)
+
+  const handleCalendarTouchStart = (e) => {
+    const t = e.touches[0];
+    touchStartRef.current = { x: t.clientX, y: t.clientY };
+  };
+
+  const handleCalendarTouchEnd = (e) => {
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touchStartRef.current.x;
+    const dy = t.clientY - touchStartRef.current.y;
+    // 세로 스크롤과 헷갈리지 않도록 가로 이동이 세로 이동보다 뚜렷하게 클 때만 반응
+    if (Math.abs(dx) < SWIPE_THRESHOLD || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+
+    const next = new Date(currentDate);
+    next.setMonth(next.getMonth() + (dx < 0 ? 1 : -1));
+    setCurrentDate(next);
+  };
+
   return (
     <main className="fade-in calendar-page-container">
       <div className="calendar-content-wrapper" style={{ display: 'flex', gap: '20px' }}>
-        <div className="calendar-card">
-          <div className='calender-title'>
-            <div className="calendar-summary">
-              <span style={{ fontSize: '0.9rem', color: 'var(--text-weak)', marginRight: '5px' }}>
-                {currentDate.getMonth() + 1}월 총 지출:
-              </span>
-              <strong style={{ color: 'var(--expense-color)', fontSize: '1.3rem' }}>
-                {monthlyTotalExpense.toLocaleString()}
-              </strong>원
-            </div>
-          </div>
-
+        <div
+          className="calendar-card"
+          onTouchStart={handleCalendarTouchStart}
+          onTouchEnd={handleCalendarTouchEnd}
+        >
           <Calendar
             onClickDay={(date) => { setSelectedDate(date.toLocaleDateString('en-CA')); setListMode('day'); }}
             tileContent={renderTileContent}
@@ -242,13 +263,25 @@ function CalendarView({ currentDate, setCurrentDate }) {
             onActiveStartDateChange={({ activeStartDate }) => setCurrentDate(activeStartDate)}
             calendarType="gregory"
             tileClassName={getTileClassName}
+            navigationLabel={({ label, view }) => (
+              <span className="calendar-nav-label">
+                {label}
+                {/* 연/연대 보기로 드릴업했을 때는 "이번 달" 맥락이 안 맞으므로 월 보기에서만 표시 */}
+                {view === 'month' && (
+                  <span className="calendar-nav-summary">
+                    {' · 총지출 '}
+                    <strong>{monthlyTotalExpense.toLocaleString()}</strong>원
+                  </span>
+                )}
+              </span>
+            )}
           />
         </div>
 
         <div className="detail-card">
           <div className="ledger-head">
             <h3 className="detail-title">
-              {listMode === 'day' ? `${selectedDate} 내역` : `${currentDate.getMonth() + 1}월 전체`}
+              {listMode === 'day' ? `${fmtKoreanDate(selectedDate)} 내역` : `${currentDate.getMonth() + 1}월 전체`}
             </h3>
             <button type="button" className="ledger-add-btn" onClick={() => navigate('/mypage/expenseForm')}>
               + 추가
@@ -292,7 +325,7 @@ function CalendarView({ currentDate, setCurrentDate }) {
                         )}
                       </div>
                       <div className="ledger-item-sub">
-                        {item.category}{listMode === 'month' ? ` · ${item.date}` : ''}
+                        {item.category}{listMode === 'month' ? ` · ${fmtKoreanDate(item.date)}` : ''}
                       </div>
                     </div>
                     <div className="ledger-item-right">
