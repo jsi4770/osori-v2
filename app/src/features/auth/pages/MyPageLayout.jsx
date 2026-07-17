@@ -5,7 +5,7 @@ import "./MyPage.css";
 import { useAuth } from "../../../context/AuthContext";
 import { useState,useRef } from "react";
 import { faqApi } from "../../../api/faqApi";
-import { IconHome, IconCalendar, IconPin, IconTrendingUp, IconSettings, IconUser } from "../../../components/icons";
+import { IconHome, IconCalendar, IconTrendingUp, IconUser, IconReceipt } from "../../../components/icons";
 
 const MyPageLayout = ({refreshGroupList}) => {
   const navigate = useNavigate();
@@ -123,7 +123,7 @@ const MyPageLayout = ({refreshGroupList}) => {
               to="/mypage/fixedTrans"
               className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}
             >
-              <IconPin size={19} /> <span>고정지출</span>
+              <IconReceipt size={19} /> <span>고정지출</span>
             </NavLink>
           </li>
           <li>
@@ -133,7 +133,7 @@ const MyPageLayout = ({refreshGroupList}) => {
           </li>
           <li>
             <NavLink to="/mypage/profileSettings" className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
-              <IconSettings size={19} /> <span>프로필 설정</span>
+              <IconUser size={19} /> <span>프로필 설정</span>
             </NavLink>
           </li>
 
@@ -146,7 +146,7 @@ const MyPageLayout = ({refreshGroupList}) => {
 
       <nav className="mobile-bottom-nav">
         <NavLink to="/mypage/fixedTrans" className={({ isActive }) => `mbn-item ${isActive ? "active" : ""}`}>
-          <span className="mbn-icon"><IconPin size={21} /></span>
+          <span className="mbn-icon"><IconReceipt size={21} /></span>
           <span className="mbn-label">고정지출</span>
         </NavLink>
         <NavLink to="/mypage/calendarView" className={({ isActive }) => `mbn-item ${isActive ? "active" : ""}`}>
@@ -162,7 +162,7 @@ const MyPageLayout = ({refreshGroupList}) => {
           <span className="mbn-label">리포트</span>
         </NavLink>
         <NavLink to="/mypage/profileSettings" className={({ isActive }) => `mbn-item ${isActive ? "active" : ""}`}>
-          <span className="mbn-icon"><IconSettings size={21} /></span>
+          <span className="mbn-icon"><IconUser size={21} /></span>
           <span className="mbn-label">설정</span>
         </NavLink>
       </nav>
