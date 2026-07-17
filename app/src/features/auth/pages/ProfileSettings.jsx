@@ -320,6 +320,23 @@ function ProfileSettings() {
 
 
 
+  // 로그아웃 진행 중 중복 클릭 방지
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  // 설정 탭 로그아웃: AuthContext.logout()이 서버 로그아웃 + 로컬 토큰/유저 정리까지 처리한다.
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+    if (!window.confirm("로그아웃 하시겠습니까?")) return;
+
+    setIsLoggingOut(true);
+    try {
+      await logout();
+      navigate("/login", { replace: true });
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
   // ✅ 원래 회원탈퇴 UX: 위험 카드 클릭 → 모달 열기
   const openWithdraw = () => {
     setWithdrawPassword("");
@@ -615,6 +632,25 @@ function ProfileSettings() {
                   : "저장"}
               </button>
             </div>
+          </div>
+        </section>
+
+        <section className="ps-logout-wrap">
+          <div className="info-card ps-logout">
+            <div className="ps-logout-info">
+              <div className="ps-logout-title">로그아웃</div>
+              <div className="ps-logout-desc">
+                이 기기에서 로그아웃합니다. 다시 이용하려면 로그인이 필요합니다.
+              </div>
+            </div>
+            <button
+              type="button"
+              className="ps-logout-btn"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+            >
+              {isLoggingOut ? "로그아웃 중..." : "로그아웃"}
+            </button>
           </div>
         </section>
 

@@ -258,6 +258,54 @@
   font-weight: 700;
 }
 
+/* Logout (중립 액션 — 회원탈퇴 위험 영역과 구분) */
+.ps-logout-wrap {
+  margin: 0;
+}
+
+.ps-logout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 26px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ps-logout-title {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--text-color, #333);
+  margin-bottom: 6px;
+}
+
+.ps-logout-desc {
+  color: #666;
+  font-weight: 600;
+}
+
+.ps-logout-btn {
+  flex-shrink: 0;
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--primary-color);
+  background: transparent;
+  color: var(--primary-color);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.ps-logout-btn:hover:not(:disabled) {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+.ps-logout-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 /* Danger Zone */
 .ps-danger-wrap {
   margin: 0;
