@@ -122,16 +122,56 @@
   border: none !important;
   display: flex;
   flex-direction: column;
-  flex: 1;             
-  min-height: 0;        
+  flex: 1;
+  min-height: 0;
+}
+
+/* react-calendar 기본(dist) 흰색 배경이 다크모드에서 흰 블록으로 보이는 것 방지 → 카드 배경 상속 */
+.react-calendar,
+.react-calendar__viewContainer,
+.react-calendar__month-view,
+.react-calendar__navigation {
+  background: transparent !important;
+}
+
+/* 요일 라벨(일~토) 테마 색 */
+.react-calendar__month-view__weekdays,
+.react-calendar__month-view__weekdays__weekday abbr {
+  color: var(--text-sub);
+}
+
+/* 타일 hover/focus 기본 회색 → 테마 서피스 */
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background-color: var(--surface-subtle);
 }
 
 .react-calendar__month-view__days {
   display: grid !important;
-  grid-template-columns: repeat(7, 1fr); 
+  grid-template-columns: repeat(7, 1fr);
   grid-auto-rows: 1fr;
   gap: 4px;
-  height: 95%;
+  /* react-calendar 내부 flex 체인이 확정 높이를 안 주므로 그리드에 직접 높이를 부여.
+     확정 높이 위에서 1fr 행이 주(5~6줄) 수에 관계없이 세로를 꽉 채운다.
+     (헤더/제목/네비/요일/패딩을 뺀 값) */
+  height: calc(100vh - 280px);
+  min-height: 460px;
+}
+
+/* 월/연도 선택(네비게이션) 폰트: 라이트=검정, 다크=흰색 */
+.react-calendar__navigation button {
+  color: var(--text-strong);
+  font-weight: 700;
+  font-size: 1rem;
+}
+.react-calendar__navigation button:disabled {
+  background-color: transparent;
+  opacity: 0.4;
+}
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  background-color: var(--surface-subtle);
+  border-radius: 8px;
 }
 
 .react-calendar__tile {
