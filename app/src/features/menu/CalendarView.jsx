@@ -6,6 +6,15 @@ import './CalendarView.css';
 import transApi from '../../api/transApi';
 import { fetchHolidays } from '../../api/holidayApi';
 
+// 달력 칸은 폭이 좁아 십만 단위 이상이면 잘리므로 만/억 단위로 축약해 표기한다.
+// (우측 일별 상세 패널은 전체 금액을 그대로 보여준다)
+const fmtCompact = (n) => {
+  const abs = Math.abs(n);
+  if (abs >= 1e8) return (n / 1e8).toFixed(abs % 1e8 === 0 ? 0 : 1).replace(/\.0$/, "") + "억";
+  if (abs >= 1e4) return (n / 1e4).toFixed(abs % 1e4 === 0 ? 0 : 1).replace(/\.0$/, "") + "만";
+  return n.toLocaleString();
+};
+
 function CalendarView({ currentDate, setCurrentDate }) {
   const { user } = useAuth();
   const [transactions, setTransactions] = useState([]);
@@ -96,8 +105,8 @@ function CalendarView({ currentDate, setCurrentDate }) {
         const expense = dayData.filter(i => i.type === 'OUT').reduce((s, i) => s + i.amount, 0);
         return (
           <div className="amount-container">
-            {income > 0 && <div className="income-tag">+{income.toLocaleString()}</div>}
-            {expense > 0 && <div className="expense-tag">-{expense.toLocaleString()}</div>}
+            {income > 0 && <div className="income-tag">+{fmtCompact(income)}</div>}
+            {expense > 0 && <div className="expense-tag">-{fmtCompact(expense)}</div>}
           </div>
         );
       }
