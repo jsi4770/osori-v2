@@ -28,6 +28,28 @@ ChartJS.register(
   LineController
 );
 
+// 여러 문장을 일정 간격으로 한 문장씩 롤링(순환)하며 보여주는 컴포넌트
+function RollingSummary({ items, interval = 3000 }) {
+  const [index, setIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    if (items.length <= 1) return;
+    const id = setInterval(() => {
+      setIndex(prev => (prev + 1) % items.length);
+    }, interval);
+    return () => clearInterval(id);
+  }, [items.length, interval]);
+
+  return (
+    <div className="rolling-summary">
+      {/* key가 바뀔 때마다 다시 마운트되어 롤링 애니메이션이 재생됨 */}
+      <div key={index} className="rolling-summary-item">
+        {items[index]}
+      </div>
+    </div>
+  );
+}
+
 function MonthlyTrendChart({ transactions = [], currentDate }) {
   if (!currentDate || !(currentDate instanceof Date)) {
     return <div className="chart-loading">차트 데이터를 불러오는 중...</div>;
@@ -97,12 +119,12 @@ function MonthlyTrendChart({ transactions = [], currentDate }) {
     projectedData = [...projectedData, predictedAmount];
 
     summaryContent = (
-      <div className={styles['chart-summary']} style={{textAlign : 'center'}}>
-        이번 달 총 <strong>{projectedCurrent.toLocaleString()}원</strong> 지출 예상 &nbsp;&nbsp;|&nbsp;&nbsp;
-   
-         다음 달 예상 지출: 약 <strong>{predictedAmount.toLocaleString()}원</strong>
-        
-      </div>
+      <RollingSummary
+        items={[
+          <>이번 달 총 <strong>{projectedCurrent.toLocaleString()}원</strong> 지출 예상</>,
+          <>다음 달 예상 지출: 약 <strong>{predictedAmount.toLocaleString()}원</strong></>,
+        ]}
+      />
     );
   } else if (availableDataPoints < 2) {
     summaryContent = (
@@ -170,8 +192,8 @@ function MonthlyTrendChart({ transactions = [], currentDate }) {
     },
     layout: {
       padding: {
-      left: 40,   // 왼쪽 여백
-      right: 40,  // 오른쪽 여백
+      left: 4,    // 왼쪽 여백(축 눈금은 Chart.js가 자동 확보)
+      right: 12,  // 오른쪽 여백('다음 달(예측)' 라벨 잘림 방지 최소값)
       top: 0,     // 위쪽 (필요 없으면 0)
       bottom: 0   // 아래쪽 (필요 없으면 0)
     }

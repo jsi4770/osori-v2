@@ -357,6 +357,7 @@ input[type="date"] {
   min-height : 0;
   font-size: 0.95rem;
   margin: 2px 0 4px;
+  padding-left: 10px;
 }
 
 canvas {
