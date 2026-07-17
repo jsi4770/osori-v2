@@ -1,7 +1,18 @@
+/* 목록 카드: 화면 비율만큼 채우고, 그보다 항목이 많아지면 목록만 스크롤
+   (.info-card의 max-height:400px보다 우선 적용되도록 두 클래스를 함께 명시) */
+.info-card.ftMainCard {
+  max-height: calc(100vh - 40px);
+  display: flex;
+  flex-direction: column;
+}
+
 .ftList {
   display: flex;
   flex-direction: column;
   margin-top: 16px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0; /* flex 자식이 내용 크기만큼 늘어나지 않고 스크롤되도록 */
 }
 
 .ftRow {
@@ -46,10 +57,12 @@
   text-overflow: ellipsis;
 }
 
+/* 카테고리/등록일을 항상 각자 한 줄씩(2줄)로 고정 — 텍스트 길이에 따라
+   한 줄/두 줄이 오락가락하던 것을 방지 */
 .ftRowSub {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  gap: 4px;
   font-size: 13px;
   color: var(--text-weak);
 }
@@ -87,6 +100,7 @@
   white-space: nowrap;
   width: 140px;
   margin-left: auto;
+  transform: translateX(20px); /* 헤더 줄 안에서 오른쪽으로 20px 추가 이동 */
 
   padding: 12px 16px;
   border: 1px solid var(--border);

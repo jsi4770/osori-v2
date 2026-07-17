@@ -67,7 +67,7 @@ export default function FixedTransPage() {
     <main className="fade-in">
       {/* 목록 */}
       <div className="account-book-grid">
-        <div className="info-card" style={{ gridColumn: "1 / -1", paddingTop:'10px'}}>
+        <div className="info-card ftMainCard" style={{ gridColumn: "1 / -1", paddingTop:'10px'}}>
           <div className="card-title-area" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <h3>내 고정지출 목록</h3>
