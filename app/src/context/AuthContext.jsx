@@ -51,6 +51,8 @@ export function AuthProvider({ children }) {
       // 여기서 로그아웃 완료(토큰/유저 제거)
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      // 로그아웃하면 온보딩을 다시 볼 수 있도록 방문 기록 초기화
+      localStorage.removeItem("osori_onboarded");
       setToken("");
       setUser(null);
     }

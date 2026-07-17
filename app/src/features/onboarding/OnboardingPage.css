@@ -1,0 +1,385 @@
+/* ============================================================
+   OSORI 온보딩 — 모바일 퍼스트(390~430px), 기존 메인 컬러(#0066ff) 사용
+   성장/숲 뉘앙스는 기존 --income-color(민트그린)를 보조 악센트로 사용
+   ============================================================ */
+
+.ob-wrap {
+  --ob-mint: #2ecc71;
+  --ob-kakao: #fee500;
+
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
+  height: 100vh;
+  height: 100dvh;
+  background:
+    radial-gradient(120% 60% at 50% 0%, var(--primary-tint) 0%, #ffffff 55%) no-repeat,
+    #ffffff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+  font-family: 'Pretendard', sans-serif;
+  color: var(--text-main);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---- 상단 바 ---- */
+.ob-topbar {
+  flex: 0 0 auto;
+  height: 56px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ob-logo {
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  color: var(--primary-color);
+}
+.ob-skip {
+  border: none;
+  background: transparent;
+  color: #9aa0a6;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 6px 4px;
+}
+.ob-skip:hover { color: #6b7076; }
+
+/* ---- 무대(비주얼 + 텍스트) ---- */
+.ob-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 4px 28px 8px;
+}
+
+/* 비주얼 영역 */
+.ob-visual {
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 텍스트 영역 */
+.ob-text {
+  flex: 0 0 auto;
+  padding-bottom: 6px;
+}
+.ob-badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--primary-color);
+  background: var(--primary-tint);
+  padding: 6px 12px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+}
+.ob-title {
+  font-size: 26px;
+  line-height: 1.32;
+  font-weight: 800;
+  color: #1f2328;
+  margin: 0 0 12px;
+  letter-spacing: -0.4px;
+}
+.ob-title b { color: var(--primary-color); font-weight: 900; }
+.ob-copy {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-sub);
+  margin: 0;
+  white-space: pre-line;
+  font-weight: 500;
+}
+
+/* ---- 하단 푸터(도트 + 버튼) ---- */
+.ob-footer {
+  flex: 0 0 auto;
+  padding: 12px 24px calc(20px + env(safe-area-inset-bottom));
+}
+.ob-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.ob-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: #d9dde2;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.ob-dot.active {
+  width: 22px;
+  background: var(--primary-color);
+}
+
+/* ---- 버튼 ---- */
+.ob-btn {
+  width: 100%;
+  height: 56px;
+  border: none;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.1s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+.ob-btn:active { transform: scale(0.985); }
+
+.ob-btn-next {
+  background: var(--primary-color);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(0, 102, 255, 0.22);
+}
+.ob-btn-next:hover { background: var(--primary-hover); }
+
+.ob-cta { display: flex; flex-direction: column; gap: 10px; }
+.ob-btn-kakao {
+  background: var(--ob-kakao);
+  color: #191600;
+  box-shadow: 0 8px 18px rgba(254, 229, 0, 0.3);
+}
+.ob-btn-kakao:hover { background: #f5dd00; }
+.ob-btn-email {
+  height: 52px;
+  background: #fff;
+  color: #3c4147;
+  border: 1.5px solid #e3e6ea;
+  font-weight: 700;
+}
+.ob-btn-email:hover { border-color: var(--primary-color); color: var(--primary-color); }
+
+/* ============================================================
+   fade-in-up 진입 애니메이션 (단계 전환 시 key 변경으로 재생)
+   요소별 딜레이로 부드러운 스태거
+   ============================================================ */
+@keyframes obFadeUp {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.ob-stage .ob-visual { animation: obFadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.ob-stage .ob-badge  { animation: obFadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both; }
+.ob-stage .ob-title  { animation: obFadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.16s both; }
+.ob-stage .ob-copy   { animation: obFadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ob-stage .ob-visual,
+  .ob-stage .ob-badge,
+  .ob-stage .ob-title,
+  .ob-stage .ob-copy { animation: none; }
+}
+
+/* ============================================================
+   슬라이드별 비주얼
+   ============================================================ */
+
+/* 공통 캐릭터 */
+.ob-badger {
+  width: min(60%, 230px);
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.14));
+  animation: obFloat 3.5s ease-in-out infinite;
+  z-index: 1;
+}
+.ob-badger-sm { width: min(38%, 130px); }
+@keyframes obFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.ob-badger-halo {
+  position: absolute;
+  width: 62%;
+  max-width: 260px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,102,255,0.10) 0%, rgba(46,204,113,0.06) 45%, transparent 70%);
+}
+
+/* 1. intro / 5. start 떠다니는 소품 */
+.ob-coin, .ob-spark {
+  position: absolute;
+  font-size: 28px;
+  z-index: 2;
+  animation: obFloat 2.8s ease-in-out infinite;
+}
+.ob-coin-1 { top: 14%; left: 16%; animation-delay: 0.1s; }
+.ob-coin-2 { top: 24%; right: 14%; animation-delay: 0.6s; }
+.ob-coin-3 { bottom: 18%; left: 20%; font-size: 24px; animation-delay: 1s; }
+.ob-spark-1 { top: 16%; right: 18%; }
+.ob-spark-2 { bottom: 20%; left: 18%; animation-delay: 0.7s; }
+
+/* 2. OCR — 폰/영수증/필드 */
+.ob-phone {
+  width: 100%;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.ob-receipt {
+  position: relative;
+  width: 190px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px 18px 20px;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.10);
+  border: 1px solid #f0f0f0;
+  overflow: hidden;
+}
+.ob-receipt-top { font-weight: 800; font-size: 14px; margin-bottom: 12px; color: #333; }
+.ob-receipt-line { height: 9px; border-radius: 5px; background: #eef1f4; margin: 8px 0; }
+.ob-scan-line {
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 26px;
+  background: linear-gradient(180deg, rgba(0,102,255,0.28), rgba(0,102,255,0));
+  border-bottom: 2px solid var(--primary-color);
+  animation: obScan 2.2s ease-in-out infinite;
+}
+@keyframes obScan {
+  0% { top: 0; opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+.ob-ocr-arrow { color: var(--primary-color); font-size: 22px; font-weight: 900; line-height: 1; }
+.ob-ocr-fields {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.ob-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1px solid #e8ebef;
+  border-radius: 10px;
+  padding: 9px 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+.ob-chip span { font-size: 11px; color: #9aa0a6; font-weight: 700; }
+.ob-chip b { font-size: 13px; color: #2a2f35; }
+.ob-chip-full { width: 100%; justify-content: center; }
+
+/* 3. AI — 말풍선 */
+.ob-ai {
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 4px;
+}
+.ob-ai .ob-badger-sm { animation: obFloat 3.5s ease-in-out infinite; }
+.ob-bubble {
+  max-width: 88%;
+  font-size: 13.5px;
+  line-height: 1.5;
+  font-weight: 600;
+  padding: 12px 15px;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+}
+.ob-bubble b { color: var(--primary-color); }
+.ob-bubble-1 { align-self: flex-start; background: #fff; border: 1px solid #eef1f4; border-bottom-left-radius: 4px; }
+.ob-bubble-2 { align-self: flex-end; background: var(--primary-tint); border-bottom-right-radius: 4px; }
+.ob-bubble-ai {
+  align-self: center;
+  max-width: 94%;
+  text-align: center;
+  background: linear-gradient(135deg, var(--primary-color), #3b82f6);
+  color: #fff;
+}
+.ob-bubble-ai b { color: #fff; }
+.ob-ai-tag {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  opacity: 0.9;
+  margin-bottom: 4px;
+}
+
+/* 4. 고정지출 대시보드 */
+.ob-dash {
+  width: 100%;
+  max-width: 300px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 18px 18px 14px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  border: 1px solid #f1f3f5;
+}
+.ob-dash-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.ob-dash-label { margin: 0 0 2px; font-size: 12px; color: #9aa0a6; font-weight: 700; }
+.ob-dash-total { margin: 0; font-size: 22px; font-weight: 900; color: #1f2328; }
+.ob-dash-badge {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: var(--primary-tint);
+  color: var(--primary-color);
+  display: flex; align-items: center; justify-content: center;
+}
+.ob-sub-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-top: 1px solid #f4f6f8;
+}
+.ob-sub-icon {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: #f5f7f9;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+}
+.ob-sub-meta { flex: 1; display: flex; flex-direction: column; }
+.ob-sub-meta b { font-size: 13.5px; color: #2a2f35; }
+.ob-sub-meta span { font-size: 11px; color: #9aa0a6; }
+.ob-sub-price { font-size: 13.5px; font-weight: 800; color: #2a2f35; }
+.ob-dash-foot {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ob-mint);
+}
+
+/* ---- 아주 작은 화면 대응 ---- */
+@media (max-height: 700px) {
+  .ob-title { font-size: 23px; }
+  .ob-copy { font-size: 14px; }
+  .ob-badger { width: min(48%, 180px); }
+}

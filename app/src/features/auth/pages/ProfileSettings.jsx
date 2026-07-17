@@ -331,7 +331,8 @@ function ProfileSettings() {
     setIsLoggingOut(true);
     try {
       await logout();
-      navigate("/login", { replace: true });
+      // "/"로 보내면 RootRedirect가 미온보딩 상태를 감지해 온보딩으로 안내
+      navigate("/", { replace: true });
     } finally {
       setIsLoggingOut(false);
     }

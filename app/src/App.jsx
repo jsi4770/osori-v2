@@ -19,13 +19,17 @@ import KakaoCallback from "./features/auth/pages/KakaoCallback";
 import SocialRegisterPage from "./features/auth/pages/SocialRegisterPage";
 import CoachChatPage from "./features/coaching/CoachChatPage";
 import GrowthReportPage from "./features/coaching/GrowthReportPage";
+import OnboardingPage from "./features/onboarding/OnboardingPage";
 import { useAuth } from "./context/AuthContext";
 
 // 로그인 여부에 따라 진입 지점을 분기(PWA 재실행/새로고침 시 세션 유지)
+// 세션/방문 기록이 없는 첫 방문자는 온보딩으로, 이미 본 사람은 로그인으로 보냄
 function RootRedirect() {
   const { isAuthenticated, user } = useAuth();
   const loggedIn = isAuthenticated && user && user.status !== "N";
-  return <Navigate to={loggedIn ? "/mypage/assets" : "/login"} replace />;
+  if (loggedIn) return <Navigate to="/mypage/assets" replace />;
+  const onboarded = localStorage.getItem("osori_onboarded") === "true";
+  return <Navigate to={onboarded ? "/login" : "/onboarding"} replace />;
 }
 
 // 이미 로그인된 사용자가 로그인/랜딩 화면에 오면 홈으로 보냄
@@ -43,6 +47,9 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<RootRedirect />} />
+
+        {/* 온보딩: 첫 방문자 전용 풀스크린 (AuthLayout 밖) */}
+        <Route path="/onboarding" element={<OnboardingPage />} />
 
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<AnonOnly><LoginPage /></AnonOnly>} />
