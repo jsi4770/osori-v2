@@ -1,0 +1,143 @@
+import React, { useState, useEffect } from "react";
+import styles from "./MyAccountBook.module.css";
+
+const EXPENSE_CATEGORIES = [
+  "식비", "생활/마트", "쇼핑", "의료/건강",
+  "교통", "문화/여가", "교육", "기타",
+];
+const INCOME_CATEGORIES = ["월급", "용돈", "금융소득", "상여금", "기타"];
+
+// 가계부 내역 보기/수정/삭제 공용 모달 (가계부·캘린더뷰에서 공유)
+export default function TransactionModal({ isOpen, type, transaction, onClose, onSave, onDelete }) {
+  const [currentCategories, setCurrentCategories] = useState(EXPENSE_CATEGORIES);
+  const today = new Date().toISOString().split("T")[0];
+
+  const [formData, setFormData] = useState({
+    text: "", amount: 0, date: "", category: "기타", memo: "", type: "OUT",
+  });
+
+  useEffect(() => {
+    if (transaction) {
+      const transType = transaction.type || "OUT";
+      setCurrentCategories(transType === "IN" ? INCOME_CATEGORIES : EXPENSE_CATEGORIES);
+      setFormData({
+        text: transaction.text,
+        amount: Math.abs(transaction.amount),
+        date: transaction.date,
+        category: transaction.category,
+        memo: transaction.memo || "",
+        type: transType,
+      });
+    }
+  }, [transaction]);
+
+  if (!isOpen) return null;
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "amount" && value < 0) {
+      alert("금액은 0보다 커야 합니다.");
+      return;
+    }
+    if (name === "date" && value > today) {
+      alert("미래 날짜는 선택할 수 없습니다.");
+      setFormData((prev) => ({ ...prev, [name]: today }));
+      return;
+    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleTypeChange = (e) => {
+    const newType = e.target.value;
+    const newCategories = newType === "IN" ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+    setCurrentCategories(newCategories);
+    setFormData((prev) => ({ ...prev, type: newType, category: newCategories[0] }));
+  };
+
+  const isViewMode = type === "view";
+  const isDetailMode = type === "edit" || type === "view";
+
+  return (
+    <div className={styles["modal-overlay"]} onClick={onClose}>
+      <div className={styles["modal-content"]} onClick={(e) => e.stopPropagation()}>
+        {isDetailMode ? (
+          <>
+            <h3>{isViewMode ? "내역 상세" : "내역 수정"}</h3>
+
+            <div className={styles["modal-radio-group"]}>
+              <label className={styles["radio-label"]}>
+                <input type="radio" name="type" value="IN" checked={formData.type === "IN"} onChange={handleTypeChange} disabled={isViewMode} />
+                <span style={{ color: formData.type === "IN" ? "var(--income-color)" : "var(--text-weak)" }}>수입</span>
+              </label>
+              <label className={styles["radio-label"]}>
+                <input type="radio" name="type" value="OUT" checked={formData.type === "OUT"} onChange={handleTypeChange} disabled={isViewMode} />
+                <span style={{ color: formData.type === "OUT" ? "var(--expense-color)" : "var(--text-weak)" }}>지출</span>
+              </label>
+            </div>
+
+            <div className={styles["modal-form"]}>
+              <div>
+                <label className={styles["modal-label"]}>날짜</label>
+                <input
+                  type="date" name="date" className={styles["modal-input"]}
+                  value={formData.date} onChange={handleChange}
+                  readOnly={isViewMode} disabled={isViewMode} max={today}
+                  onBlur={(e) => {
+                    if (e.target.value > today) {
+                      alert("미래 날짜는 입력할 수 없습니다.");
+                      setFormData((prev) => ({ ...prev, date: today }));
+                    }
+                  }}
+                />
+              </div>
+              <div>
+                <label className={styles["modal-label"]}>내용</label>
+                <input type="text" name="text" className={styles["modal-input"]} value={formData.text} onChange={handleChange} readOnly={isViewMode} />
+              </div>
+              <div>
+                <label className={styles["modal-label"]}>금액</label>
+                <input type="number" name="amount" className={styles["modal-input"]} value={formData.amount} onChange={handleChange} readOnly={isViewMode} min="0" />
+              </div>
+              <div>
+                <label className={styles["modal-label"]}>카테고리</label>
+                {isViewMode ? (
+                  <input type="text" name="category" className={styles["modal-input"]} value={formData.category} readOnly />
+                ) : (
+                  <select name="category" className={styles["modal-input"]} value={formData.category} onChange={handleChange}>
+                    {currentCategories.map((cat, index) => (
+                      <option key={index} value={cat}>{cat}</option>
+                    ))}
+                  </select>
+                )}
+              </div>
+              <div>
+                <label className={styles["modal-label"]}>메모</label>
+                <input type="text" name="memo" className={styles["modal-input"]} value={formData.memo} onChange={handleChange} readOnly={isViewMode} placeholder={isViewMode ? "" : "메모를 입력하세요"} />
+              </div>
+            </div>
+
+            <div className={styles["modal-actions"]}>
+              <button className={`${styles["modal-btn"]} ${styles.cancel}`} onClick={onClose}>
+                {isViewMode ? "닫기" : "취소"}
+              </button>
+              {!isViewMode && (
+                <button className={`${styles["modal-btn"]} ${styles.confirm}`} onClick={() => onSave({ ...transaction, ...formData })}>수정</button>
+              )}
+            </div>
+          </>
+        ) : (
+          <>
+            <h3>🗑️ 삭제 확인</h3>
+            <p style={{ textAlign: "center", color: "var(--text-sub)", fontSize: "1rem", margin: "20px 0" }}>
+              <strong>"{transaction?.text}"</strong> 내역을<br />정말 삭제하시겠습니까?
+            </p>
+            <div className={styles["modal-actions"]}>
+              <button className={`${styles["modal-btn"]} ${styles.cancel}`} onClick={onClose}>취소</button>
+              <button className={`${styles["modal-btn"]} ${styles.delete}`} onClick={() => onDelete(transaction.id)}>삭제</button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
