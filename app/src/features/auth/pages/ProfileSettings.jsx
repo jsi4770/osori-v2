@@ -400,11 +400,6 @@ function ProfileSettings() {
 
   return (
     <main className="fade-in">
-      <header className="content-header">
-        <h2>프로필 설정</h2>
-        <p className="ps-sub">프로필/계정 정보를 수정하고 저장할 수 있습니다.</p>
-      </header>
-
       <div className="ps-stack">
         <section className="ps-grid">
           <div className="info-card ps-card">

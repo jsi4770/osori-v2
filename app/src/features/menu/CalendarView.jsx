@@ -107,16 +107,9 @@ function CalendarView({ currentDate, setCurrentDate }) {
 
   return (
     <main className="fade-in calendar-page-container">
-      <header className='content-header'>
-        <h2>캘린더뷰</h2>
-        <p className="welcome-text">한 달의 소비 흐름, 오소리가 꼼꼼하게 기록하고 있어요.</p>
-      </header>
-
       <div className="calendar-content-wrapper" style={{ display: 'flex', gap: '20px' }}>
-        <div className="calendar-card" style={{ flex: 7 }}>
+        <div className="calendar-card">
           <div className='calender-title'>
-            <h2 className="calendar-header">{user?.nickName || '회원'}님의 소비 달력</h2>
-
             <div className="calendar-summary">
               <span style={{ fontSize: '0.9rem', color: 'var(--text-weak)', marginRight: '5px' }}>
                 {currentDate.getMonth() + 1}월 총 지출:
@@ -138,7 +131,7 @@ function CalendarView({ currentDate, setCurrentDate }) {
           />
         </div>
 
-        <div className="detail-card" style={{ flex: 3 }}>
+        <div className="detail-card">
           <h3 className="detail-title">{selectedDate} 내역</h3>
           <div className="detail-list-container">
             {details.length > 0 ? (

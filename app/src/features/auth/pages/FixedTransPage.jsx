@@ -65,11 +65,6 @@ export default function FixedTransPage() {
 
   return (
     <main className="fade-in">
-      <header className="content-header">
-        <h2>고정지출</h2>
-        <p className="welcome-text">잊기 쉬운 고정지출, 오소리가 매달 꼼꼼하게 챙겨드려요.</p>
-      </header>
-
       {/* 목록 */}
       <div className="account-book-grid">
         <div className="info-card" style={{ gridColumn: "1 / -1", paddingTop:'10px'}}>

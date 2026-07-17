@@ -12,9 +12,10 @@
 
 .calender-title {
   display: flex;
-  justify-content: space-between; /* 양 끝으로 벌림 */
-  align-items: center;           /* 세로 중앙 정렬 */
+  justify-content: flex-end; /* 제목 제거 후 월 총지출 요약을 우측 정렬 */
+  align-items: center;
   width: 100%;
+  margin-bottom: 4px;
 }
 
 .calendar-header {
@@ -93,7 +94,7 @@
 }
 
 .calendar-card {
-  flex: 7;
+  flex: 1;
   min-width: 0;
   background: var(--surface);
   border-radius: 20px;
@@ -106,7 +107,7 @@
 }
 
 .detail-card {
-  flex: 3;
+  flex: 0 0 320px;
   min-width: 0;
   background: var(--surface);
   border-radius: 20px;
@@ -154,7 +155,7 @@
   /* react-calendar 내부 flex 체인이 확정 높이를 안 주므로 그리드에 직접 높이를 부여.
      확정 높이 위에서 1fr 행이 주(5~6줄) 수에 관계없이 세로를 꽉 채운다.
      (헤더/제목/네비/요일/패딩을 뺀 값) */
-  height: calc(100vh - 280px);
+  height: calc(100vh - 165px);
   min-height: 460px;
 }
 
