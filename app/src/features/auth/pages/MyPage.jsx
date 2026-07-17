@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MyPage.css";
 import { useAuth } from "../../../context/AuthContext";
@@ -15,9 +15,24 @@ const MyPage = () => {
   const [transactions, setTransactions] = useState([]);
   const [showRecent, setShowRecent] = useState(true);
   const [analysisDate, setAnalysisDate] = useState(new Date());
+  const [activeSlide, setActiveSlide] = useState(0);
+  const carouselRef = useRef(null);
 
   const analysisYear = analysisDate.getFullYear();
   const analysisMonth = analysisDate.getMonth() + 1;
+
+  const handleCarouselScroll = () => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const index = Math.round(el.scrollLeft / el.clientWidth);
+    setActiveSlide(index);
+  };
+
+  const goToSlide = (index) => {
+    const el = carouselRef.current;
+    if (!el) return;
+    el.scrollTo({ left: index * el.clientWidth, behavior: "smooth" });
+  };
 
   const handlePrevMonth = () => {
     setAnalysisDate(new Date(analysisDate.getFullYear(), analysisDate.getMonth() - 1, 1));
@@ -164,16 +179,28 @@ const MyPage = () => {
           </div>
         </div>
 
-        <div className="chart-card">
-          <div className="chart-main-container">
+        <div
+          className="chart-carousel"
+          ref={carouselRef}
+          onScroll={handleCarouselScroll}
+        >
+          <div className="chart-slide">
             <ExpenseChart transactions={transactions} currentDate={analysisDate} />
+          </div>
+          <div className="chart-slide">
+            <MonthlyTrendChart transactions={transactions} currentDate={analysisDate} />
           </div>
         </div>
 
-        <div className="chart-card">
-          <div className="chart-main-container">
-            <MonthlyTrendChart transactions={transactions} currentDate={analysisDate} />
-          </div>
+        <div className="carousel-dots">
+          {[0, 1].map((i) => (
+            <button
+              key={i}
+              className={`carousel-dot ${activeSlide === i ? "active" : ""}`}
+              onClick={() => goToSlide(i)}
+              aria-label={`${i + 1}번째 분석 보기`}
+            />
+          ))}
         </div>
       </div>
     </main>

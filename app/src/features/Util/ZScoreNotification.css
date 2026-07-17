@@ -1,12 +1,12 @@
 .notification-list-container {
-  margin: auto;
-  min-width: 70%;
+  margin: 10px auto;
+  align-self: center; /* flex 부모 안에서 확실히 가로 중앙 정렬 */
+  width: 100%;
+  max-width: 520px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 10px;
-  margin-bottom: 10px;
   padding : 20px;
   min-height: 60px;
   height : auto;
