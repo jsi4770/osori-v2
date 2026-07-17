@@ -16,9 +16,75 @@
   flex-direction: column;
   position: fixed;
   top: 0;
-  left: 0; 
+  left: 0;
   bottom: 0;
   z-index: 1001; /* 다른 요소보다 위에 오도록 */
+}
+
+/* 모바일 전용 상단바 (햄버거 + 로고) — 데스크톱에서는 숨김 */
+.mobile-topbar {
+  display: none;
+}
+
+.mobile-backdrop {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .mypage-container {
+    padding-top: 0;
+  }
+
+  .mobile-topbar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    padding: 0 16px;
+    background: white;
+    border-bottom: 1px solid #eee;
+    z-index: 1100;
+  }
+
+  .mobile-menu-btn {
+    border: none;
+    background: none;
+    font-size: 1.4rem;
+    line-height: 1;
+    padding: 6px 8px;
+    cursor: pointer;
+  }
+
+  .mobile-topbar-logo {
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .mobile-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1150;
+  }
+
+  .sidebar {
+    top: 0;
+    width: 78%;
+    max-width: 280px;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 1200;
+    padding-top: 20px;
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
 }
 
 .sidebar-menu {
@@ -197,9 +263,17 @@
 
 .mypage-content {
   flex: 1;
-  margin-left: 300px; 
+  margin-left: 300px;
   padding: 40px;
-  padding-top: 0;  
+  padding-top: 0;
+}
+
+@media (max-width: 900px) {
+  .mypage-content {
+    margin-left: 0;
+    padding: 16px;
+    padding-top: 72px; /* 고정된 모바일 상단바(56px) + 여백 */
+  }
 }
 
 .content-header {

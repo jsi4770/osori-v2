@@ -10,6 +10,7 @@ const MyPageLayout = ({refreshGroupList}) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const scrollRef = useRef();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isFaqModalOpen,setIsFaqModalOpen] =useState(false);
   const [faqList, setFaqList] = useState([]);
   const [newQuestion,setNewQuestion] = useState('');
@@ -80,47 +81,70 @@ const MyPageLayout = ({refreshGroupList}) => {
   };
 
 
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
+
   return (
     <div className="mypage-container">
-      <aside className="sidebar">
+      <div className="mobile-topbar">
+        <button
+          className="mobile-menu-btn"
+          onClick={() => setIsMobileMenuOpen(true)}
+          aria-label="메뉴 열기"
+        >
+          ☰
+        </button>
+        <div className="mobile-topbar-logo" onClick={() => navigate("/")}>OSORI</div>
+      </div>
+
+      {isMobileMenuOpen && (
+        <div className="mobile-backdrop" onClick={closeMobileMenu} />
+      )}
+
+      <aside className={`sidebar ${isMobileMenuOpen ? "mobile-open" : ""}`}>
         <div className="logo" onClick={() => navigate("/")} style={{ cursor: "pointer", padding: "0 20px 30px" }}>
           OSORI
         </div>
 
         <ul className="sidebar-menu">
           <li>
-            <NavLink to="/mypage/assets" className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
+            <NavLink to="/mypage/assets" onClick={closeMobileMenu} className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
               <span>💰</span> 자산관리
             </NavLink>
           </li>
           <li>
-            <NavLink to="/mypage/calendarView" className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
+            <NavLink to="/mypage/calendarView" onClick={closeMobileMenu} className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
               <span>📅</span> 캘린더뷰
             </NavLink>
           </li>
           <li>
             <NavLink
               to="/mypage/fixedTrans"
+              onClick={closeMobileMenu}
               className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}
             >
               <span>📌</span> 고정지출
             </NavLink>
           </li>
           <li>
-            <NavLink to="/mypage/coaching/report" className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
+            <NavLink to="/mypage/coaching/report" onClick={closeMobileMenu} className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
               <span>📈</span> 성장 리포트
             </NavLink>
           </li>
           <li>
-            <NavLink to="/mypage/profileSettings" className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
+            <NavLink to="/mypage/profileSettings" onClick={closeMobileMenu} className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
               <span>⚙️</span> 프로필 설정
             </NavLink>
           </li>
 
         </ul>
 
-        <div className="faq-container">
-          {isFaqModalOpen && (
+        <button className="logout-btn" onClick={handleLogout}>
+          로그아웃
+        </button>
+      </aside>
+
+      <div className="faq-container">
+        {isFaqModalOpen && (
             <div className="faq-dropdown">
               <h4 style={{ textAlign: "center", marginBottom: "15px" }}>FAQ</h4>
               
@@ -183,11 +207,6 @@ const MyPageLayout = ({refreshGroupList}) => {
             onClick={() => setIsFaqModalOpen(!isFaqModalOpen)}
           />
         </div>
-
-        <button className="logout-btn" onClick={handleLogout}>
-          로그아웃
-        </button>
-      </aside>
 
       <main className="mypage-content">
         <Outlet />

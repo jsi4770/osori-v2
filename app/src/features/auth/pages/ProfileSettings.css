@@ -424,9 +424,21 @@
   }
 
   .ps-stack {
-    gap: 60px; 
+    gap: 60px;
   }
 
+  .ps-card {
+    height: auto;
+    min-height: 0;
+  }
+
+  .ps-danger {
+    height: auto;
+  }
+
+  .ps-scroll-area {
+    max-height: none;
+  }
 }
 
 /* =========================================================

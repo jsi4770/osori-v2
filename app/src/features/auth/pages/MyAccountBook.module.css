@@ -485,3 +485,69 @@ canvas {
     outline: 3px solid rgba(99, 102, 241, 0.30) !important;
     outline-offset: 2px;
 }
+
+@media (max-width: 900px) {
+  .card {
+    flex-direction: column !important;
+    height: auto;
+    padding: 12px;
+    gap: 16px;
+  }
+
+  .left-side,
+  .right-side {
+    flex: none;
+    width: 100%;
+    height: auto;
+  }
+
+  .list-card {
+    padding: 20px !important;
+  }
+
+  .header-title {
+    font-size: 1.3rem;
+  }
+
+  .search-wrapper {
+    flex-wrap: wrap;
+    padding: 12px 16px;
+    border-radius: 20px;
+  }
+
+  .filter-group {
+    flex-wrap: wrap;
+  }
+
+  .search-input {
+    margin-left: 0;
+    flex-basis: 100%;
+  }
+
+  .chart-card {
+    height: 280px;
+    min-height: 280px;
+  }
+
+  .modal-content {
+    padding: 24px !important;
+    border-radius: 24px;
+  }
+
+  .modal-form {
+    grid-template-columns: 1fr !important;
+  }
+
+  .modal-form > div:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .modal-form > div:nth-child(1),
+  .modal-form > div:nth-child(3) {
+    max-width: 100% !important;
+  }
+
+  .modal-radio-group {
+    gap: 20px !important;
+  }
+}
