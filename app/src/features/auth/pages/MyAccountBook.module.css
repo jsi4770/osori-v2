@@ -1,14 +1,4 @@
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-
-:root {
-  --primary-color: #0066ff;
-  --income-color: #2ecc71;
-  --expense-color: #e74c3c;
-  --bg-color: #f8f9fa;
-  --text-main: #2d3436;
-  --text-sub: #636e72;
-  --shared-color: #9b59b6;
-}
+/* 폰트 import 및 CSS 변수(--primary-color 등)는 index.css에서 전역으로 관리 */
 
 .fade-in {
   animation: fadeIn 0.3s ease-in-out;

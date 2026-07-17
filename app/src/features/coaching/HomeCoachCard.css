@@ -23,7 +23,7 @@
 .hcc-report-link {
   border: none;
   background: none;
-  color: #0066ff;
+  color: var(--primary-color);
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
@@ -59,7 +59,7 @@
   font-size: 0.9rem;
   font-weight: 700;
   color: #fff;
-  background: #0066ff;
+  background: var(--primary-color);
   cursor: pointer;
   transition: background 0.15s ease;
 }

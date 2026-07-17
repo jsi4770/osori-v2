@@ -29,6 +29,15 @@
   height: 36px;
   font-size: 1.1rem;
   cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.ccp-back:hover {
+  background: #e4e7ec;
+}
+
+.ccp-back:active {
+  transform: scale(0.94);
 }
 
 .ccp-messages {
@@ -78,7 +87,7 @@
 }
 
 .ccp-bubble.user {
-  background: #0066ff;
+  background: var(--primary-color);
   color: #fff;
   border-bottom-right-radius: 4px;
 }
@@ -104,7 +113,7 @@
 }
 
 .ccp-input:focus {
-  border-color: #0066ff;
+  border-color: var(--primary-color);
 }
 
 .ccp-send {
@@ -113,8 +122,17 @@
   padding: 0 24px;
   font-weight: 700;
   color: #fff;
-  background: #0066ff;
+  background: var(--primary-color);
   cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.ccp-send:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.ccp-send:active:not(:disabled) {
+  transform: scale(0.97);
 }
 
 .ccp-send:disabled {

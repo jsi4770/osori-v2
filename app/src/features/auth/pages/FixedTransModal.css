@@ -127,8 +127,17 @@
 }
 
 .ftmPrimary {
-  background: #111;
+  background: var(--primary-color);
   color: #fff;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.ftmPrimary:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.ftmPrimary:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .ftmPrimary:disabled {

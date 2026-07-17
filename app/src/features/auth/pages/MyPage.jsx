@@ -8,16 +8,9 @@ import transApi from "../../../api/transApi";
 const MyPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const displayName = user?.nickName || user?.nickname || user?.userName || "회원";
-  const email = user?.email || "";
-
   const [, setIsLoading] = useState(true);
   const [currentDate] = useState(new Date());
   const [transactions, setTransactions] = useState([]);
-
-  const serverAvatarUrl = user?.changeName
-    ? `http://13.239.33.140:8080/osori/upload/profiles/${user.changeName}`
-    : "";
 
   //내 가계부 지출액 표시 함수
   const loadData = async () => {
@@ -74,28 +67,9 @@ const MyPage = () => {
   return (
     <main className="fade-in">
       <header className="content-header">
-        <h2>마이페이지</h2>
+        <h2>홈</h2>
         <p className="welcome-text">내 지갑 속 소비 흐름을 한눈에 정리해 드릴게요.</p>
       </header>
-
-      <section className="profile-fixed-card">
-        <div className="info-card profile-main">
-          <div className="profile-section">
-            <div className="profile-img ps-avatar">
-              {serverAvatarUrl ? (
-                <img src={serverAvatarUrl} alt="프로필" />
-              ) : (
-                <span aria-hidden>👤</span>
-              )}
-            </div>
-
-            <div className="profile-details">
-              <h3>{displayName}</h3>
-              <p>{email}</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <div className="account-book-grid">
         <div className="info-card"

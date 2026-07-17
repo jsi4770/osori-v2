@@ -80,7 +80,7 @@
   font-size: 0.85rem;
   font-weight: 700;
   color: #fff;
-  background: #0066ff;
+  background: var(--primary-color);
   cursor: pointer;
 }
 

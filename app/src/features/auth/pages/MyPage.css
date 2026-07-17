@@ -21,12 +21,12 @@
   z-index: 1001; /* 다른 요소보다 위에 오도록 */
 }
 
-/* 모바일 전용 상단바 (햄버거 + 로고) — 데스크톱에서는 숨김 */
+/* 모바일 전용 상단바(로고 + 프로필) / 하단 탭바 — 데스크톱에서는 숨김 */
 .mobile-topbar {
   display: none;
 }
 
-.mobile-backdrop {
+.mobile-bottom-nav {
   display: none;
 }
 
@@ -35,55 +35,113 @@
     padding-top: 0;
   }
 
+  /* 데스크톱 사이드바는 숨기고 상단바 + 하단 탭바로 대체 */
+  .sidebar {
+    display: none;
+  }
+
   .mobile-topbar {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 14px;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     height: 56px;
-    padding: 0 16px;
+    padding: 0 18px;
     background: white;
     border-bottom: 1px solid #eee;
     z-index: 1100;
   }
 
-  .mobile-menu-btn {
-    border: none;
-    background: none;
-    font-size: 1.4rem;
-    line-height: 1;
-    padding: 6px 8px;
-    cursor: pointer;
-  }
-
   .mobile-topbar-logo {
     font-weight: 800;
+    letter-spacing: 0.5px;
     cursor: pointer;
   }
 
-  .mobile-backdrop {
-    display: block;
+  .mobile-profile-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    background: none;
+    padding: 4px 6px;
+    border-radius: 20px;
+    cursor: pointer;
+    max-width: 55%;
+  }
+
+  .mobile-profile-chip:hover {
+    background: #f5f6f8;
+  }
+
+  .mobile-profile-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #eef2ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+  }
+
+  .mobile-profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .mobile-profile-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mobile-bottom-nav {
+    display: flex;
     position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 1150;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    border-top: 1px solid #eee;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    z-index: 1100;
   }
 
-  .sidebar {
-    top: 0;
-    width: 78%;
-    max-width: 280px;
-    transform: translateX(-100%);
-    transition: transform 0.25s ease;
-    z-index: 1200;
-    padding-top: 20px;
+  .mbn-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 8px 0 6px;
+    color: #999;
+    text-decoration: none;
   }
 
-  .sidebar.mobile-open {
-    transform: translateX(0);
+  .mbn-icon {
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+
+  .mbn-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+  }
+
+  .mbn-item.active {
+    color: var(--primary-color);
   }
 }
 
@@ -126,11 +184,11 @@
 
 .menu-item:hover {
   background-color: #f0f4ff;
-  color: #0066ff;
+  color: var(--primary-color);
 }
 
 .menu-item.active {
-  background-color: #0066ff;
+  background-color: var(--primary-color);
   color: white;
 }
 
@@ -236,7 +294,7 @@
 }
 
 .accept-btn:hover {
-  background-color: #0066ff;
+  background-color: var(--primary-color);
   color: white;
 }
 
@@ -273,6 +331,34 @@
     margin-left: 0;
     padding: 16px;
     padding-top: 72px; /* 고정된 모바일 상단바(56px) + 여백 */
+    padding-bottom: 84px; /* 고정된 하단 탭바 높이 + 여백 */
+  }
+
+  .content-header {
+    padding: 8px 4px 12px;
+  }
+
+  .content-header h2 {
+    font-size: 1.35rem;
+  }
+
+  .content-header .welcome-text,
+  .content-header .ps-sub {
+    font-size: 0.9rem;
+  }
+
+  .info-card {
+    padding: 20px;
+    max-height: none;
+    min-height: 0;
+  }
+
+  .amount {
+    font-size: 26px;
+  }
+
+  .faq-container {
+    bottom: 76px; /* 하단 탭바 위로 띄움 */
   }
 }
 
@@ -513,7 +599,7 @@
   margin-bottom: 20px;
   background: white;
   border-radius: 24px;
-  border:3px solid #0066ff;
+  border:3px solid var(--primary-color);
   width: 250px;
   display: flex;
   flex-direction: column;
@@ -527,7 +613,7 @@
   left: 30px; 
   border-width: 15px 12px 0;
   border-style: solid;
-  border-color: #0066ff transparent transparent;
+  border-color: var(--primary-color) transparent transparent;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   display: block;
@@ -564,7 +650,7 @@
 
 .chat-row.user { justify-content: flex-end; }
 .chat-row.user .chat-bubble {
-  background-color: #0066ff;
+  background-color: var(--primary-color);
   color: white;
   border-radius: 15px 15px 0 15px; 
 }
@@ -574,9 +660,9 @@
   text-align: left;
   padding: 8px 12px;
   margin-top: 6px;
-  border: 1px solid #0066ff;
+  border: 1px solid var(--primary-color);
   background: white;
-  color: #0066ff;
+  color: var(--primary-color);
   border-radius: 20px;
   cursor: pointer;
   font-size: 13px;
@@ -587,7 +673,7 @@
   width: 88%;
   padding: 8px 12px;
   margin-top: 6px;
-  border: 1px solid #0066ff;
+  border: 1px solid var(--primary-color);
   background: white;
   border-radius: 20px;
   font-size: 13px;

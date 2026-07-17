@@ -1,9 +1,22 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
 :root {
+  /* 포인트 컬러: 진한 파랑(#0066ff). --primary-hover는 hover/active용으로 한 단계 더 진하게 */
+  --primary-color: #0066ff;
+  --primary-hover: #0052cc;
+  --primary-tint: #eaf1ff;
+  --income-color: #2ecc71;
+  --expense-color: #e74c3c;
+  --shared-color: #9b59b6;
+  --bg-color: #f8f9fa;
+  --text-main: #2d3436;
+  --text-sub: #636e72;
+
   font-family: 'Pretendard', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color-scheme: light dark;
-  color: #213547;
+  color-scheme: light;
+  color: var(--text-main);
   background-color: #ffffff;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,15 +26,26 @@
 
 body {
   margin: 0;
-  display: block; 
-  min-width: 100%; 
+  display: block;
+  min-width: 100%;
   min-height: 100vh;
+  font-family: 'Pretendard', sans-serif;
+  background-color: var(--bg-color);
+}
+
+/* 폼 요소는 기본적으로 body의 font-family를 상속받지 않으므로 명시적으로 강제 */
+button, input, select, textarea {
+  font-family: inherit;
 }
 
 a {
   font-weight: 500;
-  color: #0066ff;
+  color: var(--primary-color);
   text-decoration: none;
+}
+
+a:hover {
+  color: var(--primary-hover);
 }
 
 button {
@@ -34,8 +58,17 @@ button {
   transition: all 0.2s;
 }
 
-a:hover {
-  color: #535bf2;
+button:hover {
+  border-color: var(--primary-color);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+button:focus-visible {
+  outline: 3px solid var(--primary-tint);
+  outline-offset: 2px;
 }
 
 h1 {
@@ -43,19 +76,13 @@ h1 {
   line-height: 1.1;
 }
 
-button:hover {
-  border-color: #646cff;
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
 }
 
-button:focus,button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* 네이버, 카카오 그림 가운데 정렬하기 위한 도구*/

@@ -8,9 +8,8 @@ import { faqApi } from "../../../api/faqApi";
 
 const MyPageLayout = ({refreshGroupList}) => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const scrollRef = useRef();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isFaqModalOpen,setIsFaqModalOpen] =useState(false);
   const [faqList, setFaqList] = useState([]);
   const [newQuestion,setNewQuestion] = useState('');
@@ -81,57 +80,58 @@ const MyPageLayout = ({refreshGroupList}) => {
   };
 
 
-  const closeMobileMenu = () => setIsMobileMenuOpen(false);
+  const apiBase = import.meta.env.VITE_API_BASE_URL || "/fincoach";
+  const displayName = user?.nickName || user?.nickname || user?.userName || "회원";
+  const avatarUrl = user?.changeName ? `${apiBase}/upload/profiles/${user.changeName}` : "";
 
   return (
     <div className="mypage-container">
       <div className="mobile-topbar">
-        <button
-          className="mobile-menu-btn"
-          onClick={() => setIsMobileMenuOpen(true)}
-          aria-label="메뉴 열기"
-        >
-          ☰
-        </button>
         <div className="mobile-topbar-logo" onClick={() => navigate("/")}>OSORI</div>
+
+        <button
+          className="mobile-profile-chip"
+          onClick={() => navigate("/mypage/profileSettings")}
+          aria-label="프로필 설정으로 이동"
+        >
+          <span className="mobile-profile-avatar">
+            {avatarUrl ? <img src={avatarUrl} alt="" /> : <span aria-hidden>👤</span>}
+          </span>
+          <span className="mobile-profile-name">{displayName}</span>
+        </button>
       </div>
 
-      {isMobileMenuOpen && (
-        <div className="mobile-backdrop" onClick={closeMobileMenu} />
-      )}
-
-      <aside className={`sidebar ${isMobileMenuOpen ? "mobile-open" : ""}`}>
+      <aside className="sidebar">
         <div className="logo" onClick={() => navigate("/")} style={{ cursor: "pointer", padding: "0 20px 30px" }}>
           OSORI
         </div>
 
         <ul className="sidebar-menu">
           <li>
-            <NavLink to="/mypage/assets" onClick={closeMobileMenu} className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
-              <span>💰</span> 자산관리
+            <NavLink to="/mypage/assets" className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
+              <span>🏠</span> 홈
             </NavLink>
           </li>
           <li>
-            <NavLink to="/mypage/calendarView" onClick={closeMobileMenu} className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
+            <NavLink to="/mypage/calendarView" className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
               <span>📅</span> 캘린더뷰
             </NavLink>
           </li>
           <li>
             <NavLink
               to="/mypage/fixedTrans"
-              onClick={closeMobileMenu}
               className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}
             >
               <span>📌</span> 고정지출
             </NavLink>
           </li>
           <li>
-            <NavLink to="/mypage/coaching/report" onClick={closeMobileMenu} className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
+            <NavLink to="/mypage/coaching/report" className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
               <span>📈</span> 성장 리포트
             </NavLink>
           </li>
           <li>
-            <NavLink to="/mypage/profileSettings" onClick={closeMobileMenu} className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
+            <NavLink to="/mypage/profileSettings" className={({ isActive }) => `menu-item ${isActive ? "active" : ""}`}>
               <span>⚙️</span> 프로필 설정
             </NavLink>
           </li>
@@ -142,6 +142,29 @@ const MyPageLayout = ({refreshGroupList}) => {
           로그아웃
         </button>
       </aside>
+
+      <nav className="mobile-bottom-nav">
+        <NavLink to="/mypage/assets" className={({ isActive }) => `mbn-item ${isActive ? "active" : ""}`}>
+          <span className="mbn-icon">🏠</span>
+          <span className="mbn-label">홈</span>
+        </NavLink>
+        <NavLink to="/mypage/calendarView" className={({ isActive }) => `mbn-item ${isActive ? "active" : ""}`}>
+          <span className="mbn-icon">📅</span>
+          <span className="mbn-label">캘린더</span>
+        </NavLink>
+        <NavLink to="/mypage/fixedTrans" className={({ isActive }) => `mbn-item ${isActive ? "active" : ""}`}>
+          <span className="mbn-icon">📌</span>
+          <span className="mbn-label">고정지출</span>
+        </NavLink>
+        <NavLink to="/mypage/coaching/report" className={({ isActive }) => `mbn-item ${isActive ? "active" : ""}`}>
+          <span className="mbn-icon">📈</span>
+          <span className="mbn-label">리포트</span>
+        </NavLink>
+        <NavLink to="/mypage/profileSettings" className={({ isActive }) => `mbn-item ${isActive ? "active" : ""}`}>
+          <span className="mbn-icon">⚙️</span>
+          <span className="mbn-label">설정</span>
+        </NavLink>
+      </nav>
 
       <div className="faq-container">
         {isFaqModalOpen && (

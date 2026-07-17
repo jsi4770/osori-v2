@@ -164,7 +164,7 @@
 }
 
 .ps-input:focus {
-  border-color: #0066ff;
+  border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.12);
 }
 
@@ -177,7 +177,7 @@
 .ps-link-btn {
   border: none;
   background: transparent;
-  color: #0066ff;
+  color: var(--primary-color);
   font-weight: 800;
   cursor: pointer;
 }
@@ -223,7 +223,7 @@
   padding: 14px 18px;
   border-radius: 14px;
   border: none;
-  background: #0066ff;
+  background: var(--primary-color);
   color: #fff;
   font-weight: 900;
   cursor: pointer;
