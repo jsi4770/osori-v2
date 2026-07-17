@@ -654,44 +654,21 @@ function ProfileSettings() {
           </div>
         </section>
 
-        {/* 계정 관리: 로그아웃(중립) + 위험 구역(회원탈퇴)을 한 카드 안에서 구분 */}
-        <section className="ps-section">
-          <h2 className="ps-section-title">계정 관리</h2>
-
-          <div className="info-card ps-account-mgmt">
-            <div className="ps-mgmt-row">
-              <div className="ps-mgmt-info">
-                <div className="ps-mgmt-title">로그아웃</div>
-                <div className="ps-mgmt-desc">
-                  이 기기에서 로그아웃합니다. 다시 이용하려면 로그인이 필요합니다.
-                </div>
-              </div>
-              <button
-                type="button"
-                className="ps-logout-btn"
-                onClick={handleLogout}
-                disabled={isLoggingOut}
-              >
-                {isLoggingOut ? "로그아웃 중..." : "로그아웃"}
-              </button>
-            </div>
-
-            <div className="ps-danger-zone">
-              <div className="ps-danger-zone-label">위험 구역</div>
-              <div className="ps-mgmt-row">
-                <div className="ps-mgmt-info">
-                  <div className="ps-mgmt-title ps-danger-title">회원탈퇴</div>
-                  <div className="ps-mgmt-desc">
-                    회원 탈퇴 시 계정 정보 및 데이터는 복구할 수 없습니다. (서버 정책에 따라 비활성화 처리될 수 있습니다.)
-                  </div>
-                </div>
-                <button type="button" className="ps-danger-btn" onClick={openWithdraw}>
-                  회원탈퇴
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* 계정 관리: 별도 카드/설명 없이 작은 텍스트 링크로만 노출 */}
+        <div className="ps-account-links">
+          <button
+            type="button"
+            className="ps-account-link"
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+          >
+            {isLoggingOut ? "로그아웃 중..." : "로그아웃"}
+          </button>
+          <span className="ps-account-link-sep">·</span>
+          <button type="button" className="ps-account-link" onClick={openWithdraw}>
+            회원탈퇴
+          </button>
+        </div>
       </div>
 
       {isWithdrawOpen && (
