@@ -2,7 +2,6 @@
   width: 100%;
   min-height: calc(100vh - 70px);
   background-color: #f8f9fa;
-  padding: 0px 20px 50px 20px; 
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -13,7 +12,7 @@
 .expense-card {
   position: relative;
   width: 100%;
-  max-width: 1100px;
+  max-width: none;
   background-color: #ffffff;
   border-radius: 24px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.05);

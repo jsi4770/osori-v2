@@ -17,7 +17,6 @@ body {
   width: 100% !important;
   max-width: none !important;
   height: calc(100vh - 40px);
-  padding: 20px;
   box-sizing: border-box;
   background: transparent;
 }
@@ -480,7 +479,6 @@ canvas {
   .card {
     flex-direction: column !important;
     height: auto;
-    padding: 12px;
     gap: 16px;
   }
 
