@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import styles from "./LoginPage.module.css";
 import { authApi } from "../../../api/authApi";
@@ -18,6 +18,17 @@ export default function LoginPage() {
     password: "",
     remember: false,
   });
+
+  const pwRef = useRef(null);
+
+  // 아이디 입력창에서 Enter → 곧바로 로그인하지 않고 비밀번호 입력창으로 포커스 이동.
+  // 비밀번호 입력창의 Enter는 폼 기본 동작(submit)이 그대로 로그인 실행.
+  const onLoginIdKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      pwRef.current?.focus();
+    }
+  };
 
   useEffect(() => {
     const fromRegisterLoginId = location.state?.loginId;
@@ -98,6 +109,7 @@ export default function LoginPage() {
             name="loginId"
             value={form.loginId}
             onChange={onChange}
+            onKeyDown={onLoginIdKeyDown}
             placeholder="ID"
             autoComplete="username"
           />
@@ -106,6 +118,7 @@ export default function LoginPage() {
         <div className={styles.field}>
           <div className={styles.label}>비밀번호</div>
           <input
+            ref={pwRef}
             className={styles.input}
             type="password"
             name="password"

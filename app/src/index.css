@@ -24,6 +24,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+  /* iOS가 가로모드 등에서 글자를 임의로 키우지 않도록 고정 */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
   display: block;
@@ -31,6 +37,10 @@ body {
   min-height: 100vh;
   font-family: 'Pretendard', sans-serif;
   background-color: var(--bg-color);
+  /* 더블탭 확대(줌) 제스처 비활성화 — 핀치 줌은 viewport 메타로 차단 */
+  touch-action: manipulation;
+  /* 가로 넘침으로 인한 초기 확대/스크롤 방지 */
+  overflow-x: hidden;
 }
 
 /* 폼 요소는 기본적으로 body의 font-family를 상속받지 않으므로 명시적으로 강제 */

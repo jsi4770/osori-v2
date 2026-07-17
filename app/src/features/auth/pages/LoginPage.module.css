@@ -1,5 +1,8 @@
 .wrap{
   width: 100%;
+  /* box-sizing이 없으면 좌우 패딩(36px)이 width:100%에 더해져
+     부모보다 넓어지고 오른쪽으로 넘쳐 우측 치우침이 생김 */
+  box-sizing: border-box;
   background: #fff;
   max-width: 520px;
   margin: 0 auto;
