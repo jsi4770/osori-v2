@@ -110,6 +110,40 @@
   overflow: hidden;
 }
 
+.calendar-slide-wrap {
+  width: 100%;
+}
+
+.calendar-slide-next {
+  animation: calendarSlideFromRight 0.25s ease-out;
+}
+
+.calendar-slide-prev {
+  animation: calendarSlideFromLeft 0.25s ease-out;
+}
+
+@keyframes calendarSlideFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes calendarSlideFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 .detail-card {
   flex: 0 0 320px;
   min-width: 0;
@@ -279,7 +313,7 @@
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  height: 26px; /* .detail-title(날짜 제목)과 높이를 맞춤 */
+  height: 22px; /* .detail-title(날짜 제목)보다 살짝 낮춰 시각적으로 맞춤 */
   border: none;
   border-radius: 8px;
   padding: 0 12px;

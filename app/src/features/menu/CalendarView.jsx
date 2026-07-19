@@ -229,6 +229,8 @@ function CalendarView({ currentDate, setCurrentDate }) {
   // ---- 캘린더 터치 스와이프로 월 이동 ----
   const touchStartRef = useRef({ x: 0, y: 0 });
   const SWIPE_THRESHOLD = 50; // 이 이상 가로로 움직여야 스와이프로 인정(오터치 방지)
+  // 스와이프 방향에 따라 달력이 좌/우로 넘어가는 모션을 줄 때 쓰는 상태('next' | 'prev' | null)
+  const [swipeDir, setSwipeDir] = useState(null);
 
   const handleCalendarTouchStart = (e) => {
     const t = e.touches[0];
@@ -244,6 +246,7 @@ function CalendarView({ currentDate, setCurrentDate }) {
 
     const next = new Date(currentDate);
     next.setMonth(next.getMonth() + (dx < 0 ? 1 : -1));
+    setSwipeDir(dx < 0 ? 'next' : 'prev');
     setCurrentDate(next);
   };
 
@@ -255,27 +258,32 @@ function CalendarView({ currentDate, setCurrentDate }) {
           onTouchStart={handleCalendarTouchStart}
           onTouchEnd={handleCalendarTouchEnd}
         >
-          <Calendar
-            onClickDay={(date) => { setSelectedDate(date.toLocaleDateString('en-CA')); setListMode('day'); }}
-            tileContent={renderTileContent}
-            formatDay={(locale, date) => date.getDate()}
-            activeStartDate={currentDate}
-            onActiveStartDateChange={({ activeStartDate }) => setCurrentDate(activeStartDate)}
-            calendarType="gregory"
-            tileClassName={getTileClassName}
-            navigationLabel={({ label, view }) => (
-              <span className="calendar-nav-label">
-                {label}
-                {/* 연/연대 보기로 드릴업했을 때는 "이번 달" 맥락이 안 맞으므로 월 보기에서만 표시 */}
-                {view === 'month' && (
-                  <span className="calendar-nav-summary">
-                    {' · 총지출 '}
-                    <strong>{monthlyTotalExpense.toLocaleString()}</strong>원
-                  </span>
-                )}
-              </span>
-            )}
-          />
+          <div
+            key={`${currentDate.getFullYear()}-${currentDate.getMonth()}`}
+            className={`calendar-slide-wrap ${swipeDir ? `calendar-slide-${swipeDir}` : ''}`}
+          >
+            <Calendar
+              onClickDay={(date) => { setSelectedDate(date.toLocaleDateString('en-CA')); setListMode('day'); }}
+              tileContent={renderTileContent}
+              formatDay={(locale, date) => date.getDate()}
+              activeStartDate={currentDate}
+              onActiveStartDateChange={({ activeStartDate }) => setCurrentDate(activeStartDate)}
+              calendarType="gregory"
+              tileClassName={getTileClassName}
+              navigationLabel={({ label, view }) => (
+                <span className="calendar-nav-label">
+                  {label}
+                  {/* 연/연대 보기로 드릴업했을 때는 "이번 달" 맥락이 안 맞으므로 월 보기에서만 표시 */}
+                  {view === 'month' && (
+                    <span className="calendar-nav-summary">
+                      {' 총지출 '}
+                      <strong>{monthlyTotalExpense.toLocaleString()}</strong>원
+                    </span>
+                  )}
+                </span>
+              )}
+            />
+          </div>
         </div>
 
         <div className="detail-card">
