@@ -282,6 +282,13 @@ function ProfileSettings() {
       setUser(updatedUserFromServer);
       localStorage.setItem("user", JSON.stringify(updatedUserFromServer));
 
+      // 저장 후에는 서버가 확정한 changeName 기반 URL을 보여줘야 하므로,
+      // 로컬 blob 미리보기(previewUrl)는 정리한다.
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      setUploadFile(null);
+      setPreviewUrl("");
+      setIsImageRemoved(false);
+
       if (isPasswordEditing) {
         await userApi.changePassword({ currentPassword, newPassword });
       }
@@ -391,8 +398,9 @@ function ProfileSettings() {
   // 상단 프로필 표시는 "입력값(draft)"이 아니라 "서버 저장값(initial)"만
   const displayName = (initial.displayName || "회원").trim();
   const displayEmail = (initial.email || "").trim();
+  const apiBase = import.meta.env.VITE_API_BASE_URL || "/fincoach";
   const serverAvatarUrl = user?.changeName
-    ? `http://localhost:8080/osori/upload/profiles/${user.changeName}`
+    ? `${apiBase}/upload/profiles/${user.changeName}`
     : "";
 
   // 탈퇴 버튼 활성화 조건
