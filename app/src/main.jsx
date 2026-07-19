@@ -3,9 +3,7 @@ import React from "react"
 import { createRoot } from "react-dom/client";
 import { registerSW } from "virtual:pwa-register";
 import "./index.css";
-import App from "./App.jsx";
-import { AuthProvider } from "./context/AuthContext.jsx";
-import { ThemeProvider } from "./context/ThemeContext.jsx";
+import Root from "./Root.jsx";
 import { preventZoom } from "./preventZoom";
 
 registerSW({ immediate: true });
@@ -15,11 +13,7 @@ preventZoom();
 
 createRoot(document.getElementById("root")).render(
   //<StrictMode>
-    <ThemeProvider>
-      <AuthProvider>
-        <App/>
-      </AuthProvider>
-    </ThemeProvider>
+    <Root />
   //</StrictMode>
 );
 
