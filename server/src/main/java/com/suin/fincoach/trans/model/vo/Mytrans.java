@@ -28,5 +28,6 @@ public class Mytrans {
 	private Integer groupBId; //
 	private String memo; //메모
 	private int userId; //사용자id
+	private String excludeAnalysis; //분석(이상치 탐지/그래프/코칭)에서 제외 여부 - Y/N
 
 }

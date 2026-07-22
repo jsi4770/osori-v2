@@ -5,16 +5,21 @@
   /* .mypage-container의 상단 패딩(70px) + .mypage-content의 하단 패딩(40px)만큼 빼서
      입력창까지 뷰포트 안에 딱 들어오게 함(별도 스크롤 없이 카톡처럼 하단 고정) */
   height: calc(100vh - 110px);
+  height: calc(100dvh - 110px); /* 모바일 브라우저 주소창 유무로 100vh가 흔들리는 것 보정 */
   max-width: 720px;
   margin: 0 auto;
   padding: 12px;
+  padding-top: 0;
   box-sizing: border-box;
 }
 
 @media (max-width: 900px) {
   .coach-chat-page {
-    /* 모바일 상단바(72px) + 하단 탭바 예약 영역(84px) */
-    height: calc(100vh - 156px);
+    /* .mypage-content와 정확히 같은 식을 써야 함 — 노치가 있는 아이폰은
+       safe-area-inset-top이 44~59px이라, 여기서 안 더하면 실제 화면보다
+       박스가 커져서(입력창까지 스크롤해야 보임) 실기기에서만 깨진다. */
+    height: calc(100vh - (72px + env(safe-area-inset-top, 0px)) - 84px);
+    height: calc(100dvh - (72px + env(safe-area-inset-top, 0px)) - 84px);
   }
 }
 

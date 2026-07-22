@@ -59,8 +59,8 @@ function MonthlyTrendChart({ transactions = [], currentDate }) {
   const targetMonth = currentDate.getMonth();
 
   // 지출 내역을 바탕으로 차트 표시 월수 결정 (2개월 ~ 6개월)
-  const expenseTransactions = transactions.filter(t => 
-    t.type?.toUpperCase() === 'OUT' || t.type?.toUpperCase() === 'EXPENSE'
+  const expenseTransactions = transactions.filter(t =>
+    (t.type?.toUpperCase() === 'OUT' || t.type?.toUpperCase() === 'EXPENSE') && t.excludeAnalysis !== 'Y'
   );
 
   let startMonthOffset = 5; // 기본 6개월치

@@ -73,6 +73,7 @@ function CalendarView({ currentDate, setCurrentDate }) {
           type: (t.type || t.TYPE || 'OUT').toUpperCase(),
           amount: Number(t.originalAmount || t.ORIGINAL_AMOUNT || t.amount || 0),
           memo: t.memo || t.MEMO || '',
+          excludeAnalysis: (t.excludeAnalysis || t.EXCLUDE_ANALYSIS) === 'Y' ? 'Y' : 'N',
         }));
         setTransactions(mapped);
       })
@@ -160,7 +161,7 @@ function CalendarView({ currentDate, setCurrentDate }) {
     return transactions
       .filter(item => {
         const itemDate = new Date(item.date);
-        return item.type === 'OUT' && itemDate.getFullYear() === year && itemDate.getMonth() === month;
+        return item.type === 'OUT' && item.excludeAnalysis !== 'Y' && itemDate.getFullYear() === year && itemDate.getMonth() === month;
       })
       .reduce((sum, item) => sum + item.amount, 0);
   }, [transactions, currentDate]);
@@ -204,6 +205,7 @@ function CalendarView({ currentDate, setCurrentDate }) {
         memo: updated.memo || '',
         userId: Number(userId),
         isShared: 'N',
+        excludeAnalysis: updated.excludeAnalysis === 'Y' ? 'Y' : 'N',
       });
       alert("수정되었습니다.");
       setIsModalOpen(false);
@@ -327,9 +329,12 @@ function CalendarView({ currentDate, setCurrentDate }) {
                   <li key={item.id} className="ledger-item">
                     <div className="ledger-item-main" onClick={() => openView(item)}>
                       <div className="ledger-item-title">
-                        {item.text}
+                        <span className="ledger-item-title-text">{item.text}</span>
                         {item.memo === FIXED_AUTO_MEMO && (
                           <span className="ledger-fixed-badge">고정지출</span>
+                        )}
+                        {item.excludeAnalysis === 'Y' && (
+                          <span className="ledger-exclude-badge">분석 제외</span>
                         )}
                       </div>
                       <div className="ledger-item-sub">

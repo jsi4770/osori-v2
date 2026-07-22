@@ -378,9 +378,17 @@
 }
 
 .ledger-item-title {
+  display: flex;
+  align-items: center;
+  min-width: 0;
   font-weight: bold;
   font-size: 15px;
   color: var(--text-main);
+}
+
+/* 긴 제목은 이 span만 줄임표로 잘리고, 옆의 배지(고정지출/분석 제외)는 항상 온전히 보이게 함 */
+.ledger-item-title-text {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -390,11 +398,26 @@
    이미 실현된 내역이라는 걸 구분하기 위해 문구는 "예정" 없이 "고정지출"만 표기 */
 .ledger-fixed-badge {
   display: inline-block;
+  flex-shrink: 0;
   margin-left: 6px;
   font-size: 11px;
   font-weight: 700;
   color: var(--text-weak);
   border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 1px 6px;
+  vertical-align: middle;
+}
+
+/* "분석에서 제외" 토글이 켜진 내역 표식 — 홈 그래프/AI 코칭 분석에서 빠져있다는 걸 목록에서도 바로 알 수 있게 */
+.ledger-exclude-badge {
+  display: inline-block;
+  flex-shrink: 0;
+  margin-left: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-weak);
+  background: var(--surface-subtle);
   border-radius: 6px;
   padding: 1px 6px;
   vertical-align: middle;

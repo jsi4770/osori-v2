@@ -149,8 +149,78 @@ form {
 }
 
 .input-group:nth-child(5),
+.input-group:nth-child(6),
 .submit-btn {
   grid-column: 1 / -1;
+}
+
+.exclude-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.exclude-toggle-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.exclude-toggle-title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-main);
+}
+
+.exclude-toggle-desc {
+  font-size: 0.82rem;
+  color: var(--text-weak);
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  background-color: var(--border);
+  transition: 0.2s;
+  border-radius: 24px;
+}
+
+.toggle-slider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--surface);
+  transition: 0.2s;
+  border-radius: 50%;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background-color: var(--primary-color);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(18px);
 }
 
 .input-label {

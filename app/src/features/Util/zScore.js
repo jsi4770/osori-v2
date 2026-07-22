@@ -3,6 +3,8 @@
 // 코칭 타겟이 항상 월세/구독료로만 고정되는 문제가 생기므로, 이 두 함수에서는 제외한다.
 export const FIXED_AUTO_MEMO = '고정지출 자동등록';
 const isFixedAuto = (t) => t.memo === FIXED_AUTO_MEMO;
+// 사용자가 "분석에서 제외" 토글을 켠 내역 — 이상치 탐지/코칭 타겟 계산에서 제외한다.
+const isExcluded = (t) => t.excludeAnalysis === 'Y';
 
 const getWitMessage = (category, amount, limit) => {
   const diff = Math.round(amount - limit);
@@ -51,7 +53,7 @@ export const zScore = (transactions, currentDate) => {
   // 1. 과거 월(이번 달 1일 이전) 카테고리별 지출 금액 집계
   const pastByCat = {};
   transactions
-    .filter(t => isOut(t) && !isFixedAuto(t) && parseSafeDate(t.date || t.transDate) < firstOfMonth)
+    .filter(t => isOut(t) && !isFixedAuto(t) && !isExcluded(t) && parseSafeDate(t.date || t.transDate) < firstOfMonth)
     .forEach(t => {
       const cat = t.category || '기타';
       (pastByCat[cat] = pastByCat[cat] || []).push(amountOf(t));
@@ -62,7 +64,7 @@ export const zScore = (transactions, currentDate) => {
   transactions
     .filter(t => {
       const d = parseSafeDate(t.date || t.transDate);
-      return isOut(t) && !isFixedAuto(t) && d.getFullYear() === currentYear && d.getMonth() === currentMonth;
+      return isOut(t) && !isFixedAuto(t) && !isExcluded(t) && d.getFullYear() === currentYear && d.getMonth() === currentMonth;
     })
     .forEach(t => {
       const cat = t.category || '기타';
@@ -138,7 +140,7 @@ export const manualCoachingTarget = (transactions, currentDate) => {
   transactions
     .filter(t => {
       const d = parseSafeDate(t.date || t.transDate);
-      return d.getFullYear() === currentYear && d.getMonth() === currentMonth && t.type?.toUpperCase() === 'OUT' && !isFixedAuto(t);
+      return d.getFullYear() === currentYear && d.getMonth() === currentMonth && t.type?.toUpperCase() === 'OUT' && !isFixedAuto(t) && !isExcluded(t);
     })
     .forEach(t => {
       const cat = t.category || '기타';
@@ -154,7 +156,7 @@ export const manualCoachingTarget = (transactions, currentDate) => {
 
   const pastAmounts = [];
   transactions
-    .filter(t => parseSafeDate(t.date || t.transDate) < new Date(currentYear, currentMonth, 1) && t.type?.toUpperCase() === 'OUT' && !isFixedAuto(t) && (t.category || '기타') === topCategory)
+    .filter(t => parseSafeDate(t.date || t.transDate) < new Date(currentYear, currentMonth, 1) && t.type?.toUpperCase() === 'OUT' && !isFixedAuto(t) && !isExcluded(t) && (t.category || '기타') === topCategory)
     .forEach(t => pastAmounts.push(Math.abs(t.amount || t.originalAmount || 0)));
 
   const avgAmount = pastAmounts.length >= 3

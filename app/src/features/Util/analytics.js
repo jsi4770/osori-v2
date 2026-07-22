@@ -55,7 +55,7 @@ export const getCategoryMonthlyTotals = (transactions, currentDate) => {
   const targetMonth = currentDate.getMonth();
 
   const expenseTransactions = transactions.filter(
-    (t) => t.type?.toUpperCase() === 'OUT' || t.type?.toUpperCase() === 'EXPENSE'
+    (t) => (t.type?.toUpperCase() === 'OUT' || t.type?.toUpperCase() === 'EXPENSE') && t.excludeAnalysis !== 'Y'
   );
   if (expenseTransactions.length === 0) return [];
 

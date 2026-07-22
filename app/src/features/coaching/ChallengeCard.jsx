@@ -14,6 +14,7 @@ const computeProgress = (challenge, transactions) => {
 
   const relevant = transactions.filter((t) => {
     if (t.type?.toUpperCase() !== 'OUT') return false;
+    if (t.excludeAnalysis === 'Y') return false;
     if (challenge.category && (t.category || '기타') !== challenge.category) return false;
     const d = new Date(t.date);
     return d >= start && d <= end;

@@ -30,7 +30,8 @@ const ExpenseForm = () => {
     title: '',
     originalAmount: '',
     category: EXPENSE_CATEGORIES[0],
-    memo: ''
+    memo: '',
+    excludeAnalysis: 'N'
   });
 
   const handleTypeToggle = (type) => {
@@ -210,6 +211,21 @@ const ExpenseForm = () => {
           <div className="input-group"><label className="input-label">금액</label><div className="amount-wrapper"><input type="number" name="originalAmount" className="input-field" placeholder="0" value={formData.originalAmount} onChange={handleChange} min="0" required /><span className="currency-unit">원</span></div></div>
           <div className="input-group"><label className="input-label">카테고리</label><select name="category" className="input-field" value={formData.category} onChange={handleChange}>{currentCategories.map((cat, index) => <option key={index} value={cat}>{cat}</option>)}</select></div>
           <div className="input-group"><label className="input-label">메모</label><textarea name="memo" className="input-field" placeholder="내용을 입력하세요 (선택)" value={formData.memo} onChange={handleChange}></textarea></div>
+
+          <div className="input-group exclude-toggle-row">
+            <div className="exclude-toggle-label">
+              <span className="exclude-toggle-title">분석에서 제외</span>
+              <span className="exclude-toggle-desc">홈 그래프·AI 코칭 분석에 이 내역을 포함하지 않아요</span>
+            </div>
+            <label className="toggle-switch">
+              <input
+                type="checkbox"
+                checked={formData.excludeAnalysis === 'Y'}
+                onChange={(e) => setFormData(prev => ({ ...prev, excludeAnalysis: e.target.checked ? 'Y' : 'N' }))}
+              />
+              <span className="toggle-slider" />
+            </label>
+          </div>
 
           <button type="submit" className={`submit-btn ${formData.type === '지출' ? 'expense-mode' : ''}`}>
             {formData.type === '수입' ? '수입 등록하기' : '지출 등록하기'}

@@ -40,6 +40,7 @@ const HomeInsightCard = ({ transactions = [], currentDate, isLoading = false }) 
     const totals = {};
     transactions.forEach((t) => {
       if (t.type?.toUpperCase() !== 'OUT') return;
+      if (t.excludeAnalysis === 'Y') return;
       const d = new Date(t.date);
       if (d.getFullYear() !== year || d.getMonth() !== month) return;
       const cat = t.category || '기타';

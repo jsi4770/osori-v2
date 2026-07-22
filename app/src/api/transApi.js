@@ -31,6 +31,11 @@ export const transApi = {
         return response.data;
     },
 
+    updateExcludeAnalysis: async (transId, userId, excludeAnalysis) => {
+        const response = await api.put('/trans/excludeAnalysis', { transId, userId, excludeAnalysis });
+        return response.data;
+    },
+
     recentTrans: async (userId) =>{
         const response = await api.get(`/trans/recentTrans/${userId}`);
         return response.data;

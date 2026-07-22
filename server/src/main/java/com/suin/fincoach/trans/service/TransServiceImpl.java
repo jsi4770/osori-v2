@@ -37,6 +37,12 @@ public class TransServiceImpl implements TransService{
 	}
 
 	@Override
+	public int updateExcludeAnalysis(Mytrans mt) {
+
+		return dao.updateExcludeAnalysis(sqlSession,mt);
+	}
+
+	@Override
 	public int deleteTrans(int transId) {
 
 		return dao.deleteTrans(sqlSession,transId);

@@ -36,6 +36,9 @@ public class TransController {
 		if (mt.getIsShared() == null) {
 	        mt.setIsShared("N");
 	    }
+		if (mt.getExcludeAnalysis() == null) {
+	        mt.setExcludeAnalysis("N");
+	    }
 
 		int result = service.myTransSave(mt);
 
@@ -61,6 +64,18 @@ public class TransController {
 			return ResponseEntity.ok("게시글 수정 성공");
 		} else {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 정보 수정 실패!");
+		}
+	}
+
+	@PutMapping("/excludeAnalysis")
+	public ResponseEntity<?> updateExcludeAnalysis(@RequestBody Mytrans mt) {
+
+		int result = service.updateExcludeAnalysis(mt);
+
+		if (result > 0) {
+			return ResponseEntity.ok("분석 제외 설정 변경 성공");
+		} else {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("분석 제외 설정 변경 실패!");
 		}
 	}
 

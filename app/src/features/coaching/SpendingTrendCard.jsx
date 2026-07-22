@@ -21,6 +21,7 @@ const normalizeTransactions = (rawList) => (rawList || []).map((item) => {
     date: formattedDate,
     type: item.type || item.TYPE,
     category: item.category || item.CATEGORY || '기타',
+    excludeAnalysis: (item.excludeAnalysis || item.EXCLUDE_ANALYSIS) === 'Y' ? 'Y' : 'N',
   };
 });
 

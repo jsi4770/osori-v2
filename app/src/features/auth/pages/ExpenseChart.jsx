@@ -33,7 +33,8 @@ function ExpenseChart({ transactions = [], currentDate }) {
 
   const expenses = transactions.filter(t =>
     t.type?.toUpperCase() === 'OUT' &&
-    t.date.startsWith(targetYM)
+    t.date.startsWith(targetYM) &&
+    t.excludeAnalysis !== 'Y'
   );
 
   const analysisData = expenses.reduce((acc, curr) => {

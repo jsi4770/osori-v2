@@ -67,6 +67,7 @@ const MyPage = () => {
             type: item.type || item.TYPE,
             category: item.category || item.CATEGORY || "기타",
             memo: item.memo || item.MEMO || "",
+            excludeAnalysis: (item.excludeAnalysis || item.EXCLUDE_ANALYSIS) === "Y" ? "Y" : "N",
           };
         });
         setTransactions(mappedData);
@@ -102,11 +103,12 @@ const MyPage = () => {
           month = d.getMonth();
         }
 
-        // 이번 달 지출(OUT)만 필터링
+        // 이번 달 지출(OUT)만 필터링 — "분석에서 제외" 토글이 켜진 내역은 이 합계에도 포함하지 않는다
         return (
           year === currentYear &&
           month === currentMonth &&
-          t.type?.toUpperCase() === 'OUT'
+          t.type?.toUpperCase() === 'OUT' &&
+          t.excludeAnalysis !== 'Y'
         );
       })
       .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);

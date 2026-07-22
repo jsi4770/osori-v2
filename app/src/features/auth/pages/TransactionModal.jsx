@@ -8,7 +8,7 @@ export default function TransactionModal({ isOpen, type, transaction, onClose, o
   const today = new Date().toISOString().split("T")[0];
 
   const [formData, setFormData] = useState({
-    text: "", amount: 0, date: "", category: "기타", memo: "", type: "OUT",
+    text: "", amount: 0, date: "", category: "기타", memo: "", type: "OUT", excludeAnalysis: "N",
   });
 
   useEffect(() => {
@@ -22,6 +22,7 @@ export default function TransactionModal({ isOpen, type, transaction, onClose, o
         category: transaction.category,
         memo: transaction.memo || "",
         type: transType,
+        excludeAnalysis: transaction.excludeAnalysis === "Y" ? "Y" : "N",
       });
     }
   }, [transaction]);
@@ -109,6 +110,22 @@ export default function TransactionModal({ isOpen, type, transaction, onClose, o
                 <label className={styles["modal-label"]}>메모</label>
                 <input type="text" name="memo" className={styles["modal-input"]} value={formData.memo} onChange={handleChange} readOnly={isViewMode} placeholder={isViewMode ? "" : "메모를 입력하세요"} />
               </div>
+            </div>
+
+            <div className={styles["exclude-toggle-row"]}>
+              <div className={styles["exclude-toggle-label"]}>
+                <span className={styles["exclude-toggle-title"]}>분석에서 제외</span>
+                <span className={styles["exclude-toggle-desc"]}>홈 그래프·AI 코칭 분석에 이 내역을 포함하지 않아요</span>
+              </div>
+              <label className={styles["toggle-switch"]}>
+                <input
+                  type="checkbox"
+                  checked={formData.excludeAnalysis === "Y"}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, excludeAnalysis: e.target.checked ? "Y" : "N" }))}
+                  disabled={isViewMode}
+                />
+                <span className={styles["toggle-slider"]} />
+              </label>
             </div>
 
             <div className={styles["modal-actions"]}>

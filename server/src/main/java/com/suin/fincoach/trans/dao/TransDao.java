@@ -24,6 +24,11 @@ public class TransDao {
 		return sqlSession.update("transMapper.updateTrans",mt);
 	}
 
+	public int updateExcludeAnalysis(SqlSessionTemplate sqlSession, Mytrans mt) {
+
+		return sqlSession.update("transMapper.updateExcludeAnalysis",mt);
+	}
+
 	public int deleteTrans(SqlSessionTemplate sqlSession, int transId) {
 
 		return sqlSession.delete("transMapper.deleteTrans",transId);
