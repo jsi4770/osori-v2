@@ -3,11 +3,16 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import styles from "./LoginPage.module.css";
 import { authApi } from "../../../api/authApi";
 import { useAuth } from "../../../context/AuthContext";
+import { useAppReady } from "../../../context/AppReadyContext";
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
+  const { markReady } = useAppReady();
+
+  // 로그인 화면은 기다릴 데이터가 없으므로 마운트 즉시 스플래시에 "준비됐다"고 알린다.
+  useEffect(() => { markReady(); }, [markReady]);
 
   const REST_API_KEY = "fbeeefb1ab0d16e849dfdfdd01f9222b";
   const REDIRECT_URI = "http://localhost:5173/auth/kakao/callback";

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MyPage.css";
 import { useAuth } from "../../../context/AuthContext";
+import { useAppReady } from "../../../context/AppReadyContext";
 import HomeInsightCard from "../../coaching/HomeInsightCard";
 import transApi from "../../../api/transApi";
 import ExpenseChart from "./ExpenseChart";
@@ -9,6 +10,7 @@ import MonthlyTrendChart from "./MonthlyTrendChart";
 
 const MyPage = () => {
   const { user } = useAuth();
+  const { markReady } = useAppReady();
   const navigate = useNavigate();
   const [, setIsLoading] = useState(true);
   const [currentDate] = useState(new Date());
@@ -72,6 +74,7 @@ const MyPage = () => {
       console.error('데이터 로딩 실패:', error);
     } finally {
       setIsLoading(false);
+      markReady(); // 홈 화면(첫 진입 지점)의 초기 데이터가 준비됐으니 스플래시에 알린다
     }
   };
 

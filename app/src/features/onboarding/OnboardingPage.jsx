@@ -1,6 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { IconReceipt, IconTrendingUp, IconCalendar, IconCheck } from "../../components/icons";
+import { useAppReady } from "../../context/AppReadyContext";
 import "./OnboardingPage.css";
 
 const BADGER = "/osori-badger.png";
@@ -186,9 +187,13 @@ function SlideVisual({ type }) {
 
 export default function OnboardingPage() {
   const navigate = useNavigate();
+  const { markReady } = useAppReady();
   const [currentStep, setCurrentStep] = useState(0);
   const touchStartX = useRef(null);
   const touchStartY = useRef(null);
+
+  // 온보딩도 기다릴 데이터가 없으므로 마운트 즉시 스플래시에 "준비됐다"고 알린다.
+  useEffect(() => { markReady(); }, [markReady]);
 
   const isLast = currentStep === SLIDES_DATA.length - 1;
   const slide = SLIDES_DATA[currentStep];

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import App from "./App.jsx";
 import DesktopFrame from "./components/DesktopFrame.jsx";
 import SplashScreen from "./components/SplashScreen.jsx";
+import { AppReadyProvider } from "./context/AppReadyContext.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 
@@ -28,22 +29,22 @@ function Root() {
 
   if (isWide) {
     return (
-      <>
+      <AppReadyProvider>
         <SplashScreen />
         <DesktopFrame />
-      </>
+      </AppReadyProvider>
     );
   }
 
   return (
-    <>
+    <AppReadyProvider>
       <SplashScreen />
       <ThemeProvider>
         <AuthProvider>
           <App />
         </AuthProvider>
       </ThemeProvider>
-    </>
+    </AppReadyProvider>
   );
 }
 
