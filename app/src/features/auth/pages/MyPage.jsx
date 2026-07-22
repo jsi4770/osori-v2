@@ -12,7 +12,7 @@ const MyPage = () => {
   const { user } = useAuth();
   const { markReady } = useAppReady();
   const navigate = useNavigate();
-  const [, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [currentDate] = useState(new Date());
   const [transactions, setTransactions] = useState([]);
   const [showRecent, setShowRecent] = useState(true);
@@ -130,7 +130,7 @@ const MyPage = () => {
           <span className="expense-summary-amount">{totalMonthlyExpenditure.toLocaleString()}원</span>
         </div>
 
-        <HomeInsightCard transactions={transactions} currentDate={currentDate} />
+        <HomeInsightCard transactions={transactions} currentDate={currentDate} isLoading={isLoading} />
 
         <div className="home-shortcut-row">
           <button className="home-shortcut-btn" onClick={() => navigate("/mypage/expenseForm")}>

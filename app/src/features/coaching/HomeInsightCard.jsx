@@ -13,7 +13,7 @@ const EMPTY_MESSAGES = [
 
 // 홈 화면 인사이트 카드: 위트 메시지(Tier 0, 항상/무료) → "AI 진단" 펼치면 룰 기반 상세(Tier 1, 무료)
 // → "AI와 대화하며 계획 세우기"를 눌러야만 실제 Gemini 호출(Tier 2)이 일어난다.
-const HomeInsightCard = ({ transactions = [], currentDate }) => {
+const HomeInsightCard = ({ transactions = [], currentDate, isLoading = false }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const userId = user?.userId;
@@ -62,6 +62,16 @@ const HomeInsightCard = ({ transactions = [], currentDate }) => {
       setDiagnosing(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="notification-list-container">
+        <div className="notification-list">
+          <div className="notification-item notification-loading">로딩중...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="notification-list-container">

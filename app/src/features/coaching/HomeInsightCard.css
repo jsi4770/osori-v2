@@ -60,6 +60,12 @@
   word-break: keep-all;
 }
 
+.notification-loading {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-weak);
+}
+
 .insight-toggle-btn {
   margin-top: 8px;
   align-self: center;
