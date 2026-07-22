@@ -1,9 +1,7 @@
 package com.suin.fincoach.coaching.controller;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.suin.fincoach.coaching.model.service.CoachingService;
+import com.suin.fincoach.coaching.model.service.GeminiCallBudget;
 import com.suin.fincoach.coaching.model.vo.AnomalyItem;
 import com.suin.fincoach.coaching.model.vo.CoachingMessage;
 import com.suin.fincoach.coaching.model.vo.SpendingTrend;
@@ -31,6 +30,9 @@ public class CoachingController {
 	@Autowired
 	private CoachingService service;
 
+	@Autowired
+	private GeminiCallBudget geminiCallBudget;
+
 	// Gemini는 무료 티어라도 호출량이 있으므로, 안전 캡을 넘기면 실제 호출을 막고 429를 돌려준다.
 	@Value("${coaching.llm.enabled:false}")
 	private boolean llmEnabled;
@@ -38,21 +40,10 @@ public class CoachingController {
 	@Value("${coaching.llm.daily-limit:50}")
 	private int dailyLimit;
 
-	private final AtomicInteger callsToday = new AtomicInteger(0);
-	private volatile LocalDate callsDate = LocalDate.now();
-
-	private synchronized int incrementAndGetTodayCalls() {
-		LocalDate today = LocalDate.now();
-		if (!today.equals(callsDate)) {
-			callsDate = today;
-			callsToday.set(0);
-		}
-		return callsToday.incrementAndGet();
-	}
-
-	// 실제 Gemini 호출이 일어나는 엔드포인트에만 일일 안전 캡 적용 (LLM이 켜져 있을 때만 카운트)
+	// 실제 Gemini 호출이 일어나는 엔드포인트에만 일일 안전 캡 적용 (LLM이 켜져 있을 때만 카운트).
+	// 카운터는 챌린지 컨트롤러와 공유(GeminiCallBudget) — 구글 할당량이 프로젝트+모델 단위라서다.
 	private ResponseEntity<?> dailyCapExceeded() {
-		if (llmEnabled && incrementAndGetTodayCalls() > dailyLimit) {
+		if (llmEnabled && geminiCallBudget.incrementAndGetTodayCalls() > dailyLimit) {
 			return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
 					.body(Map.of("message", "오늘의 AI 코칭 호출 한도(" + dailyLimit + "회)를 초과했습니다. 잠시 후 다시 시도해주세요."));
 		}

@@ -6,18 +6,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import com.suin.fincoach.coaching.model.dao.CoachingDao;
 import com.suin.fincoach.coaching.model.dao.TrendDao;
@@ -40,18 +32,12 @@ public class CoachingServiceImpl implements CoachingService {
 	@Autowired
 	private SqlSessionTemplate sqlSession;
 
+	@Autowired
+	private GeminiClient geminiClient;
+
 	// Gemini는 무료 티어라도 호출 실패/한도 초과가 있을 수 있어, 꺼져 있거나 오류일 때는 Mock으로 우아하게 대체한다.
 	@Value("${coaching.llm.enabled:false}")
 	private boolean llmEnabled;
-
-	@Value("${gemini.api.key:CHANGE_ME}")
-	private String geminiApiKey;
-
-	@Value("${gemini.model:gemini-2.5-flash}")
-	private String geminiModel;
-
-	private static final String GEMINI_URL =
-			"https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s";
 
 	private static final String NUDGE_SYSTEM_PROMPT =
 			"당신은 이제 막 취업한 사회초년생을 위한 개인 재무 코치입니다. 다정하지만 직설적인 톤으로, 왜 그런 소비가 생겼을지 "
@@ -80,9 +66,6 @@ public class CoachingServiceImpl implements CoachingService {
 			+ "여러 달 흐름을 비교하지 말고, 이번 달 지출이 어떤 카테고리에 집중돼 있는지 짚어주고 다음 달을 위한 "
 			+ "작은 실천 조언을 하나 제안하세요. 다정하게, 2~4문장, 한국어로만 답하세요.";
 
-	private final RestTemplate restTemplate = new RestTemplate();
-	private final JSONParser jsonParser = new JSONParser();
-
 	@Override
 	public CoachingMessage generateNudge(int userId, String category, int amount, int avgAmount) {
 		// 홈 화면 방문마다 같은 이상치가 재감지되어도, 오늘 이미 같은 카테고리+금액으로 만든 넛지가 있으면
@@ -96,8 +79,8 @@ public class CoachingServiceImpl implements CoachingService {
 		String content = null;
 		if (llmEnabled) {
 			JSONArray contents = new JSONArray();
-			contents.add(userTurn(buildNudgePrompt(category, amount, avgAmount)));
-			content = callGemini(NUDGE_SYSTEM_PROMPT, contents);
+			contents.add(geminiClient.userTurn(buildNudgePrompt(category, amount, avgAmount)));
+			content = geminiClient.generateText(NUDGE_SYSTEM_PROMPT, contents);
 		}
 		if (content == null) {
 			content = mockNudge(category, amount, avgAmount);
@@ -135,8 +118,8 @@ public class CoachingServiceImpl implements CoachingService {
 		String content = null;
 		if (llmEnabled) {
 			JSONArray contents = new JSONArray();
-			contents.add(userTurn(buildCompositeNudgePrompt(anomalies)));
-			content = callGemini(COMPOSITE_NUDGE_SYSTEM_PROMPT, contents);
+			contents.add(geminiClient.userTurn(buildCompositeNudgePrompt(anomalies)));
+			content = geminiClient.generateText(COMPOSITE_NUDGE_SYSTEM_PROMPT, contents);
 		}
 		if (content == null) {
 			content = mockCompositeNudge(anomalies);
@@ -167,10 +150,10 @@ public class CoachingServiceImpl implements CoachingService {
 			for (CoachingMessage msg : history) {
 				// NUDGE와 COACH는 model 턴, USER는 user 턴으로 매핑
 				String geminiRole = "USER".equals(msg.getRole()) ? "user" : "model";
-				contents.add(turn(geminiRole, msg.getContent()));
+				contents.add(geminiClient.turn(geminiRole, msg.getContent()));
 			}
-			contents.add(userTurn(userMessage));
-			reply = callGemini(CHAT_SYSTEM_PROMPT, contents);
+			contents.add(geminiClient.userTurn(userMessage));
+			reply = geminiClient.generateText(CHAT_SYSTEM_PROMPT, contents);
 		}
 		if (reply == null) {
 			reply = mockChatReply();
@@ -212,8 +195,8 @@ public class CoachingServiceImpl implements CoachingService {
 		if (llmEnabled) {
 			String systemPrompt = monthlyTotals.size() >= 2 ? TREND_SYSTEM_PROMPT : COMPOSITION_SYSTEM_PROMPT;
 			JSONArray contents = new JSONArray();
-			contents.add(userTurn(buildTrendPrompt(monthlyTotals)));
-			content = callGemini(systemPrompt, contents);
+			contents.add(geminiClient.userTurn(buildTrendPrompt(monthlyTotals)));
+			content = geminiClient.generateText(systemPrompt, contents);
 		}
 		if (content == null) {
 			content = mockTrend(monthlyTotals);
@@ -237,78 +220,7 @@ public class CoachingServiceImpl implements CoachingService {
 		return trendDao.selectTrend(sqlSession, userId, yearMonth);
 	}
 
-	// ---- Gemini ----
-
-	private String callGemini(String systemPrompt, JSONArray contents) {
-		try {
-			JSONObject systemInstruction = new JSONObject();
-			JSONArray sysParts = new JSONArray();
-			sysParts.add(textPart(systemPrompt));
-			systemInstruction.put("parts", sysParts);
-
-			JSONObject body = new JSONObject();
-			body.put("systemInstruction", systemInstruction);
-			body.put("contents", contents);
-
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			HttpEntity<String> entity = new HttpEntity<>(body.toString(), headers);
-
-			String url = String.format(GEMINI_URL, geminiModel, geminiApiKey);
-			ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
-
-			if (response.getStatusCode() == HttpStatus.OK) {
-				return parseGeminiText(response.getBody());
-			}
-			log.warn("Gemini 응답 상태 이상: {}", response.getStatusCode());
-		} catch (Exception e) {
-			// 무료 티어 한도 초과/네트워크 오류 등 — Mock 대체를 위해 null 반환
-			log.warn("Gemini 호출 실패, Mock 코칭으로 대체합니다: {}", e.getMessage());
-		}
-		return null;
-	}
-
-	private String parseGeminiText(String responseBody) {
-		try {
-			JSONObject root = (JSONObject) jsonParser.parse(responseBody);
-			JSONArray candidates = (JSONArray) root.get("candidates");
-			if (candidates == null || candidates.isEmpty()) {
-				return null;
-			}
-			JSONObject content = (JSONObject) ((JSONObject) candidates.get(0)).get("content");
-			if (content == null) {
-				return null;
-			}
-			JSONArray parts = (JSONArray) content.get("parts");
-			if (parts == null || parts.isEmpty()) {
-				return null;
-			}
-			String text = (String) ((JSONObject) parts.get(0)).get("text");
-			return (text == null || text.isBlank()) ? null : text.trim();
-		} catch (Exception e) {
-			log.warn("Gemini 응답 파싱 실패: {}", e.getMessage());
-			return null;
-		}
-	}
-
-	private JSONObject textPart(String text) {
-		JSONObject part = new JSONObject();
-		part.put("text", text);
-		return part;
-	}
-
-	private JSONObject turn(String role, String text) {
-		JSONObject turn = new JSONObject();
-		turn.put("role", role);
-		JSONArray parts = new JSONArray();
-		parts.add(textPart(text));
-		turn.put("parts", parts);
-		return turn;
-	}
-
-	private JSONObject userTurn(String text) {
-		return turn("user", text);
-	}
+	// ---- 프롬프트 빌더 ----
 
 	private String buildNudgePrompt(String category, int amount, int avgAmount) {
 		String cat = (category == null || category.isBlank()) ? "이 카테고리" : category;

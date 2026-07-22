@@ -4,6 +4,7 @@ import "./MyPage.css";
 import { useAuth } from "../../../context/AuthContext";
 import { useAppReady } from "../../../context/AppReadyContext";
 import HomeInsightCard from "../../coaching/HomeInsightCard";
+import ChallengeCard from "../../coaching/ChallengeCard";
 import transApi from "../../../api/transApi";
 import ExpenseChart from "./ExpenseChart";
 import MonthlyTrendChart from "./MonthlyTrendChart";
@@ -131,6 +132,8 @@ const MyPage = () => {
         </div>
 
         <HomeInsightCard transactions={transactions} currentDate={currentDate} isLoading={isLoading} />
+
+        {!isLoading && <ChallengeCard transactions={transactions} />}
 
         <div className="home-shortcut-row">
           <button className="home-shortcut-btn" onClick={() => navigate("/mypage/expenseForm")}>

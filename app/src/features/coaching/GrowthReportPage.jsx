@@ -10,7 +10,7 @@ import {
   Legend,
 } from 'chart.js';
 import { useAuth } from '../../context/AuthContext';
-import { getGrowthReport, respondToNudge } from '../../api/coachingApi';
+import { getGrowthReport } from '../../api/coachingApi';
 import { IconCheck, IconSkip, IconClock } from '../../components/icons';
 import SpendingTrendCard from './SpendingTrendCard';
 import './GrowthReportPage.css';
@@ -56,17 +56,6 @@ const GrowthReportPage = () => {
     })();
     return () => { cancelled = true; };
   }, [userId]);
-
-  const handleRespond = async (messageId, accepted) => {
-    try {
-      await respondToNudge(messageId, accepted);
-      setNudges(prev => prev.map(n =>
-        n.messageId === messageId ? { ...n, accepted: accepted ? 'Y' : 'N' } : n
-      ));
-    } catch (error) {
-      alert(error?.response?.data?.message || '코칭 기능을 잠시 사용할 수 없어요.');
-    }
-  };
 
   const categoryChart = useMemo(() => {
     const counts = {};
@@ -140,22 +129,6 @@ const GrowthReportPage = () => {
                       >
                         대화하기
                       </button>
-                      {(n.accepted === null || n.accepted == null) && (
-                        <>
-                          <button
-                            className="grp-accept-btn"
-                            onClick={() => handleRespond(n.messageId, true)}
-                          >
-                            실행할게요
-                          </button>
-                          <button
-                            className="grp-dismiss-btn"
-                            onClick={() => handleRespond(n.messageId, false)}
-                          >
-                            넘어갈게요
-                          </button>
-                        </>
-                      )}
                     </div>
                   </div>
                 </div>

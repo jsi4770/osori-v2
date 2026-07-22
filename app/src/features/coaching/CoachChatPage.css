@@ -40,6 +40,102 @@
   transform: scale(0.94);
 }
 
+.ccp-challenge-btn {
+  margin-left: auto;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--primary-color);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.ccp-challenge-btn:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.ccp-challenge-btn:disabled {
+  background: #b0c4de;
+  cursor: not-allowed;
+}
+
+.ccp-challenge-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.ccp-challenge-modal {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 24px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.ccp-challenge-modal h3 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.ccp-challenge-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-align: center;
+  margin: 0 0 8px;
+  word-break: keep-all;
+}
+
+.ccp-challenge-detail {
+  font-size: 0.85rem;
+  color: var(--text-weak);
+  text-align: center;
+  margin: 0 0 20px;
+}
+
+.ccp-challenge-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.ccp-challenge-cancel,
+.ccp-challenge-confirm {
+  flex: 1;
+  border: none;
+  border-radius: 12px;
+  padding: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ccp-challenge-cancel {
+  background: var(--surface-subtle);
+  color: var(--text-sub);
+}
+
+.ccp-challenge-confirm {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+.ccp-challenge-confirm:disabled {
+  background: #b0c4de;
+  cursor: not-allowed;
+}
+
 .ccp-messages {
   flex: 1;
   overflow-y: auto;

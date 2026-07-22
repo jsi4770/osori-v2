@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getGrowthReport, sendChatMessage } from '../../api/coachingApi';
+import { extractChallenge, createChallenge } from '../../api/challengeApi';
 import './CoachChatPage.css';
 
 const CoachChatPage = () => {
@@ -14,6 +15,10 @@ const CoachChatPage = () => {
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const scrollRef = useRef(null);
+
+  const [extracting, setExtracting] = useState(false);
+  const [proposedChallenge, setProposedChallenge] = useState(null);
+  const [savingChallenge, setSavingChallenge] = useState(false);
 
   // 진입 시 이 thread의 최초 넛지를 코치의 첫 말풍선으로 보여준다.
   useEffect(() => {
@@ -75,11 +80,57 @@ const CoachChatPage = () => {
     }
   };
 
+  const handleExtractChallenge = async () => {
+    if (!userId || extracting) return;
+    setExtracting(true);
+    try {
+      const result = await extractChallenge({ threadId, userId });
+      if (!result.found) {
+        const message = result.reason === 'LLM_DISABLED'
+          ? '지금은 AI 코칭이 꺼져 있어 챌린지 추출을 사용할 수 없어요.'
+          : '대화에서 아직 구체적인 목표를 찾지 못했어요. 조금 더 얘기해볼까요?';
+        alert(message);
+        return;
+      }
+      setProposedChallenge(result);
+    } catch (error) {
+      alert(error?.response?.data?.message || '챌린지 추출에 실패했어요.');
+    } finally {
+      setExtracting(false);
+    }
+  };
+
+  const handleConfirmChallenge = async () => {
+    if (!proposedChallenge || savingChallenge) return;
+    setSavingChallenge(true);
+    try {
+      await createChallenge({
+        userId,
+        threadId,
+        category: proposedChallenge.category || null,
+        title: proposedChallenge.title,
+        metricType: proposedChallenge.metricType,
+        targetValue: proposedChallenge.targetValue,
+        periodDays: proposedChallenge.periodDays,
+      });
+      setProposedChallenge(null);
+      alert('챌린지가 생성됐어요! 홈 화면에서 진행률을 확인할 수 있어요.');
+      navigate('/mypage/assets');
+    } catch (error) {
+      alert(error?.response?.data?.message || '챌린지 저장에 실패했어요.');
+    } finally {
+      setSavingChallenge(false);
+    }
+  };
+
   return (
     <main className="coach-chat-page fade-in">
       <header className="ccp-header">
         <button className="ccp-back" onClick={() => navigate(-1)}>←</button>
         <h2>💬 AI 재무 코치</h2>
+        <button className="ccp-challenge-btn" onClick={handleExtractChallenge} disabled={extracting}>
+          {extracting ? '분석 중...' : '🎯 챌린지'}
+        </button>
       </header>
 
       <div className="ccp-messages" ref={scrollRef}>
@@ -114,6 +165,30 @@ const CoachChatPage = () => {
           전송
         </button>
       </div>
+
+      {proposedChallenge && (
+        <div className="ccp-challenge-overlay" onClick={() => setProposedChallenge(null)}>
+          <div className="ccp-challenge-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>🎯 이 챌린지로 시작할까요?</h3>
+            <p className="ccp-challenge-title">{proposedChallenge.title}</p>
+            <p className="ccp-challenge-detail">
+              {proposedChallenge.category && `${proposedChallenge.category} · `}
+              {proposedChallenge.metricType === 'COUNT'
+                ? `최대 ${proposedChallenge.targetValue}회`
+                : `최대 ${Number(proposedChallenge.targetValue).toLocaleString()}원`}
+              {' · '}{proposedChallenge.periodDays}일간
+            </p>
+            <div className="ccp-challenge-actions">
+              <button className="ccp-challenge-cancel" onClick={() => setProposedChallenge(null)}>
+                취소
+              </button>
+              <button className="ccp-challenge-confirm" onClick={handleConfirmChallenge} disabled={savingChallenge}>
+                {savingChallenge ? '저장 중...' : '확정'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 };
