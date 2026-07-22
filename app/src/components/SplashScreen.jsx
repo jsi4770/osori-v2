@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import "./SplashScreen.css";
 
-const BADGER = "/osori-badger.png";
 const VISIBLE_MS = 900;
 const FADE_MS = 300;
 
@@ -24,7 +23,6 @@ function SplashScreen() {
 
   return (
     <div className={`splash-screen${phase === "fading" ? " splash-fade-out" : ""}`}>
-      <img src={BADGER} alt="OSORI" className="splash-logo" />
       <span className="splash-name">OSORI</span>
     </div>
   );
