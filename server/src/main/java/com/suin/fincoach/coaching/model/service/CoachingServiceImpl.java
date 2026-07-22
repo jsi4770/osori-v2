@@ -51,10 +51,9 @@ public class CoachingServiceImpl implements CoachingService {
 			"https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s";
 
 	private static final String NUDGE_SYSTEM_PROMPT =
-			"당신은 이제 막 취업한 사회초년생을 위한 개인 재무 코치입니다. 다정하지만 직설적인 톤으로 말합니다. "
-			+ "단순히 지출이 늘었다고 통보하지 말고, 왜 그런 소비가 생겼을지 맥락을 짚어주고 이번 주에 바로 실천할 수 있는 "
-			+ "구체적이고 작은 대안을 하나 제안하세요. 잔소리나 죄책감을 주는 말투는 피하고 응원하는 느낌으로. "
-			+ "모바일 넛지 카드에 들어갈 내용이므로 반드시 2~3문장, 한국어로만 답하세요.";
+			"당신은 이제 막 취업한 사회초년생을 위한 개인 재무 코치입니다. 다정하지만 직설적인 톤으로, 왜 그런 소비가 생겼을지 "
+			+ "맥락을 살짝 짚어주고 실천할 수 있는 작은 대안을 하나 제안하세요. 잔소리하지 말고 응원하는 느낌으로. "
+			+ "모바일 넛지 카드에 들어갈 내용이므로 반드시 1~2문장 이내로 짧고 간결하게, 한국어로만 답하세요.";
 
 	private static final String CHAT_SYSTEM_PROMPT =
 			"당신은 사회초년생을 위한 개인 재무 코치입니다. 방금 보낸 소비 넛지에서 이어지는 대화를 진행합니다. "
@@ -308,13 +307,11 @@ public class CoachingServiceImpl implements CoachingService {
 			int pct = (int) Math.round((amount - avgAmount) * 100.0 / avgAmount);
 			return String.format(
 					"이번 %s 지출이 %,d원으로 평소 평균(%,d원)보다 %d%% 많아요. "
-					+ "다음 결제 전에 딱 한 번만 '이게 지금 꼭 필요한가?' 되물어보는 것부터 시작해볼까요? "
-					+ "이번 주 목표를 같이 정해봐요.",
+					+ "다음 결제 전에 '이게 지금 꼭 필요한가?' 한 번만 되물어볼까요?",
 					cat, amount, avgAmount, pct);
 		}
 		return String.format(
-				"이번 %s 지출은 %,d원이에요. 지금 페이스면 이번 달 예산 관리는 순조로워요. "
-				+ "이 흐름을 유지할 작은 목표를 하나 같이 세워볼까요?",
+				"이번 %s 지출은 %,d원으로, 지금 페이스면 이번 달 예산 관리는 순조로워요.",
 				cat, amount);
 	}
 

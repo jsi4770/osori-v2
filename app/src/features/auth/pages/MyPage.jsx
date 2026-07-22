@@ -16,6 +16,7 @@ const MyPage = () => {
   const [transactions, setTransactions] = useState([]);
   const [showRecent, setShowRecent] = useState(true);
   const [analysisDate, setAnalysisDate] = useState(new Date());
+  const [hasAnomalyNudge, setHasAnomalyNudge] = useState(null); // null = 아직 모름 (ZScore 분석 전 HomeCoachCard 깜빡임 방지)
   const [activeSlide, setActiveSlide] = useState(0);
   const carouselRef = useRef(null);
 
@@ -128,9 +129,13 @@ const MyPage = () => {
           <span className="expense-summary-amount">{totalMonthlyExpenditure.toLocaleString()}원</span>
         </div>
 
-        <ZScoreNotification transactions={transactions} currentDate={currentDate} />
+        <ZScoreNotification
+          transactions={transactions}
+          currentDate={currentDate}
+          onStatusChange={setHasAnomalyNudge}
+        />
 
-        <HomeCoachCard transactions={transactions} />
+        {hasAnomalyNudge === false && <HomeCoachCard transactions={transactions} />}
 
         <div className="home-shortcut-row">
           <button className="home-shortcut-btn" onClick={() => navigate("/mypage/expenseForm")}>

@@ -10,7 +10,7 @@ const EMPTY_MESSAGES = [
   "💰 지갑이 오소리 덕분에 튼튼해요!",
 ];
 
-const ZScoreNotification = ({ transactions, currentDate }) => {
+const ZScoreNotification = ({ transactions, currentDate, onStatusChange }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [items, setItems] = useState(null); // null = 분석 전, [] = 이상치 없음
@@ -20,6 +20,7 @@ const ZScoreNotification = ({ transactions, currentDate }) => {
     if (!currentDate) return;
 
     const anomalies = zScore(transactions, currentDate);
+    onStatusChange?.(anomalies.length > 0);
     if (anomalies.length === 0) {
       setItems([]);
       return;
@@ -50,7 +51,7 @@ const ZScoreNotification = ({ transactions, currentDate }) => {
     })();
 
     return () => { cancelled = true; };
-  }, [transactions, currentDate, userId]);
+  }, [transactions, currentDate, userId, onStatusChange]);
 
   if (items === null) {
     return (
