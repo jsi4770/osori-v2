@@ -22,9 +22,7 @@ public class User {
 	private String email; // 이메일 (중복 불가)
 	private String password; // 비밀번호
 	private String status; // 회원 상태 (활성,비활성,휴면)
-	private Date lastLogin; // 마지막 로그인 시점 
-	private String originName; // 프로필 이미지 원본 파일명
-	private String changeName; // 서버 저장 파일명
+	private Date lastLogin; // 마지막 로그인 시점
 	private Date createdAt; // 가입일
 	private int bAmount;	//	B_AMOUNT	NUMBER	Yes		12	예산
 	private int resetDate;	//	RESET_DATE	NUMBER	Yes		13	예산리셋날짜

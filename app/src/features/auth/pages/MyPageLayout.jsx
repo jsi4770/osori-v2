@@ -81,9 +81,7 @@ const MyPageLayout = ({refreshGroupList}) => {
   };
 
 
-  const apiBase = import.meta.env.VITE_API_BASE_URL || "/fincoach";
   const displayName = user?.nickName || user?.nickname || user?.userName || "회원";
-  const avatarUrl = user?.changeName ? `${apiBase}/upload/profiles/${user.changeName}` : "";
 
   return (
     <div className="mypage-container">
@@ -96,7 +94,7 @@ const MyPageLayout = ({refreshGroupList}) => {
           aria-label="프로필 설정으로 이동"
         >
           <span className="mobile-profile-avatar">
-            {avatarUrl ? <img src={avatarUrl} alt="" /> : <IconUser size={15} aria-hidden />}
+            <IconUser size={15} aria-hidden />
           </span>
           <span className="mobile-profile-name">{displayName}</span>
         </button>

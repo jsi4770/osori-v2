@@ -30,7 +30,6 @@ function ProfileSettings() {
   const [nickName, setNickName] = useState(initial.displayName);
   const [userName, setUserName] = useState(initial.name);
   const [email, setEmail] = useState(initial.email);
-  const [isImageRemoved, setIsImageRemoved] = useState(false);
 
   // 서버 initial이 바뀌면(저장 성공 후 setUser 등) 입력값도 동기화
   useEffect(() => {
@@ -48,10 +47,6 @@ function ProfileSettings() {
 
   // blur 중복체크 최적화: 같은 값으로 재-blur 시 서버호출 스킵
   const lastCheckedRef = useRef({ nickName: "", email: "" });
-
-  const fileInputRef = useRef(null);
-  const [uploadFile, setUploadFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState("");
 
   const [isPasswordEditing, setIsPasswordEditing] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
@@ -80,24 +75,13 @@ function ProfileSettings() {
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
 
-  useEffect(() => {
-    return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-    };
-  }, [previewUrl]);
-
   const hasProfileChanges = nickName !== initial.displayName || userName !== initial.name;
   const hasEmailChanges = email !== initial.email;
-
-  // 주의: 현재 백엔드 /user/update 는 @RequestBody(User)만 받음
-  // FormData(이미지 업로드)는 백엔드 multipart 처리 없으면 400/415 등으로 터질 수 있다.
-  const hasProfileImageChanges = !!uploadFile || isImageRemoved;
 
   const hasPasswordChanges =
     isPasswordEditing && (currentPassword || newPassword || newPasswordConfirm);
 
-  const canSave =
-    hasProfileChanges || hasEmailChanges || hasProfileImageChanges || hasPasswordChanges;
+  const canSave = hasProfileChanges || hasEmailChanges || hasPasswordChanges;
 
   const hasFieldErrors = Boolean(fieldErrors.nickName || fieldErrors.email || fieldErrors.userName);
 
@@ -202,28 +186,6 @@ function ProfileSettings() {
     setFieldErrors((prev) => ({ ...prev, userName: "" }));
   };
 
-  const handleResetToDefault = () => {
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setUploadFile(null);
-    setPreviewUrl("");
-    setIsImageRemoved(true);
-  };
-
-  const handleSelectProfileFile = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      alert("이미지 파일만 업로드 가능합니다.");
-      return;
-    }
-
-    setIsImageRemoved(false);
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setUploadFile(file);
-    setPreviewUrl(URL.createObjectURL(file));
-  };
-
   const handleSave = async () => {
     const msg = validate();
     if (msg) {
@@ -252,12 +214,6 @@ function ProfileSettings() {
     formData.append("email", (email || "").trim().toLowerCase());
     formData.append("status", user?.status || "");
 
-    if (uploadFile) {
-      formData.append("profileImage", uploadFile);
-    } else if (isImageRemoved) {
-      formData.append("isImageRemoved", "true");
-    }
-
     const mePayload = {
       loginId,
       nickName: (nickName || "").trim(),
@@ -281,13 +237,6 @@ function ProfileSettings() {
 
       setUser(updatedUserFromServer);
       localStorage.setItem("user", JSON.stringify(updatedUserFromServer));
-
-      // 저장 후에는 서버가 확정한 changeName 기반 URL을 보여줘야 하므로,
-      // 로컬 blob 미리보기(previewUrl)는 정리한다.
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-      setUploadFile(null);
-      setPreviewUrl("");
-      setIsImageRemoved(false);
 
       if (isPasswordEditing) {
         await userApi.changePassword({ currentPassword, newPassword });
@@ -398,10 +347,6 @@ function ProfileSettings() {
   // 상단 프로필 표시는 "입력값(draft)"이 아니라 "서버 저장값(initial)"만
   const displayName = (initial.displayName || "회원").trim();
   const displayEmail = (initial.email || "").trim();
-  const apiBase = import.meta.env.VITE_API_BASE_URL || "/fincoach";
-  const serverAvatarUrl = user?.changeName
-    ? `${apiBase}/upload/profiles/${user.changeName}`
-    : "";
 
   // 탈퇴 버튼 활성화 조건
   const canWithdraw = withdrawChecked && withdrawPassword.trim().length > 0 && !isWithdrawing;
@@ -415,43 +360,14 @@ function ProfileSettings() {
 
           <div className="info-card ps-card ps-account-card">
             <div className="ps-profile-row">
-              <div className="profile-img ps-avatar" title="클릭해서 프로필 사진 변경">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleSelectProfileFile}
-                  className="ps-file"
-                />
-                <button
-                  type="button"
-                  className="ps-avatar-btn"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  {previewUrl ? (
-                      <img src={previewUrl} alt="프로필 미리보기" />
-                    ) : isImageRemoved ? (
-                      <IconUser size={36} aria-hidden />
-                    ) : serverAvatarUrl ? (
-                      <img src={serverAvatarUrl} alt="프로필 이미지" />
-                    ) : (
-                      <IconUser size={36} aria-hidden />
-                    )}
-                </button>
+              <div className="profile-img ps-avatar">
+                <div className="ps-avatar-btn">
+                  <IconUser size={36} aria-hidden />
+                </div>
               </div>
 
               <div className="ps-profile-meta">
                 <div className="ps-meta-name">{displayName}</div>
-                {(previewUrl || (serverAvatarUrl && !isImageRemoved)) && (
-                  <button
-                    type="button"
-                    className="ps-link-btn"
-                    style={{ color: '#ff4757', fontSize: '12px', marginTop: '4px' }}
-                    onClick={handleResetToDefault}
-                  >
-                    기본 이미지로 변경
-                  </button>
-                )}
                 <div className="ps-meta-email">{displayEmail}</div>
               </div>
             </div>

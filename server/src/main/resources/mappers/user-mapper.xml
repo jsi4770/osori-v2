@@ -24,24 +24,6 @@
 	  )
 	</insert>
     
-    <!--  
-    <select id="selectUser" parameterType="User" resultType="User">
-    	SELECT USER_ID,
-    		   LOGIN_ID,
-    		   USER_NAME,
-    		   NICKNAME,
-    		   EMAIL,
-    		   PASSWORD,
-    		   STATUS,
-    		   LAST_LOGIN,
-    		   ORIGIN_NAME,
-    		   CHANGE_NAME,
-    		   CREATED_AT  		    	
-    	FROM USERS
-    	WHERE LOGIN_ID= #{loginId}
-    </select>
-    -->
-    
     <select id="selectUser" parameterType="User" resultType="User">
     	SELECT 
     		U.*,
@@ -104,20 +86,8 @@
 		<update id="updateUser" parameterType="User">
 		    UPDATE USERS
 		    SET USER_NAME = #{userName},
-		        NICKNAME = #{nickName},         
+		        NICKNAME = #{nickName},
 		        EMAIL = #{email},
-		        
-		        <choose>
-		            <when test="changeName != null">
-		                ORIGIN_NAME = #{originName},
-		                CHANGE_NAME = #{changeName},
-		            </when>
-		            <otherwise>
-		                ORIGIN_NAME = NULL,
-		                CHANGE_NAME = NULL,
-		            </otherwise>
-		        </choose>
-		
 		        STATUS = 'Y',
 		        LAST_LOGIN = CASE
 		                        WHEN (CURRENT_DATE - LAST_LOGIN) &gt;= 30 THEN CURRENT_DATE

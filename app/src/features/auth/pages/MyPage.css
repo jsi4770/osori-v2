@@ -104,12 +104,6 @@
     font-size: 0.9rem;
   }
 
-  .mobile-profile-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
   .mobile-profile-name {
     font-size: 0.85rem;
     font-weight: 700;
@@ -447,14 +441,6 @@
   background: var(--surface-accent);
   border: 1px solid var(--border);
   padding: 0;
-}
-
-.profile-img.ps-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  display: block;
 }
 
 .profile-section .badge-list {

@@ -1,7 +1,5 @@
 package com.suin.fincoach.user.controller;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 
 import com.suin.fincoach.FincoachApplication;
@@ -217,56 +214,9 @@ public class UserController {
 
 	// 정보 수정 메소드
 	@PatchMapping("/update")
-	public ResponseEntity<?> updateUser(@ModelAttribute User loginUser,
-			@RequestParam(value = "profileImage", required = false) MultipartFile profileImage,
-			@RequestParam(value = "isImageRemoved", required = false, defaultValue = "false") String isImageRemoved) {
+	public ResponseEntity<?> updateUser(@ModelAttribute User loginUser) {
 
 		HashMap<String, Object> res = new HashMap<>();
-		
-		String projectPath = System.getProperty("user.dir"); 
-		String savePath = projectPath + File.separator + "upload" + File.separator + "profiles" + File.separator;
-		
-		if ("true".equals(isImageRemoved)) {
-	        User currentUser = service.selectUser(loginUser);
-	        if (currentUser != null && currentUser.getChangeName() != null) {
-	            File oldFile = new File(savePath + currentUser.getChangeName());
-	            if (oldFile.exists()) {
-	                oldFile.delete(); // 실제 파일 삭제
-	            }
-	        }
-	        // DB에 저장될 객체의 파일명을 null로 세팅 (기본 이미지 상태로 복구)
-	        loginUser.setOriginName(null);
-	        loginUser.setChangeName(null);
-	    }
-		
-		else if (profileImage != null && !profileImage.isEmpty()) {
-	        
-	        File folder = new File(savePath);
-	        if (!folder.exists()) {
-	            folder.mkdirs(); 
-	        }
-		
-			User currentUser = service.selectUser(loginUser); 
-			if (currentUser != null && currentUser.getChangeName() != null) {
-				File oldFile = new File(savePath + currentUser.getChangeName());
-				if (oldFile.exists()) {
-					oldFile.delete();
-				}
-			}
-			
-			String originName = profileImage.getOriginalFilename();
-	        String changeName = System.currentTimeMillis() + "_" + loginUser.getLoginId() + "_" + originName;
-
-	        loginUser.setOriginName(originName);
-	        loginUser.setChangeName(changeName);
-
-	        try {
-	            profileImage.transferTo(new File(savePath + changeName));
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 저장 실패");
-	        }
-	    }
 
 		int result = service.updateUser(loginUser);
 
