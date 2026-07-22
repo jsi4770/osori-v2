@@ -160,6 +160,13 @@
 .ob-btn-next:hover { background: var(--primary-hover); }
 
 .ob-cta { display: flex; flex-direction: column; gap: 10px; }
+.ob-btn-guest {
+  background: var(--primary-color);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(0, 102, 255, 0.22);
+}
+.ob-btn-guest:hover { background: var(--primary-hover); }
+.ob-btn-guest:disabled { opacity: 0.7; cursor: default; }
 .ob-btn-kakao {
   background: var(--ob-kakao);
   color: #191600;

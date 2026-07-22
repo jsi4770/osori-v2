@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { IconReceipt, IconTrendingUp, IconCalendar, IconCheck } from "../../components/icons";
 import { useAppReady } from "../../context/AppReadyContext";
+import { useAuth } from "../../context/AuthContext";
+import { authApi } from "../../api/authApi";
 import "./OnboardingPage.css";
 
 const BADGER = "/osori-badger.png";
@@ -188,7 +190,9 @@ function SlideVisual({ type }) {
 export default function OnboardingPage() {
   const navigate = useNavigate();
   const { markReady } = useAppReady();
+  const { login } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
+  const [guestLoading, setGuestLoading] = useState(false);
   const touchStartX = useRef(null);
   const touchStartY = useRef(null);
 
@@ -205,6 +209,22 @@ export default function OnboardingPage() {
       return;
     }
     navigate(dest, { replace: true });
+  };
+
+  // 리뷰어가 회원가입 없이 바로 둘러볼 수 있도록, 미리 목업 데이터를 채워둔 게스트 계정(osori100)으로 즉시 로그인
+  const handleGuestLogin = async () => {
+    if (guestLoading) return;
+    setGuestLoading(true);
+    try {
+      const res = await authApi.guestLogin();
+      login(res);
+      localStorage.setItem("osori_onboarded", "true");
+      navigate("/mypage/assets", { replace: true });
+    } catch (error) {
+      alert("게스트 로그인에 실패했습니다. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setGuestLoading(false);
+    }
   };
 
   const goNext = () => {
@@ -260,6 +280,9 @@ export default function OnboardingPage() {
 
         {isLast ? (
           <div className="ob-cta">
+            <button type="button" className="ob-btn ob-btn-guest" onClick={handleGuestLogin} disabled={guestLoading}>
+              {guestLoading ? "접속 중..." : "게스트로 바로 로그인하기"}
+            </button>
             <button type="button" className="ob-btn ob-btn-kakao" onClick={() => finish("kakao")}>
               <KakaoGlyph />
               카카오로 3초 만에 시작하기

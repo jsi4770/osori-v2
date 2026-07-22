@@ -47,6 +47,32 @@ public class UserController {
 		this.fincoachApplication = fincoachApplication;
 	} // 토큰 빈 주입
 
+	// 리뷰어 데모용 게스트 계정 아이디 — 미리 목업 데이터를 채워둔 고정 계정으로, 비밀번호 검증 없이 즉시 로그인시킨다.
+	private static final String GUEST_LOGIN_ID = "osori100";
+
+	// 게스트 로그인: 온보딩 마지막 화면의 "게스트로 바로 로그인하기" 버튼에서 호출
+	@PostMapping("/guest-login")
+	public ResponseEntity<?> guestLogin() {
+
+		HashMap<String, Object> map = new HashMap<>();
+
+		User guestUser = service.selectByLoginId(GUEST_LOGIN_ID);
+
+		if (guestUser == null) {
+			map.put("message", "게스트 계정을 찾을 수 없습니다.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(map);
+		}
+
+		String token = jwtUtil.generateToken(guestUser.getLoginId());
+
+		guestUser.setPassword(null);
+
+		map.put("token", token);
+		map.put("user", guestUser);
+
+		return ResponseEntity.ok(map);
+	}
+
 	// 로그인 처리 및 휴면 판단 메소드
 	@PostMapping("/login")
 	public ResponseEntity<?> loginMember(@RequestBody User user) {

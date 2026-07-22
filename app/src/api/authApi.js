@@ -4,6 +4,10 @@ export const authApi = {
   login: (loginId, password) =>
     apiFetch("/user/login", { method: "POST", body: { loginId, password }, auth: false }),
 
+  // 게스트 로그인 — 리뷰어 데모용, 자격증명 없이 미리 만들어둔 osori100 계정으로 즉시 로그인
+  guestLogin: () =>
+    apiFetch("/user/guest-login", { method: "POST", auth: false }),
+
   register: (data) =>
     apiFetch("/user/register", {
       method: "POST",
