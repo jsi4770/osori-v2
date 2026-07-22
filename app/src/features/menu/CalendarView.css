@@ -46,7 +46,6 @@
   /* .mypage-content 의 하단 패딩(40px) 고려. 내용이 길면 스크롤되도록 min-height 사용 */
   min-height: calc(100vh - 40px);
   box-sizing: border-box;
-  font-family: 'Pretendard', sans-serif;
 }
 
 .ledger-filter-bar {
@@ -55,8 +54,8 @@
   gap: 20px;
   padding: 12px 25px;
   background: var(--surface);
-  border-radius: 12px;
-  box-shadow: 0 4px 10px var(--shadow-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-1);
   width: fit-content;
 }
 
@@ -102,7 +101,7 @@
   flex: 1;
   min-width: 0;
   background: var(--surface);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -148,10 +147,10 @@
   flex: 0 0 320px;
   min-width: 0;
   background: var(--surface);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   padding: 20px;
   box-sizing: border-box;
-  box-shadow: 0 10px 20px var(--shadow-color);
+  box-shadow: var(--shadow-2);
   display: flex;
   flex-direction: column;
 }
@@ -244,8 +243,6 @@
   flex-direction: column;
 }
 
-.calendar-header { margin-bottom: 15px; font-size: 20px; }
-
 /* 평일 기본값: 검은색 (토요일/일요일/공휴일은 아래 holiday-red, holiday-blue가 덮어씀) */
 .react-calendar__month-view__days__day abbr { color: var(--text-strong); }
 
@@ -264,8 +261,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.income-tag { color:#2ecc71 !important; }
-.expense-tag { color: #e74c3c !important; }
+.income-tag { color: var(--income-color) !important; }
+.expense-tag { color: var(--expense-color) !important; }
 
 /* 고정지출 예정(아직 실제 내역으로 등록되지 않음) 미리보기 — 흐리게 표시하고 지출 집계에는 포함하지 않음 */
 .fixed-preview-tag {
@@ -289,7 +286,6 @@
 .react-calendar__tile--active .expense-tag { color: white !important; }
 
 .detail-title {
-  font-family: 'Pretendard', sans-serif;
   font-size: 17px;
   font-weight: bold;
   height: 26px;
@@ -315,7 +311,7 @@
   align-items: center;
   height: 22px; /* .detail-title(날짜 제목)보다 살짝 낮춰 시각적으로 맞춤 */
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 0 12px;
   font-size: 13px;
   font-weight: 700;
@@ -337,7 +333,7 @@
   border: 1px solid var(--border-subtle);
   background: var(--surface-subtle);
   color: var(--text-sub);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 7px 0;
   font-size: 13px;
   font-weight: 600;
@@ -382,7 +378,6 @@
 }
 
 .ledger-item-title {
-  font-family: 'Pretendard', sans-serif;
   font-weight: bold;
   font-size: 15px;
   color: var(--text-main);
@@ -420,7 +415,6 @@
 }
 
 .ledger-item-amt {
-  font-family: 'Pretendard', sans-serif;
   font-weight: bold;
   font-size: 15px;
   white-space: nowrap;
@@ -435,7 +429,7 @@
   border: 1px solid var(--border-subtle);
   background: var(--surface-subtle);
   color: var(--text-sub);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   padding: 3px 8px;
   font-size: 12px;
   cursor: pointer;
@@ -519,14 +513,13 @@
 }
 
 .item-store {
-  font-family: 'Pretendard', sans-serif;
   font-weight: bold;
   font-size: 17px;
   color: var(--text-main);
 }
 .item-category { font-size: 15px; color: var(--text-main); }
 .item-memo { font-size: 15px; color: var(--text-weak); }
-.item-amount { font-family: 'Pretendard', sans-serif; font-weight: bold; min-width: 85px; text-align: right; font-size: 15px; }
+.item-amount { font-weight: bold; min-width: 85px; text-align: right; font-size: 15px; }
 
 /* 공휴일 */
 /* 1. 공휴일 및 일요일: 빨간색 (우선순위를 위해 !important 사용 가능) */

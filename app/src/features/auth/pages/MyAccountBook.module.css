@@ -55,10 +55,10 @@ body {
 }
 
 .search-wrapper {
-  background-color: rgba(241, 243, 245, 0.7) !important;
+  background-color: var(--surface-subtle) !important;
   backdrop-filter: blur(10px);
   padding: 10px 30px;
-  border-radius: 50px;
+  border-radius: var(--radius-pill);
   display: flex;
   align-items: center;
   gap: 20px;
@@ -136,9 +136,9 @@ body {
   background: var(--surface);
   width: 95%;
   max-width: 650px;
-  border-radius: 35px;
+  border-radius: var(--radius-lg);
   padding: 45px;
-  box-shadow: 0 25px 60px var(--shadow-color);
+  box-shadow: var(--shadow-3);
   position: relative;
   box-sizing: border-box;
   animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -169,7 +169,7 @@ body {
 .modal-input {
   width: 100%;
   padding: 12px 16px;
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   border: 2px solid var(--border-subtle);
   background: var(--surface) !important;
   font-size: 1.1rem;
@@ -251,12 +251,12 @@ input[type="date"] {
     border-radius: 12px !important;
     font-weight: 700 !important;
     font-size: 1rem !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 139, 0.15) !important;
+    box-shadow: 0 4px 12px rgba(0, 102, 255, 0.25) !important;
 }
 
 .modal-btn.confirm:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 15px rgba(0, 0, 139, 0.2) !important;
+    box-shadow: 0 6px 16px rgba(0, 102, 255, 0.3) !important;
 }
 
 .modal-content h3 {
@@ -313,14 +313,14 @@ input[type="date"] {
     border-radius: 12px !important;
     font-weight: 700 !important;
     border: none !important;
-    box-shadow: 0 4px 12px rgba(255, 77, 79, 0.2) !important;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2) !important;
     transition: all 0.2s ease;
 }
 
 .modal-btn.delete:hover {
     background-color: #d9363e !important;
     transform: translateY(-1px);
-    box-shadow: 0 6px 15px rgba(255, 77, 79, 0.3) !important;
+    box-shadow: 0 6px 15px rgba(231, 76, 60, 0.3) !important;
 }
 
 .modal-btn.cancel {
@@ -405,7 +405,7 @@ canvas {
   color: var(--primary-color) !important;
 
   padding: 16px;
-  border-radius: 18px;
+  border-radius: var(--radius-lg);
   font-weight: 800;
   font-size: 1.1rem;
   cursor: pointer;
@@ -452,7 +452,7 @@ canvas {
 .action-btn:hover {
     background: var(--surface-accent) !important;
     border-color: #a5b4fc !important;
-    color: #4f46e5 !important;
+    color: var(--primary-color) !important;
     transform: translateY(-1px);
 }
 

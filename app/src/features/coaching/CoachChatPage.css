@@ -1,11 +1,20 @@
 .coach-chat-page {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 40px);
+  /* .mypage-container의 상단 패딩(70px) + .mypage-content의 하단 패딩(40px)만큼 빼서
+     입력창까지 뷰포트 안에 딱 들어오게 함(별도 스크롤 없이 카톡처럼 하단 고정) */
+  height: calc(100vh - 110px);
   max-width: 720px;
   margin: 0 auto;
   padding: 20px;
   box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+  .coach-chat-page {
+    /* 모바일 상단바(72px) + 하단 탭바 예약 영역(84px) */
+    height: calc(100vh - 156px);
+  }
 }
 
 .ccp-header {
@@ -59,14 +68,14 @@
 }
 
 .ccp-challenge-btn:disabled {
-  background: #b0c4de;
+  background: #b3c9f5;
   cursor: not-allowed;
 }
 
 .ccp-challenge-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -81,7 +90,7 @@
   padding: 24px;
   width: 100%;
   max-width: 360px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-3);
 }
 
 .ccp-challenge-modal h3 {
@@ -132,7 +141,7 @@
 }
 
 .ccp-challenge-confirm:disabled {
-  background: #b0c4de;
+  background: #b3c9f5;
   cursor: not-allowed;
 }
 
@@ -213,10 +222,15 @@
 }
 
 .ccp-send {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
   border: none;
-  border-radius: 24px;
-  padding: 0 24px;
-  font-weight: 700;
+  border-radius: 50%;
+  padding: 0;
   color: #fff;
   background: var(--primary-color);
   cursor: pointer;
@@ -232,6 +246,6 @@
 }
 
 .ccp-send:disabled {
-  background: #b0c4de;
+  background: #b3c9f5;
   cursor: not-allowed;
 }

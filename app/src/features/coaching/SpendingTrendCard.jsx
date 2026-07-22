@@ -75,7 +75,7 @@ const SpendingTrendCard = () => {
 
   return (
     <section className="spending-trend-card">
-      <h3>📊 이번 달 소비 흐름 분석</h3>
+      <h3>이번 달 소비 흐름 분석</h3>
       <p className="stc-content">{content}</p>
     </section>
   );

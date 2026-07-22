@@ -7,9 +7,16 @@ import './HomeInsightCard.css';
 
 // 이상치가 없을 때 보여주는 클라이언트 전용 격려 메시지 (API 호출 없음).
 const EMPTY_MESSAGES = [
-  "✅ 이번 달은 아주 계획적으로 소비하고 계시네요!",
-  "💰 지갑이 오소리 덕분에 튼튼해요!",
+  "이번 달은 아주 계획적으로 소비하고 계시네요!",
+  "지갑이 오소리 덕분에 튼튼해요!",
 ];
+
+// "본문 (평소 대비 N원 ↑)" 형태의 메시지에서 괄호 안 보조 설명을 분리해
+// 본문은 그대로, 보조 설명은 줄바꿈 + 작은 글씨로 보여주기 위한 헬퍼.
+const splitMessage = (text) => {
+  const match = text.match(/^(.*?)\s*(\([^)]*\))\s*$/);
+  return match ? { main: match[1], detail: match[2] } : { main: text, detail: null };
+};
 
 // 홈 화면 인사이트 카드: 위트 메시지(Tier 0, 항상/무료) → "AI 진단" 펼치면 룰 기반 상세(Tier 1, 무료)
 // → "AI와 대화하며 계획 세우기"를 눌러야만 실제 Gemini 호출(Tier 2)이 일어난다.
@@ -77,11 +84,19 @@ const HomeInsightCard = ({ transactions = [], currentDate, isLoading = false }) 
     <div className="notification-list-container">
       <div className="notification-list">
         {hasAnomaly
-          ? anomalies.map((a) => (
-              <div key={a.id} className="notification-item">{a.message}</div>
-            ))
+          ? anomalies.map((a) => {
+              const { main, detail } = splitMessage(a.message);
+              return (
+                <div key={a.id} className="notification-item">
+                  <span className="notification-main">{main}</span>
+                  {detail && <span className="notification-detail">{detail}</span>}
+                </div>
+              );
+            })
           : EMPTY_MESSAGES.map((text, i) => (
-              <div key={i} className="notification-item">{text}</div>
+              <div key={i} className="notification-item">
+                <span className="notification-main">{text}</span>
+              </div>
             ))}
       </div>
 

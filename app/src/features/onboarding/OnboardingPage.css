@@ -4,7 +4,6 @@
    ============================================================ */
 
 .ob-wrap {
-  --ob-mint: #2ecc71;
   --ob-kakao: #fee500;
 
   position: fixed;
@@ -21,7 +20,6 @@
   flex-direction: column;
   overflow: hidden;
   box-sizing: border-box;
-  font-family: 'Pretendard', sans-serif;
   color: var(--text-main);
   user-select: none;
   -webkit-tap-highlight-color: transparent;
@@ -51,7 +49,7 @@
   cursor: pointer;
   padding: 6px 4px;
 }
-.ob-skip:hover { color: #6b7076; }
+.ob-skip:hover { color: var(--text-weak); }
 
 /* 다음 버튼 아래 중앙 배치 */
 .ob-skip-footer {
@@ -128,7 +126,7 @@
   padding: 0;
   border: none;
   border-radius: 999px;
-  background: #d9dde2;
+  background: var(--border-strong);
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -142,7 +140,7 @@
   width: 100%;
   height: 56px;
   border: none;
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   font-size: 16px;
   font-weight: 800;
   cursor: pointer;
@@ -252,7 +250,7 @@
   position: relative;
   width: 190px;
   background: var(--surface);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   padding: 16px 18px 20px;
   box-shadow: 0 10px 26px var(--shadow-color);
   border: 1px solid var(--border-subtle);
@@ -288,7 +286,7 @@
   gap: 6px;
   background: var(--surface);
   border: 1px solid var(--border-subtle);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   padding: 9px 12px;
   box-shadow: 0 4px 10px var(--shadow-color);
 }
@@ -336,7 +334,7 @@
   width: 100%;
   max-width: 300px;
   background: var(--surface);
-  border-radius: 20px;
+  border-radius: var(--radius-xl);
   padding: 18px 18px 14px;
   box-shadow: 0 12px 30px var(--shadow-color);
   border: 1px solid var(--border-subtle);
@@ -382,7 +380,7 @@
   gap: 6px;
   font-size: 12px;
   font-weight: 700;
-  color: var(--ob-mint);
+  color: var(--income-color);
 }
 
 /* ---- 아주 작은 화면 대응 ---- */

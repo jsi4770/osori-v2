@@ -75,3 +75,10 @@ export const IconClock = ({ size = 16, ...props }) => (
     <path d="M12 7.5V12l3 2" />
   </svg>
 );
+
+export const IconArrowUp = ({ size = 20, ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" {...base} {...props}>
+    <path d="M12 19V6" />
+    <path d="M6 12l6-6 6 6" />
+  </svg>
+);

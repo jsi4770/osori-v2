@@ -12,25 +12,9 @@
   height: auto;
   overflow: visible;
   box-sizing: border-box;
-  border-radius: 16px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.4),
-    rgba(255, 255, 255, 0.1)
-  );
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px); /* 사파리(Safari) 브라우저 호환성용 */
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-}
-
-:root[data-theme="dark"] .notification-list-container {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.08),
-    rgba(255, 255, 255, 0.03)
-  );
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-2);
 }
 
 .notification-list {
@@ -48,16 +32,28 @@
   height: auto;
   width: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 2px;
   text-align: center;
   line-height: 1.4;
-  font-weight: bold;
   color: var(--text-sub);
   white-space: normal; /* 긴 문구가 잘리지 않고 줄바꿈되도록 */
   overflow: visible;
   padding: 6px 4px;
   word-break: keep-all;
+}
+
+.notification-main {
+  font-size: 0.875rem;
+  font-weight: bold;
+}
+
+.notification-detail {
+  font-size: 0.8em;
+  font-weight: 500;
+  color: var(--text-weak);
 }
 
 .notification-loading {

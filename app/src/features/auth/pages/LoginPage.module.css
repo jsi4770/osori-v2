@@ -42,19 +42,20 @@
 .input{
   height: 50px;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 0 14px;
   outline: none;
 }
 
 .input:focus{
-  border-color: #bdbdbd;
+  border-color: var(--border-strong);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .loginBtn{
   height: 64px;
   border: none;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--primary-color);
   color: #fff;
   font-size: 16px;
@@ -155,6 +156,14 @@
   cursor: pointer;
 
   white-space: nowrap;
+}
+
+.subBtn:hover{
+  background: var(--surface-subtle);
+}
+
+.subBtn:active{
+  transform: scale(0.98);
 }
 
 /* 아주 작은 화면만 2줄 허용(원하면 이 블록도 지워서 완전 고정 가능) */

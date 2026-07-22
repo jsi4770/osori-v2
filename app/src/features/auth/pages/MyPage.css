@@ -392,7 +392,7 @@
   height: auto;
   background: var(--surface);
   padding: 30px;
-  border-radius: 24px;
+  border-radius: var(--radius-xl);
   overflow: hidden;
   box-shadow: 0 4px 20px var(--shadow-color);
   display: flex;
@@ -546,9 +546,9 @@
 
 .home-summary-card {
   background: var(--surface);
-  border-radius: 24px;
+  border-radius: var(--radius-xl);
   padding: 24px 28px;
-  box-shadow: 0 4px 20px var(--shadow-color);
+  box-shadow: var(--shadow-2);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -593,7 +593,11 @@
 }
 
 .home-shortcut-btn:hover {
-  opacity: 0.9;
+  background: var(--primary-hover);
+}
+
+.home-shortcut-btn:active {
+  transform: scale(0.98);
 }
 
 .recent-expense-section {
@@ -714,8 +718,8 @@
   flex-direction: column;
   gap: 6px;
   background: var(--surface);
-  border-radius: 24px;
-  box-shadow: 0 10px 30px var(--shadow-color);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-2);
   padding: 6px 14px 12px;
   box-sizing: border-box;
 }
@@ -746,6 +750,10 @@
   font-size: 1.2rem;
   font-weight: bold;
   color: var(--primary-color);
+}
+
+.nav-btn:hover {
+  background: var(--surface-subtle);
 }
 
 /* 분석 차트 스와이프 캐러셀 */

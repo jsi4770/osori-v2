@@ -1,21 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bar } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Tooltip,
-  Legend,
-} from 'chart.js';
 import { useAuth } from '../../context/AuthContext';
 import { getGrowthReport } from '../../api/coachingApi';
 import { IconCheck, IconSkip, IconClock } from '../../components/icons';
 import SpendingTrendCard from './SpendingTrendCard';
 import './GrowthReportPage.css';
-
-ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 const formatDate = (value) => {
   if (!value) return '';
@@ -57,24 +46,6 @@ const GrowthReportPage = () => {
     return () => { cancelled = true; };
   }, [userId]);
 
-  const categoryChart = useMemo(() => {
-    const counts = {};
-    nudges.forEach(n => {
-      const cat = n.category || '기타';
-      counts[cat] = (counts[cat] || 0) + 1;
-    });
-    const labels = Object.keys(counts);
-    return {
-      labels,
-      datasets: [{
-        label: '넛지 수',
-        data: labels.map(l => counts[l]),
-        backgroundColor: '#0066ff',
-        borderRadius: 6,
-      }],
-    };
-  }, [nudges]);
-
   return (
     <main className="growth-report-page fade-in">
       <SpendingTrendCard />
@@ -88,18 +59,6 @@ const GrowthReportPage = () => {
 
       {status === 'ready' && nudges.length > 0 && (
         <>
-          <section className="grp-chart-card">
-            <h3>카테고리별 넛지</h3>
-            <Bar
-              data={categoryChart}
-              options={{
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
-              }}
-            />
-          </section>
-
           <section className="grp-timeline">
             {nudges.map((n) => {
               const badge = acceptedBadge(n.accepted);
@@ -107,7 +66,7 @@ const GrowthReportPage = () => {
               return (
                 <div key={n.messageId} className="grp-item">
                   <div className="grp-item-top">
-                    <span className="grp-category">#{n.category || '기타'}</span>
+                    <span className="grp-category">{n.category || '기타'}</span>
                     <span className={`grp-badge ${badge.className}`}><BadgeIcon size={13} /> {badge.text}</span>
                   </div>
 

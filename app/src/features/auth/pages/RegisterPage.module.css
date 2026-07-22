@@ -55,12 +55,15 @@
 .input{
   height:50px;
   border:1px solid var(--border);
-  border-radius:10px;
+  border-radius: var(--radius-sm);
   padding:0 14px;
   outline:none;
   background:var(--surface);
 }
-.input:focus{ border-color:#bdbdbd; }
+.input:focus{
+  border-color: var(--border-strong);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
 
 .hint{
   font-size: 13px;
@@ -68,12 +71,12 @@
   margin-top: -2px;
 }
 
-.ok{ color:#1a7f37; }
-.bad{ color:#d1242f; }
+.ok{ color: var(--income-color); }
+.bad{ color: var(--error-color); }
 
 .error{
   font-size:13px;
-  color:#d1242f;
+  color: var(--error-color);
   font-weight:900;
   padding: 6px 0 0;
 }
@@ -81,7 +84,7 @@
 .submitBtn{
   height:64px;
   border:none;
-  border-radius:999px;
+  border-radius: var(--radius-pill);
   background:var(--primary-color);
   color:#fff;
   font-size:16px;
@@ -104,4 +107,12 @@
   font-weight:900;
   cursor:pointer;
   margin-top: 14px;
+}
+
+.subBtn:hover{
+  background: var(--surface-subtle);
+}
+
+.subBtn:active{
+  transform: scale(0.98);
 }

@@ -14,7 +14,7 @@ export default function AuthLayout() {
         width: "100%",
       }}
     >
-      <div style={{ width: 460, maxWidth: "100%" }}>
+      <div style={{ width: "var(--container-wide)", maxWidth: "100%" }}>
         <Outlet />
       </div>
     </div>

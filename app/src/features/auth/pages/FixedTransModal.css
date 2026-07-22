@@ -22,9 +22,9 @@
   width: 420px;
   max-width: 100%;
   background: var(--surface);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   padding: 26px 22px;
-  box-shadow: 0 18px 60px var(--shadow-color);
+  box-shadow: var(--shadow-3);
 }
 
 .ftmTitle {
@@ -52,7 +52,7 @@
 .ftmInput {
   width: 100%;
   height: 48px;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--border);
   padding: 0 14px;
   font-size: 14px;
@@ -65,8 +65,8 @@
 }
 
 .ftmInput:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 /* select (모달 톤 맞춤) */
@@ -78,7 +78,7 @@
 .ftmSelect {
   width: 100%;
   height: 48px;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--border);
   padding: 0 42px 0 14px;
   font-size: 14px;
@@ -92,8 +92,8 @@
 }
 
 .ftmSelect:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .ftmSelect:hover {
@@ -154,7 +154,7 @@
 .ftmBtn {
   flex: 1;
   height: 48px;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   font-weight: 800;
   cursor: pointer;
   border: none;

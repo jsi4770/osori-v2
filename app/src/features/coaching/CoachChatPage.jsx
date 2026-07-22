@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getGrowthReport, sendChatMessage } from '../../api/coachingApi';
 import { extractChallenge, createChallenge } from '../../api/challengeApi';
+import { IconArrowUp } from '../../components/icons';
 import './CoachChatPage.css';
 
 const CoachChatPage = () => {
@@ -161,8 +162,13 @@ const CoachChatPage = () => {
           onKeyDown={handleKeyDown}
           disabled={sending}
         />
-        <button className="ccp-send" onClick={handleSend} disabled={sending || !input.trim()}>
-          전송
+        <button
+          className="ccp-send"
+          onClick={handleSend}
+          disabled={sending || !input.trim()}
+          aria-label="전송"
+        >
+          <IconArrowUp size={20} />
         </button>
       </div>
 

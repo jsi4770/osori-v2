@@ -6,7 +6,6 @@
   justify-content: center;
   align-items: flex-start;
   box-sizing: border-box;
-  font-family: 'Pretendard', sans-serif;
 }
 
 .expense-card {
@@ -14,7 +13,7 @@
   width: 100%;
   max-width: none;
   background-color: var(--surface);
-  border-radius: 24px;
+  border-radius: var(--radius-xl);
   box-shadow: 0 10px 30px var(--shadow-color);
   padding: 40px;
   box-sizing: border-box;
@@ -42,7 +41,7 @@
 .type-toggle-container {
   display: flex;
   background-color: var(--surface-subtle);
-  border-radius: 15px;
+  border-radius: var(--radius-md);
   padding: 6px;
   max-width: 400px;
   margin: 0 auto;
@@ -66,14 +65,14 @@
   box-shadow: 0 4px 10px var(--shadow-color);
 }
 .type-btn.active.income { color: var(--primary-color); }
-.type-btn.active.expense { color: #ff4d4f; }
+.type-btn.active.expense { color: var(--expense-color); }
 
 .ocr-upload-area {
   width: 100%;
   height: 220px;
   box-sizing: border-box;
   border: 3px dashed var(--border);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -168,7 +167,7 @@ form {
   height: 58px; /* 브라우저 네이티브 date 위젯 등으로 필드마다 높이가 달라지는 것을 방지해 통일 */
   padding: 18px 20px;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   font-size: 1.05rem;
   background-color: var(--surface);
   transition: all 0.2s;
@@ -230,15 +229,15 @@ textarea.input-field {
   color: white;
   background-color: var(--primary-color);
   border: none;
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   cursor: pointer;
   transition: all 0.3s;
   box-shadow: 0 10px 20px rgba(0, 102, 255, 0.15);
 }
 
-.submit-btn:hover { background-color: #0052cc; transform: translateY(-3px); }
-.submit-btn.expense-mode { background-color: #ff4757; box-shadow: 0 10px 20px rgba(255, 71, 87, 0.15); }
-.submit-btn.expense-mode:hover { background-color: #ff2e40; }
+.submit-btn:hover { background-color: #0052cc; transform: translateY(-1px); }
+.submit-btn.expense-mode { background-color: var(--expense-color); box-shadow: 0 10px 20px rgba(231, 76, 60, 0.15); }
+.submit-btn.expense-mode:hover { background-color: #c0392b; }
 
 .loading-overlay {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -295,7 +294,7 @@ textarea.input-field {
     gap: 12px;
     padding: 25px;
     background-color: var(--surface); /* 흰색 배경으로 변경 */
-    border-radius: 18px;
+    border-radius: var(--radius-lg);
     border: 1px solid var(--border-subtle);
     margin-bottom: 20px;
 }
@@ -371,41 +370,41 @@ textarea.input-field {
   align-items: center;
   justify-content: center;
   padding: 12px 5px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border-subtle);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .recent-item-chip.income {
-  border-left: 4px solid #3b82f6;
-  background-color: #f0f7ff;
+  border-left: 4px solid var(--income-color);
+  background-color: rgba(46, 204, 113, 0.08);
 }
 
 :root[data-theme="dark"] .recent-item-chip.income {
-  background-color: rgba(59, 130, 246, 0.12);
+  background-color: rgba(46, 204, 113, 0.12);
 }
 .recent-item-chip.income .recent-item-price {
-  color: #3b82f6;
+  color: var(--income-color);
   font-weight: 700;
 }
 
 .recent-item-chip.income:hover,
 .recent-item-chip.income:focus {
-  border: 2px solid #1d4ed8 !important;
+  border: 2px solid var(--primary-color) !important;
   outline: none;
 }
 
 .recent-item-chip.expense {
-  border-left: 4px solid #ef4444;
-  background-color: #fff5f5;
+  border-left: 4px solid var(--expense-color);
+  background-color: rgba(231, 76, 60, 0.08);
 }
 
 :root[data-theme="dark"] .recent-item-chip.expense {
-  background-color: rgba(239, 68, 68, 0.12);
+  background-color: rgba(231, 76, 60, 0.12);
 }
 .recent-item-chip.expense .recent-item-price {
-  color: #ef4444;
+  color: var(--expense-color);
   font-weight: 700;
 }
 

@@ -7,14 +7,14 @@ const isFixedAuto = (t) => t.memo === FIXED_AUTO_MEMO;
 const getWitMessage = (category, amount, limit) => {
   const diff = Math.round(amount - limit);
   const messages = {
-    '식비': [`🍽️ 미슐랭 가이드 찍으러 가셨나요? (평소 대비 ${diff.toLocaleString()}원 ↑)`],
-    '생활/마트': [`🛒장바구니가 꽤 무겁네요 (평소 대비 ${diff.toLocaleString()}원 ↑)`],
-    '쇼핑': [`🛍️ 지름신이 강림하셨군요! (평소 대비 ${diff.toLocaleString()}원 ↑)`],
-    '의료/건강': [`🏥 건강이 최고지만, 지갑 건강도 챙겨주세요! (평소 대비 ${diff.toLocaleString()}원 ↑)`],
-    '교통': [`🚗 이번 달은 이동이 정말 많으시네요! (평소 대비 ${diff.toLocaleString()}원 ↑)`],
-    '문화/여가': [`🎭 인생은 즐겁지만 예산도 즐거워야 해요 (평소 대비 ${diff.toLocaleString()}원 ↑)`],
-    '교육': [`📚 지식의 창고가 넓어지고 있어요 (평소 대비 ${diff.toLocaleString()}원 ↑)`],
-    '기타': [`🤔 어디에 쓰셨나요? 예상치 못한 지출이 생겼어요! (평소 대비 ${diff.toLocaleString()}원 ↑)`]
+    '식비': [`미슐랭 가이드 찍으러 가셨나요? (평소 대비 ${diff.toLocaleString()}원 ↑)`],
+    '생활/마트': [`장바구니가 꽤 무겁네요 (평소 대비 ${diff.toLocaleString()}원 ↑)`],
+    '쇼핑': [`지름신이 강림하셨군요! (평소 대비 ${diff.toLocaleString()}원 ↑)`],
+    '의료/건강': [`지갑 건강도 챙겨주세요! (평소 대비 ${diff.toLocaleString()}원 ↑)`],
+    '교통': [`이번 달은 이동이 정말 많으시네요! (평소 대비 ${diff.toLocaleString()}원 ↑)`],
+    '문화/여가': [`인생은 즐겁지만 예산도 즐거워야 해요 (평소 대비 ${diff.toLocaleString()}원 ↑)`],
+    '교육': [`지식의 창고가 넓어지고 있어요 (평소 대비 ${diff.toLocaleString()}원 ↑)`],
+    '기타': [`예상치 못한 지출이 생겼어요! (평소 대비 ${diff.toLocaleString()}원 ↑)`]
   };
   const categoryMessages = messages[category] || messages['기타'];
   return categoryMessages[Math.floor(Math.random() * categoryMessages.length)];

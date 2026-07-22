@@ -31,6 +31,29 @@
   --warn-border: #ffe58f;
   --warn-text: #856404;
 
+  /* ===== 반경(radius) 스케일 — 화면마다 제각각이던 값을 여기로 통일 =====
+     sm: 인풋/작은 칩, md: 배지/보조 버튼/모달 내부, lg: 표준 카드·모달·기본 버튼,
+     xl: 대형 카드(홈 요약 등), pill: 알약형 버튼/태그 */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  /* ===== 그림자 스케일 — --shadow-color(테마별 톤)를 기반으로 강도만 다르게 =====
+     1: 리스트 아이템/얕은 카드, 2: 표준 카드, 3: 모달/팝오버 */
+  --shadow-1: 0 2px 8px var(--shadow-color);
+  --shadow-2: 0 4px 20px var(--shadow-color);
+  --shadow-3: 0 12px 40px var(--shadow-color);
+
+  /* ===== 상태/포커스 — UI 에러 표시는 --expense-color를 그대로 재사용(의미상 별칭) ===== */
+  --error-color: var(--expense-color);
+  --focus-ring: rgba(0, 102, 255, 0.15);
+
+  /* ===== 컨테이너 폭 — 화면별로 제각각이던 max-width 통일 ===== */
+  --container-narrow: 480px;
+  --container-wide: 720px;
+
   font-family: 'Pretendard', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
