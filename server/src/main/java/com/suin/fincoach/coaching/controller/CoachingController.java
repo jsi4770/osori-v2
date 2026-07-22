@@ -1,6 +1,7 @@
 package com.suin.fincoach.coaching.controller;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.suin.fincoach.coaching.model.service.CoachingService;
 import com.suin.fincoach.coaching.model.vo.CoachingMessage;
+import com.suin.fincoach.coaching.model.vo.SpendingTrend;
 
 @RestController
 @RequestMapping("/coaching")
@@ -94,6 +96,29 @@ public class CoachingController {
 	@GetMapping("/report/{userId}")
 	public ResponseEntity<?> report(@PathVariable int userId) {
 		return ResponseEntity.ok(service.getGrowthReport(userId));
+	}
+
+	@PostMapping("/trend")
+	public ResponseEntity<?> trend(@RequestBody Map<String, Object> body) {
+		int userId = toInt(body.get("userId"));
+		String yearMonth = body.get("yearMonth") == null ? null : String.valueOf(body.get("yearMonth"));
+
+		@SuppressWarnings("unchecked")
+		List<Map<String, Object>> monthlyTotals = (List<Map<String, Object>>) body.get("monthlyTotals");
+		if (monthlyTotals == null) {
+			monthlyTotals = List.of();
+		}
+
+		// 캐시에 이미 있으면 Gemini를 호출하지 않으므로, 이 경우엔 일일 호출 캡을 소모시키지 않는다.
+		if (service.peekCachedTrend(userId, yearMonth) == null) {
+			ResponseEntity<?> capped = dailyCapExceeded();
+			if (capped != null) {
+				return capped;
+			}
+		}
+
+		SpendingTrend result = service.getSpendingTrend(userId, yearMonth, monthlyTotals);
+		return ResponseEntity.ok(result);
 	}
 
 	@PostMapping("/nudge/{messageId}/respond")

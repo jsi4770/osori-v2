@@ -67,3 +67,17 @@ CREATE TABLE IF NOT EXISTS COACHING_MESSAGE (
     ACCEPTED        VARCHAR(1),
     CREATED_AT      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE SEQUENCE IF NOT EXISTS SEQ_TREND START WITH 1 INCREMENT BY 1;
+
+-- AI coaching: monthly macro spending-trend analysis, cached per (user, year-month)
+-- so Gemini is called at most once per user per month regardless of how many times
+-- the growth report is opened that month.
+CREATE TABLE IF NOT EXISTS SPENDING_TREND (
+    TREND_ID    INT PRIMARY KEY,
+    USER_ID     INT REFERENCES USERS(USER_ID),
+    YEAR_MONTH  VARCHAR(7) NOT NULL,
+    CONTENT     VARCHAR(2000),
+    CREATED_AT  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (USER_ID, YEAR_MONTH)
+);

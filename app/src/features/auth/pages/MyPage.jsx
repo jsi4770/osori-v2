@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./MyPage.css";
 import { useAuth } from "../../../context/AuthContext";
 import ZScoreNotification from "../../Util/ZScoreNotification";
+import HomeCoachCard from "../../coaching/HomeCoachCard";
 import transApi from "../../../api/transApi";
 import ExpenseChart from "./ExpenseChart";
 import MonthlyTrendChart from "./MonthlyTrendChart";
@@ -128,6 +129,8 @@ const MyPage = () => {
         </div>
 
         <ZScoreNotification transactions={transactions} currentDate={currentDate} />
+
+        <HomeCoachCard transactions={transactions} />
 
         <div className="home-shortcut-row">
           <button className="home-shortcut-btn" onClick={() => navigate("/mypage/expenseForm")}>

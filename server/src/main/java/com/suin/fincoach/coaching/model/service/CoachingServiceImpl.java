@@ -1,6 +1,7 @@
 package com.suin.fincoach.coaching.model.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.suin.fincoach.coaching.model.dao.CoachingDao;
+import com.suin.fincoach.coaching.model.dao.TrendDao;
 import com.suin.fincoach.coaching.model.vo.CoachingMessage;
+import com.suin.fincoach.coaching.model.vo.SpendingTrend;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,6 +30,9 @@ public class CoachingServiceImpl implements CoachingService {
 
 	@Autowired
 	private CoachingDao dao;
+
+	@Autowired
+	private TrendDao trendDao;
 
 	@Autowired
 	private SqlSessionTemplate sqlSession;
@@ -55,6 +61,16 @@ public class CoachingServiceImpl implements CoachingService {
 			+ "사용자의 목표(줄이고 싶은 카테고리, 저축 목표 등)를 파악하고, 한 번에 하나씩 질문하거나 함께 "
 			+ "구체적이고 작은 실행 계획을 정하도록 돕습니다. 설교하지 말고, 사용자가 스스로 결정하도록 이끄세요. "
 			+ "다정하지만 직설적으로, 2~4문장, 한국어로만 답하세요.";
+
+	private static final String TREND_SYSTEM_PROMPT =
+			"당신은 이제 막 취업한 사회초년생을 위한 개인 재무 코치입니다. 사용자의 여러 달치 카테고리별 지출 데이터를 보고 "
+			+ "전체적인 소비 흐름을 분석합니다. 눈에 띄게 늘고 있거나 줄고 있는 카테고리를 짚어주고, 그 흐름에 대한 코멘트와 함께 "
+			+ "다음 달에 실천할 수 있는 작은 조언을 하나 제안하세요. 잔소리하지 말고 다정하게, 3~5문장, 한국어로만 답하세요.";
+
+	private static final String COMPOSITION_SYSTEM_PROMPT =
+			"당신은 이제 막 취업한 사회초년생을 위한 개인 재무 코치입니다. 사용자는 아직 이번 한 달치 지출 데이터만 있습니다. "
+			+ "여러 달 흐름을 비교하지 말고, 이번 달 지출이 어떤 카테고리에 집중돼 있는지 짚어주고 다음 달을 위한 "
+			+ "작은 실천 조언을 하나 제안하세요. 다정하게, 2~4문장, 한국어로만 답하세요.";
 
 	private final RestTemplate restTemplate = new RestTemplate();
 	private final JSONParser jsonParser = new JSONParser();
@@ -138,6 +154,42 @@ public class CoachingServiceImpl implements CoachingService {
 		return dao.updateAccepted(sqlSession, message);
 	}
 
+	@Override
+	public SpendingTrend getSpendingTrend(int userId, String yearMonth, List<Map<String, Object>> monthlyTotals) {
+		SpendingTrend cached = trendDao.selectTrend(sqlSession, userId, yearMonth);
+		if (cached != null) {
+			return cached;
+		}
+
+		String content = null;
+		if (llmEnabled) {
+			String systemPrompt = monthlyTotals.size() >= 2 ? TREND_SYSTEM_PROMPT : COMPOSITION_SYSTEM_PROMPT;
+			JSONArray contents = new JSONArray();
+			contents.add(userTurn(buildTrendPrompt(monthlyTotals)));
+			content = callGemini(systemPrompt, contents);
+		}
+		if (content == null) {
+			content = mockTrend(monthlyTotals);
+		}
+
+		SpendingTrend trend = SpendingTrend.builder()
+				.userId(userId)
+				.yearMonth(yearMonth)
+				.content(content)
+				.build();
+		trendDao.insertTrend(sqlSession, trend);
+
+		// 동시 요청 경합 시 UNIQUE(user_id, year_month) + ON CONFLICT DO NOTHING로 내 insert가
+		// 무시될 수 있으므로, 항상 재조회해서 실제로 저장된(먼저 이긴) 결과를 반환한다.
+		SpendingTrend persisted = trendDao.selectTrend(sqlSession, userId, yearMonth);
+		return persisted != null ? persisted : trend;
+	}
+
+	@Override
+	public SpendingTrend peekCachedTrend(int userId, String yearMonth) {
+		return trendDao.selectTrend(sqlSession, userId, yearMonth);
+	}
+
 	// ---- Gemini ----
 
 	private String callGemini(String systemPrompt, JSONArray contents) {
@@ -219,6 +271,35 @@ public class CoachingServiceImpl implements CoachingService {
 				cat, amount, avgAmount);
 	}
 
+	private String buildTrendPrompt(List<Map<String, Object>> monthlyTotals) {
+		StringBuilder sb = new StringBuilder();
+		if (monthlyTotals.size() >= 2) {
+			sb.append("사용자의 최근 ").append(monthlyTotals.size()).append("개월간 카테고리별 지출 데이터입니다.\n");
+		} else {
+			sb.append("사용자의 이번 달 카테고리별 지출 데이터입니다.\n");
+		}
+		for (Map<String, Object> month : monthlyTotals) {
+			String ym = String.valueOf(month.get("yearMonth"));
+			@SuppressWarnings("unchecked")
+			Map<String, Object> categories = (Map<String, Object>) month.get("categories");
+			sb.append(ym).append(": ");
+			if (categories != null) {
+				categories.forEach((cat, amount) ->
+						sb.append(cat).append(" ").append(formatAmount(amount)).append("원, "));
+			}
+			sb.append("\n");
+		}
+		sb.append("이 데이터를 바탕으로 분석과 조언을 해주세요.");
+		return sb.toString();
+	}
+
+	private String formatAmount(Object amount) {
+		if (amount instanceof Number) {
+			return String.format("%,d", ((Number) amount).longValue());
+		}
+		return String.valueOf(amount);
+	}
+
 	// ---- Mock (비활성/오류/무료 티어 한도 초과 시 우아한 대체) ----
 
 	private String mockNudge(String category, int amount, int avgAmount) {
@@ -241,6 +322,54 @@ public class CoachingServiceImpl implements CoachingService {
 		return "좋아요, 그렇게 마음먹은 것만으로도 첫걸음이에요. "
 				+ "이번 주에 딱 한 가지만 바꿔본다면 무엇부터 시작해볼까요? "
 				+ "예를 들어 배달 앱을 주 2회로 줄이는 것처럼 작고 구체적인 목표가 오래 가요.";
+	}
+
+	private String mockTrend(List<Map<String, Object>> monthlyTotals) {
+		if (monthlyTotals.size() < 2) {
+			return "이번 달 소비 데이터를 모으는 중이에요. 계속 기록하시면 다음 달엔 더 자세한 흐름 분석을 보여드릴게요!";
+		}
+
+		Map<String, Object> latest = monthlyTotals.get(monthlyTotals.size() - 1);
+		Map<String, Object> previous = monthlyTotals.get(monthlyTotals.size() - 2);
+
+		@SuppressWarnings("unchecked")
+		Map<String, Object> latestCats = (Map<String, Object>) latest.get("categories");
+		@SuppressWarnings("unchecked")
+		Map<String, Object> prevCats = (Map<String, Object>) previous.get("categories");
+
+		String biggestIncreaseCat = null;
+		long biggestIncrease = 0;
+
+		if (latestCats != null) {
+			for (Map.Entry<String, Object> entry : latestCats.entrySet()) {
+				long latestAmount = toLong(entry.getValue());
+				long prevAmount = prevCats == null ? 0 : toLong(prevCats.get(entry.getKey()));
+				long diff = latestAmount - prevAmount;
+				if (diff > biggestIncrease) {
+					biggestIncrease = diff;
+					biggestIncreaseCat = entry.getKey();
+				}
+			}
+		}
+
+		if (biggestIncreaseCat == null) {
+			return "지난달 대비 지출 패턴이 안정적으로 유지되고 있어요. 이 흐름을 계속 이어가 볼까요?";
+		}
+
+		return String.format(
+				"지난달 대비 '%s' 지출이 %,d원 늘었어요. 다음 달엔 이 카테고리부터 한 번 점검해보는 건 어떨까요?",
+				biggestIncreaseCat, biggestIncrease);
+	}
+
+	private long toLong(Object value) {
+		if (value instanceof Number) {
+			return ((Number) value).longValue();
+		}
+		try {
+			return Long.parseLong(String.valueOf(value));
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 
 }

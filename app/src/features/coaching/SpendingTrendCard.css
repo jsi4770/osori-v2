@@ -1,0 +1,28 @@
+.spending-trend-card {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 20px rgba(31, 38, 135, 0.08);
+}
+
+.spending-trend-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+
+.stc-content {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-main);
+  margin: 0;
+  word-break: keep-all;
+  white-space: pre-line;
+}
+
+.stc-empty {
+  color: var(--text-weak);
+  margin: 0;
+  font-size: 0.9rem;
+}

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="trendMapper">
+
+	<insert id="insertTrend" parameterType="SpendingTrend" useGeneratedKeys="true" keyProperty="trendId" keyColumn="trend_id">
+		INSERT INTO SPENDING_TREND (
+			TREND_ID,
+			USER_ID,
+			YEAR_MONTH,
+			CONTENT
+		) VALUES (
+			nextval('SEQ_TREND'),
+			#{userId},
+			#{yearMonth},
+			#{content}
+		)
+		ON CONFLICT (USER_ID, YEAR_MONTH) DO NOTHING
+	</insert>
+
+	<!-- 같은 유저+연월 조합으로 이미 생성된 분석이 있으면 재사용(중복 Gemini 호출 방지) -->
+	<select id="selectTrend" resultType="SpendingTrend">
+		SELECT
+			TREND_ID,
+			USER_ID,
+			YEAR_MONTH,
+			CONTENT,
+			CREATED_AT
+		FROM SPENDING_TREND
+		WHERE USER_ID = #{userId}
+		  AND YEAR_MONTH = #{yearMonth}
+		FETCH FIRST 1 ROWS ONLY
+	</select>
+
+</mapper>

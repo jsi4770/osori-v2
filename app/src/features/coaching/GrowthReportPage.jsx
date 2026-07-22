@@ -12,6 +12,7 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import { getGrowthReport, respondToNudge } from '../../api/coachingApi';
 import { IconCheck, IconSkip, IconClock } from '../../components/icons';
+import SpendingTrendCard from './SpendingTrendCard';
 import './GrowthReportPage.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
@@ -87,6 +88,8 @@ const GrowthReportPage = () => {
 
   return (
     <main className="growth-report-page fade-in">
+      <SpendingTrendCard />
+
       {status === 'loading' && <p className="grp-empty">불러오는 중...</p>}
       {status === 'error' && <p className="grp-empty">코칭 기능을 잠시 사용할 수 없어요.</p>}
 
