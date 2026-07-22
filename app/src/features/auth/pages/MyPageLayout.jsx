@@ -93,9 +93,6 @@ const MyPageLayout = ({refreshGroupList}) => {
           onClick={() => navigate("/mypage/profileSettings")}
           aria-label="프로필 설정으로 이동"
         >
-          <span className="mobile-profile-avatar">
-            <IconUser size={15} aria-hidden />
-          </span>
           <span className="mobile-profile-name">{displayName}</span>
         </button>
       </div>

@@ -91,19 +91,6 @@
     background: var(--surface-subtle);
   }
 
-  .mobile-profile-avatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: var(--surface-accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    flex-shrink: 0;
-    font-size: 0.9rem;
-  }
-
   .mobile-profile-name {
     font-size: 0.85rem;
     font-weight: 700;
@@ -428,19 +415,6 @@
   justify-content: center;
   gap: 20px;
   width: 100%;
-}
-
-.profile-img.ps-avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: var(--surface-accent);
-  border: 1px solid var(--border);
-  padding: 0;
 }
 
 .profile-section .badge-list {

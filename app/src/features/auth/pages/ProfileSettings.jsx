@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { useTheme } from "../../../context/ThemeContext";
 import { userApi } from "../../../api/userApi";
-import { IconUser } from "../../../components/icons";
 import "./MyPage.css";
 import "./ProfileSettings.css";
 
@@ -360,12 +359,6 @@ function ProfileSettings() {
 
           <div className="info-card ps-card ps-account-card">
             <div className="ps-profile-row">
-              <div className="profile-img ps-avatar">
-                <div className="ps-avatar-btn">
-                  <IconUser size={36} aria-hidden />
-                </div>
-              </div>
-
               <div className="ps-profile-meta">
                 <div className="ps-meta-name">{displayName}</div>
                 <div className="ps-meta-email">{displayEmail}</div>
