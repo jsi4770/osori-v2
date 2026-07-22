@@ -110,6 +110,40 @@
   font-size: 14px;
 }
 
+/* 결제일: 숫자 입력 + "매월 말일" 체크박스 */
+.ftmPayDayRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ftmPayDayInput {
+  width: 96px;
+  flex: 0 0 auto;
+}
+
+.ftmPayDayInput:disabled {
+  background: var(--surface-subtle);
+  color: var(--text-weak);
+}
+
+.ftmCheckLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ftmCheckLabel input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
 /* buttons */
 .ftmButtonGroup {
   display: flex;

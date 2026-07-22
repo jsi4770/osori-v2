@@ -27,9 +27,13 @@ export default function FixedTransModal({
     name: "",
     amount: "",
     category: "",
-    payDay: 1, // int (1~31)
     transDate: today, // DB에 NOT NULL이라 일단 오늘로 보냄(서버에서 sysdate로 처리해도 됨)
   });
+
+  // 결제일: 숫자 입력(1~30) + "매월 말일" 체크박스. 체크 시 서버에는 31로 전달되고
+  // (31은 매달 말일로 클램핑되어 처리됨), 숫자 입력은 비활성화된다.
+  const [payDayInput, setPayDayInput] = useState(1);
+  const [isLastDay, setIsLastDay] = useState(false);
 
   useEffect(() => {
     if (isEdit && initialValue) {
@@ -37,9 +41,16 @@ export default function FixedTransModal({
         name: initialValue.name ?? "",
         amount: initialValue.amount ?? "",
         category: initialValue.category ?? "",
-        payDay: Number(initialValue.payDay ?? 1),
         transDate: (initialValue.transDate ?? today)?.toString().slice(0, 10),
       });
+
+      const payDayNum = Number(initialValue.payDay ?? 1);
+      if (payDayNum >= 31) {
+        setIsLastDay(true);
+      } else {
+        setIsLastDay(false);
+        setPayDayInput(payDayNum);
+      }
     }
   }, [isEdit, initialValue, today]);
 
@@ -48,13 +59,23 @@ export default function FixedTransModal({
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const onChangePayDay = (e) => {
+    setPayDayInput(e.target.value);
+  };
+
+  const onToggleLastDay = (e) => {
+    setIsLastDay(e.target.checked);
+  };
+
   const validate = () => {
     if (!form.name.trim()) return "고정지출 이름을 입력해주시기 바랍니다.";
     const amountNum = Number(form.amount);
     if (!Number.isFinite(amountNum) || amountNum <= 0) return "금액은 0원보다 커야합니다.";
     if (!form.category?.toString().trim()) return "카테고리를 선택해주시기 바랍니다.";
-    const payDayNum = Number(form.payDay);
-    if (!Number.isInteger(payDayNum) || payDayNum < 1 || payDayNum > 31) return "결제일은 1일~31일 사이어야합니다.";
+    if (!isLastDay) {
+      const payDayNum = Number(payDayInput);
+      if (!Number.isInteger(payDayNum) || payDayNum < 1 || payDayNum > 30) return "결제일은 1일~30일 사이어야합니다.";
+    }
     return "";
   };
 
@@ -71,7 +92,7 @@ export default function FixedTransModal({
         name: form.name.trim(),
         amount: Number(form.amount),
         category: form.category.toString().trim(),
-        payDay: Number(form.payDay),
+        payDay: isLastDay ? 31 : Number(payDayInput),
         transDate: form.transDate,
       };
 
@@ -154,19 +175,27 @@ export default function FixedTransModal({
           <label className="ftmLabel" htmlFor="payDay">
             결제일(매달)
           </label>
-          <div className="ftmSelectWrap">
-            <select className="ftmSelect" id="payDay" name="payDay" value={form.payDay} onChange={onChange}>
-              {Array.from({ length: 30 }, (_, i) => i + 1).map((d) => (
-                <option key={d} value={d}>
-                  매달 {d}일
-                </option>
-              ))}
-              {/* 31은 달마다 마지막 날(28~31일)로 클램핑되어 처리되므로 "말일"로 안내한다 */}
-              <option value={31}>매월 말일</option>
-            </select>
-            <span className="ftmSelectArrow" aria-hidden="true">
-              ▾
-            </span>
+          <div className="ftmPayDayRow">
+            <input
+              className="ftmInput ftmPayDayInput"
+              id="payDay"
+              name="payDay"
+              type="number"
+              min={1}
+              max={30}
+              placeholder="예) 5"
+              value={isLastDay ? "" : payDayInput}
+              onChange={onChangePayDay}
+              disabled={isLastDay}
+            />
+            <label className="ftmCheckLabel">
+              <input
+                type="checkbox"
+                checked={isLastDay}
+                onChange={onToggleLastDay}
+              />
+              매월 말일
+            </label>
           </div>
 
           <input type="hidden" name="transDate" value={form.transDate} readOnly />
