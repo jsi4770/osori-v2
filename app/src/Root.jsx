@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import App from "./App.jsx";
 import DesktopFrame from "./components/DesktopFrame.jsx";
+import SplashScreen from "./components/SplashScreen.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 
@@ -25,14 +26,24 @@ function Root() {
     return () => mq.removeEventListener("change", onChange);
   }, [isFramed]);
 
-  if (isWide) return <DesktopFrame />;
+  if (isWide) {
+    return (
+      <>
+        <SplashScreen />
+        <DesktopFrame />
+      </>
+    );
+  }
 
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </ThemeProvider>
+    <>
+      <SplashScreen />
+      <ThemeProvider>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </ThemeProvider>
+    </>
   );
 }
 
