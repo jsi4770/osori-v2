@@ -141,19 +141,6 @@ public class CoachingController {
 		return ResponseEntity.ok(result);
 	}
 
-	@PostMapping("/nudge/{messageId}/respond")
-	public ResponseEntity<?> respond(@PathVariable int messageId, @RequestBody Map<String, Object> body) {
-		Object acceptedRaw = body.get("accepted");
-		boolean accepted = Boolean.parseBoolean(String.valueOf(acceptedRaw));
-
-		int result = service.respondToNudge(messageId, accepted);
-		if (result > 0) {
-			return ResponseEntity.ok(Map.of("message", "코칭 반영이 저장되었습니다."));
-		}
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-				.body(Map.of("message", "코칭 반영 저장에 실패했습니다."));
-	}
-
 	private int toInt(Object value) {
 		if (value == null) {
 			return 0;

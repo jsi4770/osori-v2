@@ -176,15 +176,6 @@ public class CoachingServiceImpl implements CoachingService {
 	}
 
 	@Override
-	public int respondToNudge(int messageId, boolean accepted) {
-		CoachingMessage message = CoachingMessage.builder()
-				.messageId(messageId)
-				.accepted(accepted ? "Y" : "N")
-				.build();
-		return dao.updateAccepted(sqlSession, message);
-	}
-
-	@Override
 	public SpendingTrend getSpendingTrend(int userId, String yearMonth, List<Map<String, Object>> monthlyTotals) {
 		SpendingTrend cached = trendDao.selectTrend(sqlSession, userId, yearMonth);
 		if (cached != null) {

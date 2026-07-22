@@ -44,9 +44,4 @@ public class CoachingDao {
 		return sqlSession.selectList("coachingMapper.selectRecentNudges", userId);
 	}
 
-	// NUDGE 행의 ACCEPTED 값 갱신
-	public int updateAccepted(SqlSessionTemplate sqlSession, CoachingMessage message) {
-		return sqlSession.update("coachingMapper.updateAccepted", message);
-	}
-
 }

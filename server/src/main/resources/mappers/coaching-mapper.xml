@@ -126,11 +126,5 @@
 		FETCH FIRST 1 ROWS ONLY
 	</select>
 
-	<update id="updateAccepted" parameterType="CoachingMessage">
-		UPDATE COACHING_MESSAGE
-		SET ACCEPTED = #{accepted}
-		WHERE MESSAGE_ID = #{messageId}
-		  AND ROLE = 'NUDGE'
-	</update>
 
 </mapper>
