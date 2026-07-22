@@ -1,6 +1,8 @@
 package com.suin.fincoach.coaching.model.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
@@ -13,6 +15,15 @@ public class CoachingDao {
 	// NUDGE / USER / COACH 행 삽입. MESSAGE_ID는 SEQ_COACHING.NEXTVAL, useGeneratedKeys로 messageId 채움.
 	public int insertMessage(SqlSessionTemplate sqlSession, CoachingMessage message) {
 		return sqlSession.insert("coachingMapper.insertMessage", message);
+	}
+
+	// 오늘 이미 같은 카테고리+금액의 NUDGE가 있는지 조회 (중복 삽입 방지용)
+	public CoachingMessage selectTodayNudge(SqlSessionTemplate sqlSession, int userId, String category, int originalAmount) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("userId", userId);
+		params.put("category", category);
+		params.put("originalAmount", originalAmount);
+		return sqlSession.selectOne("coachingMapper.selectTodayNudge", params);
 	}
 
 	// 한 스레드의 모든 메시지를 MESSAGE_ID 순으로 조회

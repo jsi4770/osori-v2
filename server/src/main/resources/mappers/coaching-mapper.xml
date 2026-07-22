@@ -54,7 +54,35 @@
 		ORDER BY MESSAGE_ID ASC
 	</select>
 
+	<!--
+	 카테고리별로 가장 최근 NUDGE 1건만 남긴다.
+	 같은 카테고리 이상치가 방문마다 반복 감지되어 매번 새 행이 쌓여도(→ insertMessage 쪽 중복 방지와는 별개로,
+	 과거에 이미 쌓인 데이터도 있으므로) 리포트에는 카테고리당 하나의 추천(direction)만 보이도록 여기서 한 번 더 방어한다.
+	-->
 	<select id="selectRecentNudges" parameterType="int" resultType="CoachingMessage">
+		SELECT * FROM (
+			SELECT DISTINCT ON (CATEGORY)
+				MESSAGE_ID,
+				USER_ID,
+				THREAD_ID,
+				ROLE,
+				CONTENT,
+				CATEGORY,
+				ORIGINAL_AMOUNT,
+				AVG_AMOUNT,
+				ACCEPTED,
+				CREATED_AT
+			FROM COACHING_MESSAGE
+			WHERE USER_ID = #{userId}
+			  AND ROLE = 'NUDGE'
+			ORDER BY CATEGORY, MESSAGE_ID DESC
+		) latest_per_category
+		ORDER BY MESSAGE_ID DESC
+		FETCH FIRST 20 ROWS ONLY
+	</select>
+
+	<!-- 오늘 이미 같은 카테고리+금액으로 만든 NUDGE가 있으면 재사용(중복 삽입/중복 Gemini 호출 방지) -->
+	<select id="selectTodayNudge" resultType="CoachingMessage">
 		SELECT
 			MESSAGE_ID,
 			USER_ID,
@@ -69,8 +97,11 @@
 		FROM COACHING_MESSAGE
 		WHERE USER_ID = #{userId}
 		  AND ROLE = 'NUDGE'
+		  AND CATEGORY = #{category}
+		  AND ORIGINAL_AMOUNT = #{originalAmount}
+		  AND CREATED_AT::date = CURRENT_DATE
 		ORDER BY MESSAGE_ID DESC
-		FETCH FIRST 20 ROWS ONLY
+		FETCH FIRST 1 ROWS ONLY
 	</select>
 
 	<update id="updateAccepted" parameterType="CoachingMessage">

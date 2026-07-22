@@ -61,6 +61,14 @@ public class CoachingServiceImpl implements CoachingService {
 
 	@Override
 	public CoachingMessage generateNudge(int userId, String category, int amount, int avgAmount) {
+		// 홈 화면 방문마다 같은 이상치가 재감지되어도, 오늘 이미 같은 카테고리+금액으로 만든 넛지가 있으면
+		// 그걸 그대로 재사용한다(중복 행 적재 및 불필요한 Gemini 호출 방지).
+		CoachingMessage existing = dao.selectTodayNudge(sqlSession, userId, category, amount);
+		if (existing != null) {
+			existing.setThreadId(existing.getMessageId());
+			return existing;
+		}
+
 		String content = null;
 		if (llmEnabled) {
 			JSONArray contents = new JSONArray();
