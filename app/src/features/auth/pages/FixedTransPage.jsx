@@ -69,13 +69,13 @@ export default function FixedTransPage() {
       <div className="account-book-grid">
         <div className="info-card ftMainCard" style={{ gridColumn: "1 / -1", paddingTop:'10px'}}>
           <div className="card-title-area" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <h3>내 고정지출 목록</h3>
-              <span className="status-dot">{list.length}개</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, whiteSpace: "nowrap" }}>
+              <h3 style={{ whiteSpace: "nowrap" }}>내 고정지출 목록</h3>
+              <span className="status-dot" style={{ whiteSpace: "nowrap" }}>{list.length}개</span>
             </div>
             <button type="button" className="ftAddBtn" onClick={openCreate}>
               <span className="ftAddIcon" aria-hidden="true">＋</span>
-              <span>고정지출 추가</span>
+              <span>추가</span>
             </button>
           </div>
 
