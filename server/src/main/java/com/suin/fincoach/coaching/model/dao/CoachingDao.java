@@ -26,6 +26,14 @@ public class CoachingDao {
 		return sqlSession.selectOne("coachingMapper.selectTodayNudge", params);
 	}
 
+	// 오늘 이미 같은 카테고리 조합(정렬 후 join)으로 만든 종합 NUDGE가 있는지 조회
+	public CoachingMessage selectTodayCompositeNudge(SqlSessionTemplate sqlSession, int userId, String categoryKey) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("userId", userId);
+		params.put("categoryKey", categoryKey);
+		return sqlSession.selectOne("coachingMapper.selectTodayCompositeNudge", params);
+	}
+
 	// 한 스레드의 모든 메시지를 MESSAGE_ID 순으로 조회
 	public List<CoachingMessage> selectThread(SqlSessionTemplate sqlSession, int threadId) {
 		return sqlSession.selectList("coachingMapper.selectThread", threadId);

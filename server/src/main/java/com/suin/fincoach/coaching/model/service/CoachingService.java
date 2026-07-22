@@ -3,6 +3,7 @@ package com.suin.fincoach.coaching.model.service;
 import java.util.List;
 import java.util.Map;
 
+import com.suin.fincoach.coaching.model.vo.AnomalyItem;
 import com.suin.fincoach.coaching.model.vo.CoachingMessage;
 import com.suin.fincoach.coaching.model.vo.SpendingTrend;
 
@@ -10,6 +11,10 @@ public interface CoachingService {
 
 	// 소비 이상치로부터 넛지 코칭 생성 + NUDGE 행 저장
 	CoachingMessage generateNudge(int userId, String category, int amount, int avgAmount);
+
+	// 홈 화면에서 동시에 감지된 여러 카테고리 이상치(최대 3개)를 한 번에 보고 종합 진단.
+	// 사용자가 "AI 진단"을 명시적으로 눌렀을 때만 호출되므로 자동 Gemini 호출이 없다.
+	CoachingMessage generateCompositeNudge(int userId, List<AnomalyItem> anomalies);
 
 	// 스레드 히스토리를 이어 대화형 코칭 진행 + USER/COACH 행 저장, COACH 응답 반환
 	CoachingMessage continueChat(int threadId, int userId, String userMessage);

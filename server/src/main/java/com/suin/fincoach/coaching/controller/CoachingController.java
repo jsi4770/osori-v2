@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.suin.fincoach.coaching.model.service.CoachingService;
+import com.suin.fincoach.coaching.model.vo.AnomalyItem;
 import com.suin.fincoach.coaching.model.vo.CoachingMessage;
 import com.suin.fincoach.coaching.model.vo.SpendingTrend;
 
@@ -70,6 +72,33 @@ public class CoachingController {
 		int avgAmount = toInt(body.get("avgAmount"));
 
 		CoachingMessage result = service.generateNudge(userId, category, originalAmount, avgAmount);
+		return ResponseEntity.ok(result);
+	}
+
+	@PostMapping("/nudge/composite")
+	public ResponseEntity<?> compositeNudge(@RequestBody Map<String, Object> body) {
+		ResponseEntity<?> capped = dailyCapExceeded();
+		if (capped != null) {
+			return capped;
+		}
+
+		int userId = toInt(body.get("userId"));
+
+		@SuppressWarnings("unchecked")
+		List<Map<String, Object>> rawAnomalies = (List<Map<String, Object>>) body.get("anomalies");
+		if (rawAnomalies == null || rawAnomalies.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(Map.of("message", "진단할 이상치 정보가 없습니다."));
+		}
+
+		List<AnomalyItem> anomalies = rawAnomalies.stream()
+				.map(m -> new AnomalyItem(
+						String.valueOf(m.get("category")),
+						toInt(m.get("originalAmount")),
+						toInt(m.get("avgAmount"))))
+				.collect(Collectors.toList());
+
+		CoachingMessage result = service.generateCompositeNudge(userId, anomalies);
 		return ResponseEntity.ok(result);
 	}
 

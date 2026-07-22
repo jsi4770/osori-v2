@@ -104,6 +104,28 @@
 		FETCH FIRST 1 ROWS ONLY
 	</select>
 
+	<!-- 오늘 이미 같은 카테고리 조합(정렬 후 join된 문자열)으로 만든 종합 NUDGE가 있으면 재사용 -->
+	<select id="selectTodayCompositeNudge" resultType="CoachingMessage">
+		SELECT
+			MESSAGE_ID,
+			USER_ID,
+			THREAD_ID,
+			ROLE,
+			CONTENT,
+			CATEGORY,
+			ORIGINAL_AMOUNT,
+			AVG_AMOUNT,
+			ACCEPTED,
+			CREATED_AT
+		FROM COACHING_MESSAGE
+		WHERE USER_ID = #{userId}
+		  AND ROLE = 'NUDGE'
+		  AND CATEGORY = #{categoryKey}
+		  AND CREATED_AT::date = CURRENT_DATE
+		ORDER BY MESSAGE_ID DESC
+		FETCH FIRST 1 ROWS ONLY
+	</select>
+
 	<update id="updateAccepted" parameterType="CoachingMessage">
 		UPDATE COACHING_MESSAGE
 		SET ACCEPTED = #{accepted}

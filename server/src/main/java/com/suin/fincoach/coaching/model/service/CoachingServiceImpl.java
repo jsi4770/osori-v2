@@ -1,7 +1,9 @@
 package com.suin.fincoach.coaching.model.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -19,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.suin.fincoach.coaching.model.dao.CoachingDao;
 import com.suin.fincoach.coaching.model.dao.TrendDao;
+import com.suin.fincoach.coaching.model.vo.AnomalyItem;
 import com.suin.fincoach.coaching.model.vo.CoachingMessage;
 import com.suin.fincoach.coaching.model.vo.SpendingTrend;
 
@@ -54,6 +57,11 @@ public class CoachingServiceImpl implements CoachingService {
 			"당신은 이제 막 취업한 사회초년생을 위한 개인 재무 코치입니다. 다정하지만 직설적인 톤으로, 왜 그런 소비가 생겼을지 "
 			+ "맥락을 살짝 짚어주고 실천할 수 있는 작은 대안을 하나 제안하세요. 잔소리하지 말고 응원하는 느낌으로. "
 			+ "모바일 넛지 카드에 들어갈 내용이므로 반드시 1~2문장 이내로 짧고 간결하게, 한국어로만 답하세요.";
+
+	private static final String COMPOSITE_NUDGE_SYSTEM_PROMPT =
+			"당신은 이제 막 취업한 사회초년생을 위한 개인 재무 코치입니다. 사용자의 이번 달 여러 카테고리 이상 지출을 한 번에 보고 "
+			+ "종합적으로 진단하세요. 그중 가장 신경 써야 할 카테고리 하나를 짚어 작은 실천 대안을 제안하고, 나머지는 짧게만 언급하세요. "
+			+ "잔소리하지 말고 응원하는 느낌으로. 모바일 넛지 카드에 들어갈 내용이므로 반드시 1~2문장 이내로 짧고 간결하게, 한국어로만 답하세요.";
 
 	private static final String CHAT_SYSTEM_PROMPT =
 			"당신은 사회초년생을 위한 개인 재무 코치입니다. 방금 보낸 소비 넛지에서 이어지는 대화를 진행합니다. "
@@ -106,6 +114,45 @@ public class CoachingServiceImpl implements CoachingService {
 
 		dao.insertMessage(sqlSession, nudge);
 		nudge.setThreadId(nudge.getMessageId()); // 반환 객체에도 self-thread 반영
+		return nudge;
+	}
+
+	@Override
+	public CoachingMessage generateCompositeNudge(int userId, List<AnomalyItem> anomalies) {
+		// 카테고리를 정렬해 join한 문자열을 캐시 키로 사용 — 오늘 같은 조합으로 이미 진단받았으면 재사용.
+		String categoryKey = anomalies.stream()
+				.map(AnomalyItem::getCategory)
+				.sorted()
+				.collect(Collectors.joining(","));
+
+		CoachingMessage existing = dao.selectTodayCompositeNudge(sqlSession, userId, categoryKey);
+		if (existing != null) {
+			existing.setThreadId(existing.getMessageId());
+			return existing;
+		}
+
+		String content = null;
+		if (llmEnabled) {
+			JSONArray contents = new JSONArray();
+			contents.add(userTurn(buildCompositeNudgePrompt(anomalies)));
+			content = callGemini(COMPOSITE_NUDGE_SYSTEM_PROMPT, contents);
+		}
+		if (content == null) {
+			content = mockCompositeNudge(anomalies);
+		}
+
+		// 카테고리별로 이번/평소 금액이 제각각이라 단일 컬럼에 합산해도 의미가 없으므로, 원본/평균 금액은 비워둔다
+		// (성장 리포트의 "이번 N원 · 평소 N원" 표시는 둘 다 null일 때 자동으로 생략된다).
+		CoachingMessage nudge = CoachingMessage.builder()
+				.userId(userId)
+				.threadId(0)
+				.role("NUDGE")
+				.content(content)
+				.category(categoryKey)
+				.build();
+
+		dao.insertMessage(sqlSession, nudge);
+		nudge.setThreadId(nudge.getMessageId());
 		return nudge;
 	}
 
@@ -270,6 +317,15 @@ public class CoachingServiceImpl implements CoachingService {
 				cat, amount, avgAmount);
 	}
 
+	private String buildCompositeNudgePrompt(List<AnomalyItem> anomalies) {
+		StringBuilder sb = new StringBuilder("사용자의 이번 달 카테고리별 이상 지출은 다음과 같습니다.\n");
+		for (AnomalyItem a : anomalies) {
+			sb.append(String.format("- %s: 이번 %,d원 (평소 평균 %,d원)%n", a.getCategory(), a.getOriginalAmount(), a.getAvgAmount()));
+		}
+		sb.append("이 정보를 바탕으로 전체적으로 진단하고, 그중 우선순위가 높은 것 하나를 짚어 조언해주세요.");
+		return sb.toString();
+	}
+
 	private String buildTrendPrompt(List<Map<String, Object>> monthlyTotals) {
 		StringBuilder sb = new StringBuilder();
 		if (monthlyTotals.size() >= 2) {
@@ -313,6 +369,33 @@ public class CoachingServiceImpl implements CoachingService {
 		return String.format(
 				"이번 %s 지출은 %,d원으로, 지금 페이스면 이번 달 예산 관리는 순조로워요.",
 				cat, amount);
+	}
+
+	private String mockCompositeNudge(List<AnomalyItem> anomalies) {
+		AnomalyItem top = anomalies.stream()
+				.max(Comparator.comparingDouble(a -> a.getAvgAmount() > 0
+						? (double) (a.getOriginalAmount() - a.getAvgAmount()) / a.getAvgAmount()
+						: a.getOriginalAmount()))
+				.orElse(anomalies.get(0));
+		int pct = top.getAvgAmount() > 0
+				? (int) Math.round((top.getOriginalAmount() - top.getAvgAmount()) * 100.0 / top.getAvgAmount())
+				: 0;
+
+		StringBuilder sb = new StringBuilder(String.format(
+				"이번 달은 %s 지출이 평소보다 %d%% 많아 가장 눈에 띄어요.", top.getCategory(), pct));
+
+		long otherCount = anomalies.size() - 1;
+		if (otherCount == 1) {
+			String otherCategory = anomalies.stream()
+					.filter(a -> a != top)
+					.findFirst()
+					.map(AnomalyItem::getCategory)
+					.orElse("다른 카테고리");
+			sb.append(String.format(" %s도 함께 살펴보면 좋아요.", otherCategory));
+		} else if (otherCount > 1) {
+			sb.append(String.format(" 그 외 %d개 카테고리도 함께 살펴보면 좋아요.", otherCount));
+		}
+		return sb.toString();
 	}
 
 	private String mockChatReply() {

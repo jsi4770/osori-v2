@@ -7,15 +7,15 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding : 10px;
+  padding: 10px;
   min-height: 60px;
-  height : auto;
+  height: auto;
   overflow: visible;
   box-sizing: border-box;
   border-radius: 16px;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.4), 
+    rgba(255, 255, 255, 0.4),
     rgba(255, 255, 255, 0.1)
   );
   backdrop-filter: blur(12px);
@@ -37,19 +37,18 @@
   width: 100%;
   height: auto;
   display: flex;
-  gap : 10px;
+  gap: 10px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   border-radius: 24px;
-  
 }
 
 .notification-item {
-  height : auto;
+  height: auto;
   width: 100%;
   display: flex;
-  justify-content: center; /* [추가] 가로 중앙 정렬 */
+  justify-content: center;
   align-items: center;
   text-align: center;
   line-height: 1.4;
@@ -57,45 +56,98 @@
   color: var(--text-sub);
   white-space: normal; /* 긴 문구가 잘리지 않고 줄바꿈되도록 */
   overflow: visible;
-  padding : 6px 4px;
+  padding: 6px 4px;
   word-break: keep-all;
 }
 
-.notification-item.clickable {
-  flex-direction: column;
-  gap: 8px;
-  white-space: normal;
-  overflow: visible;
-  cursor: pointer;
-  padding: 12px;
-  border-radius: 12px;
-  transition: background 0.15s ease;
-}
-
-.notification-item.clickable:hover {
-  background: rgba(255, 255, 255, 0.35);
-}
-
-:root[data-theme="dark"] .notification-item.clickable:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.notification-item .notification-text {
-  display: block;
-}
-
-.notification-item .notification-action {
+.insight-toggle-btn {
+  margin-top: 8px;
   align-self: center;
-  border: none;
+  border: 1px solid var(--border);
   border-radius: 20px;
   padding: 6px 16px;
   font-size: 0.85rem;
   font-weight: 700;
+  color: var(--primary-color);
+  background: var(--surface);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.insight-toggle-btn:hover {
+  background: var(--surface-subtle);
+}
+
+.insight-detail {
+  width: 100%;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+:root[data-theme="dark"] .insight-detail {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.insight-breakdown {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.insight-breakdown li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.insight-breakdown-cat {
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.insight-breakdown-amt {
+  color: var(--text-weak);
+  text-align: right;
+}
+
+.insight-summary {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text-main);
+  word-break: keep-all;
+  text-align: center;
+}
+
+.insight-cta-btn {
+  align-self: center;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
   color: #fff;
   background: var(--primary-color);
   cursor: pointer;
+  transition: background 0.15s ease;
 }
 
-.notification-item .notification-action:hover {
+.insight-cta-btn:hover {
   background: #0052cc;
+}
+
+.insight-cta-btn:disabled {
+  background: #b3c9f5;
+  cursor: not-allowed;
 }

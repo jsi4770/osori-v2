@@ -9,6 +9,13 @@ export const coachingApi = {
         return response.data;
     },
 
+    requestCompositeNudge: async ({ userId, anomalies }) => {
+        const response = await api.post('/coaching/nudge/composite', {
+            userId, anomalies
+        });
+        return response.data;
+    },
+
     sendChatMessage: async ({ threadId, userId, message }) => {
         const response = await api.post('/coaching/chat', {
             threadId, userId, message
@@ -36,6 +43,6 @@ export const coachingApi = {
     },
 };
 
-export const { requestNudge, sendChatMessage, getGrowthReport, respondToNudge, getSpendingTrend } = coachingApi;
+export const { requestNudge, requestCompositeNudge, sendChatMessage, getGrowthReport, respondToNudge, getSpendingTrend } = coachingApi;
 
 export default coachingApi;
