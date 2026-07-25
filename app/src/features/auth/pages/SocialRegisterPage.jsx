@@ -56,13 +56,13 @@ export default function SocialRegisterPage() {
     return rule.re.test(value) ? "" : rule.msg;
   };
 
-  // 데이터 없으면 입구컷
+  // 데이터 없으면 입구컷 (이메일 동의항목 권한이 없어 kakaoEmail은 항상 비어있을 수 있으므로 providerUserId로 확인)
   useEffect(() => {
-    if (!kakaoEmail) {
+    if (!providerUserId) {
       alert("카카오 인증 정보가 없습니다. 다시 로그인해주세요.");
       navigate("/login");
     }
-  }, [kakaoEmail, navigate]);
+  }, [providerUserId, navigate]);
 
   // 아이디 중복 체크 함수
   const handleCheckId = async () => {
@@ -135,8 +135,8 @@ export default function SocialRegisterPage() {
         password : form.password,
         userName : form.userName.trim(),
         nickName : form.nickName,
-        email : form.email
-      }, 
+        email : form.email || null // 이메일 동의항목 권한이 없으면 빈 문자열 대신 null로 저장 (EMAIL UNIQUE 제약 충돌 방지)
+      },
       loginType : form.loginType,
       providerUserId : providerUserId
     };
