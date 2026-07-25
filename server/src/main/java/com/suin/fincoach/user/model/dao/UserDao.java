@@ -64,9 +64,14 @@ public class UserDao {
 			return sqlSession.selectOne("userMapper.selectByLoginId", loginId); 
 		}
 
-		//Email을 바탕으로 사용자 찾기 
+		//Email을 바탕으로 사용자 찾기
 		public User findLoginIdByEmail(SqlSessionTemplate sqlSession, String email) {
-			return sqlSession.selectOne("userMapper.findLoginIdByEmail",email); 
+			return sqlSession.selectOne("userMapper.findLoginIdByEmail",email);
+		}
+
+		//카카오 providerUserId를 바탕으로 사용자 찾기 (이메일 동의항목 권한이 없어도 동작)
+		public User findLoginIdByProviderUserId(SqlSessionTemplate sqlSession, String providerUserId) {
+			return sqlSession.selectOne("userMapper.findLoginIdByProviderUserId", providerUserId);
 		}
 
 		//비밀번호 바꾸는 메소드 

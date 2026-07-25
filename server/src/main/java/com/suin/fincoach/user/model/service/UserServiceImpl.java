@@ -147,8 +147,8 @@ public class UserServiceImpl implements UserService {
 	    String providerUserId = String.valueOf(body.get("id")); // 고유 토큰 아이디
 	    String loginType = "KAKAO"; // 로그인 타입
 
-	    // 3. DB 가입 확인 및 처리 (이메일 기준)
-	    User user = dao.findLoginIdByEmail(sqlSession, email); // 회원 조회
+	    // 3. DB 가입 확인 및 처리 (카카오 고유 ID 기준 — 이메일 동의항목 권한이 없어 email이 null일 수 있음)
+	    User user = dao.findLoginIdByProviderUserId(sqlSession, providerUserId); // 회원 조회
 	    
 	    Map<String, Object> result = new HashMap<>();
 	    
@@ -192,14 +192,12 @@ public class UserServiceImpl implements UserService {
 	    }
 	    
 	    int rowUpdate = dao.updateDate(sqlSession,user); // 업데이트 된 행이 있는지 판별
-	    //user = dao.findLoginIdByEmail(sqlSession, email); // 업데이트 된 유저 객체 한번 더 호출
-	    
 
-	    if(rowUpdate > 0) { // lastLogin 날짜 갱신 됐는가 ? 
+	    if(rowUpdate > 0) { // lastLogin 날짜 갱신 됐는가 ?
 
 	    	
-	    	user = dao.findLoginIdByEmail(sqlSession, email); // 업데이트 된 유저 객체 한번 더 호출
-	    	
+	    	user = dao.findLoginIdByProviderUserId(sqlSession, providerUserId); // 업데이트 된 유저 객체 한번 더 호출
+
 	    	// 4. 전용 JWT 발행
 		    String token = jwtUtil.generateToken(user.getLoginId());
 		    user.setPassword(null);

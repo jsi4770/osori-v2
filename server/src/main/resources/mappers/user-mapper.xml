@@ -122,7 +122,18 @@
   			A.LOGIN_TYPE AS loginType
   		FROM USERS U
   		JOIN AUTH_ACCOUNT A ON (U.USER_ID = A.USER_ID)
-  		WHERE U.EMAIL = #{email}	
+  		WHERE U.EMAIL = #{email}
+  	</select>
+
+  	<!-- 카카오 이메일 동의항목 권한이 없어(계정마다 email이 null일 수 있음) providerUserId로 회원 식별 -->
+  	<select id="findLoginIdByProviderUserId" parameterType="string" resultType="User">
+  		SELECT
+  			U.*,
+  			A.LOGIN_TYPE AS loginType
+  		FROM USERS U
+  		JOIN AUTH_ACCOUNT A ON (U.USER_ID = A.USER_ID)
+  		WHERE A.PROVIDER_USER_ID = #{providerUserId}
+  		AND A.LOGIN_TYPE = 'KAKAO'
   	</select>
   	
   	<update id="resetPassword" parameterType="Map">
