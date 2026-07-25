@@ -44,6 +44,9 @@ public class UserServiceImpl implements UserService {
 	@Value("${kakao.redirect-uri}")
 	private String kakaoRedirectUri;
 
+	@Value("${kakao.client-secret}")
+	private String kakaoClientSecret;
+
 	@Transactional
 	@Override // 회원 가입 
 	public int insertUser(UserRegisterRequest request) {
@@ -122,9 +125,8 @@ public class UserServiceImpl implements UserService {
 	    params.add("client_id", kakaoClientId);
 	    params.add("redirect_uri", kakaoRedirectUri);
 	    params.add("code", code);
+	    params.add("client_secret", kakaoClientSecret);
 
-	    // 카카오 보안 설정에서 Client Secret을 생성했다면 반드시 아래 코드를 추가해야 401 에러가 안 납니다.
-	   
 	    HttpEntity<MultiValueMap<String, String>> tokenRequest = new HttpEntity<>(params, headers);
 	    ResponseEntity<Map> tokenResponse = rt.exchange("https://kauth.kakao.com/oauth/token", HttpMethod.POST, tokenRequest, Map.class);
 	    String accessToken = (String) tokenResponse.getBody().get("access_token");

@@ -47,6 +47,7 @@ naver.ocr.secret=CHANGE_ME
 kakao.client-id=CHANGE_ME
 kakao.admin-key=CHANGE_ME
 kakao.rest-api-key=CHANGE_ME
+kakao.client-secret=CHANGE_ME
 kakao.redirect-uri=http://localhost:5174/auth/kakao/callback
 
 # Google Gemini (AI coaching) — free tier, issue a key at https://aistudio.google.com/apikey (no card required)

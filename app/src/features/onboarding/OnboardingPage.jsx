@@ -10,8 +10,8 @@ const BADGER = "/osori-badger.png";
 const BADGER_MONEY = "/osori-badger-money.png";
 
 // 카카오 로그인 URL — 로그인 페이지와 동일 규격 유지
-const REST_API_KEY = "fbeeefb1ab0d16e849dfdfdd01f9222b";
-const REDIRECT_URI = "http://localhost:5173/auth/kakao/callback";
+const REST_API_KEY = "0a83fd7608e0074b1c448e2add1f2632";
+const REDIRECT_URI = `${window.location.origin}/auth/kakao/callback`;
 const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code&prompt=login`;
 
 // 슬라이드 데이터 — 활성 단계(currentStep)에 따라 렌더링
@@ -287,7 +287,7 @@ export default function OnboardingPage() {
               <KakaoGlyph />
               카카오로 3초 만에 시작하기
             </button>
-            <button type="button" className="ob-btn ob-btn-email" onClick={() => finish("/login")}>
+            <button type="button" className="ob-btn ob-btn-email" onClick={() => finish("/register")}>
               이메일로 가입 / 로그인
             </button>
           </div>

@@ -46,6 +46,8 @@ export default defineConfig({
     global: "window",
   },
   server: {
+    port: 5174,
+    strictPort: true,
     proxy: {
       "/fincoach": {
         target: "http://localhost:8080",
