@@ -171,24 +171,7 @@ public class UserServiceImpl implements UserService {
 	    				return result; 
 	    			}
 	    		}
-	    	
-	    		if(user.getEmail().equals(email)) { // 연동 해제 후, 다시 재 연동을 하려고 할 때 (연동을 한번이상 했던 사람들에 한해서만)
-	    			//즉, 카카오에서 받아온 이메일이랑 로컬 정보의 이메일이 같을때
-	    			
-	    			result.put("providerUserId",providerUserId);
-		    		result.put("loginType", loginType);
-		    		result.put("userId", user.getUserId());
-		    		
-		    		int count = dao.updateAuthAccount2(sqlSession,result);
-		    		
-		    		if(count == 0) {
-		    			return null; // 재 연동 시 카카오로 안 바뀌면 null 반환 
-		    			
-		    			//조건식을 만족하지 않으면 그냥 다음으로 넘어가서 정상 처리
-		    		}
-	    			
-	    		} 
-		    		
+	    		// providerUserId로 이미 회원을 찾았으므로(=이미 카카오로 연동된 계정) 별도의 재연동 처리는 불필요
 	    }
 	    
 	    int rowUpdate = dao.updateDate(sqlSession,user); // 업데이트 된 행이 있는지 판별
