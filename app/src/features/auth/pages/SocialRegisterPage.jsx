@@ -14,7 +14,7 @@ export default function SocialRegisterPage() {
       re: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$/,
       msg: "영문과 숫자를 조합하여 8~16자로 입력해 주세요.",
     },
-    userName: {
+    nickName: {
       re: /^[가-힣]{3,5}$/,
       msg: "한글 3~5자로 입력해 주세요.",
     }
@@ -26,8 +26,8 @@ export default function SocialRegisterPage() {
   const [form, setForm] = useState({
     loginId: "",
     password: "",
-    userName: "",
-    nickName: kakaoNickname || "",
+    userName: kakaoNickname || "", // 이름 (소셜 정보, 읽기 전용)
+    nickName: "", // 닉네임 (직접 입력, 중복체크 필요 — NICKNAME UNIQUE 제약)
     email: kakaoEmail || "",
     loginType : "KAKAO"
   });
@@ -36,11 +36,12 @@ export default function SocialRegisterPage() {
   const [fieldError, setFieldError] = useState({
     loginId: "",
     password: "",
-    userName: "",
+    nickName: "",
   });
 
   // 상태 관리
   const [idCheck, setIdCheck] = useState(null);
+  const [nickCheck, setNickCheck] = useState(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -92,11 +93,39 @@ export default function SocialRegisterPage() {
     }
   };
 
+  // 닉네임 중복 체크 함수
+  const handleCheckNickName = async () => {
+    setError("");
+    setNickCheck(null);
+
+    const nickName = form.nickName.trim();
+    if (!nickName) {
+      setError("닉네임을 입력해 주세요.");
+      return;
+    }
+
+    const nickNameMsg = validateField("nickName", nickName);
+    setFieldError((p) => ({ ...p, nickName: nickNameMsg }));
+    if (nickNameMsg) return;
+
+    try {
+      const res = await authApi.checkNickName(nickName);
+      const count = Number(res?.count ?? 0);
+      setNickCheck({
+        count,
+        msg: count === 0 ? "사용 가능한 닉네임입니다." : "이미 사용중인 닉네임입니다.",
+      });
+    } catch (e) {
+      setError("닉네임 중복체크 실패");
+    }
+  };
+
   const onChange = (e) => {
     const { name, value } = e.target;
     setForm((p) => ({ ...p, [name]: value }));
     setError("");
     if (name === "loginId") setIdCheck(null);
+    if (name === "nickName") setNickCheck(null);
 
     // touched 조건 없이 입력 즉시 에러 상태 업데이트
     setFieldError((p) => ({
@@ -113,7 +142,7 @@ export default function SocialRegisterPage() {
     const nextFieldError = {
       loginId: validateField("loginId", form.loginId),
       password: validateField("password", form.password),
-      userName: validateField("userName", form.userName),
+      nickName: validateField("nickName", form.nickName),
     };
 
     setFieldError(nextFieldError);
@@ -129,12 +158,17 @@ export default function SocialRegisterPage() {
       return;
     }
 
+    if (!nickCheck || nickCheck.count > 0) {
+      setError("닉네임 중복 확인을 완료해주세요.");
+      return;
+    }
+
     const payload = {
       user : {
         loginId : form.loginId.trim(),
         password : form.password,
-        userName : form.userName.trim(),
-        nickName : form.nickName,
+        userName : form.userName,
+        nickName : form.nickName.trim(),
         email : form.email || null // 이메일 동의항목 권한이 없으면 빈 문자열 대신 null로 저장 (EMAIL UNIQUE 제약 충돌 방지)
       },
       loginType : form.loginType,
@@ -228,36 +262,51 @@ export default function SocialRegisterPage() {
           <div className={`${styles.hint} ${styles.bad}`}>{fieldError.password}</div>
         )}
 
-        {/* 이름 섹션 */}
-        <div className={styles.label}>이름</div>
+        {/* 닉네임 섹션 */}
+        <div className={styles.labelRow}>
+          <div className={styles.label}>닉네임</div>
+          <button className={styles.checkBtn} type="button" onClick={handleCheckNickName}>
+            중복체크
+          </button>
+        </div>
         <input
           className={styles.input}
-          name="userName"
-          value={form.userName}
+          name="nickName"
+          value={form.nickName}
           onChange={onChange}
           placeholder="한글 3~5자로 입력해 주세요."
         />
-        {fieldError.userName && (
-          <div className={`${styles.hint} ${styles.bad}`}>{fieldError.userName}</div>
+        {fieldError.nickName ? (
+          <div className={`${styles.hint} ${styles.bad}`}>{fieldError.nickName}</div>
+        ) : (
+          nickCheck && (
+            <div className={`${styles.hint} ${nickCheck.count === 0 ? styles.ok : styles.bad}`}>
+              {nickCheck.msg}
+            </div>
+          )
         )}
 
-        {/* 닉네임 (소셜 고정 정보) */}
-        <div className={styles.label}>닉네임 (소셜 정보)</div>
-        <input 
+        {/* 이름 (소셜 고정 정보) */}
+        <div className={styles.label}>이름 (소셜 정보)</div>
+        <input
           className={styles.input}
           style={{ backgroundColor: 'var(--surface-subtle)', color: 'var(--text-weak)' }}
-          value={form.nickName}
-          readOnly 
+          value={form.userName}
+          readOnly
         />
 
-        {/* 이메일 (소셜 고정 정보) */}
-        <div className={styles.label}>이메일 (소셜 정보)</div>
-        <input 
-          className={styles.input}
-          style={{ backgroundColor: 'var(--surface-subtle)', color: 'var(--text-weak)' }}
-          value={form.email}
-          readOnly 
-        />
+        {/* 이메일 (소셜 고정 정보) — 카카오 이메일 동의항목 권한 승인 전까지는 항상 비어있으므로 값 있을 때만 노출 */}
+        {kakaoEmail && (
+          <>
+            <div className={styles.label}>이메일 (소셜 정보)</div>
+            <input
+              className={styles.input}
+              style={{ backgroundColor: 'var(--surface-subtle)', color: 'var(--text-weak)' }}
+              value={form.email}
+              readOnly
+            />
+          </>
+        )}
 
         {error && <div className={styles.error}>{error}</div>}
 
